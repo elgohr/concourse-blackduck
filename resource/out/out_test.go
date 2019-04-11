@@ -17,7 +17,10 @@ func TestStartsBlackduck(t *testing.T) {
     			"url": "%v",
 				"username": "%v",
     			"password": "%v"
-  			}
+  			},
+			"params": {
+				"directory": "."
+			}
 		}`, targetUrl, username, password))
 
 	var called bool
@@ -105,7 +108,10 @@ func TestAddsLoggingToSubProcess(t *testing.T) {
     			"url": "https://BLACKDUCK",
 				"username": "username",
     			"password": "password"
-  			}
+  			},
+			"params": {
+				"directory": "."
+			}
 		}`)
 
 	if err := r.run(); err != nil {
@@ -136,7 +142,10 @@ func TestReturnsValidJson(t *testing.T) {
     			"url": "https://BLACKDUCK",
 				"username": "username",
     			"password": "password"
-  			}
+  			},
+			"params": {
+				"directory": "."
+			}
 		}`)
 
 	if err := r.run(); err != nil {
@@ -169,7 +178,7 @@ func TestErrorsWhenUrlWasNotConfigured(t *testing.T) {
 		}`)
 
 	if err := r.run(); err != nil {
-		e := "missing mandatory field"
+		e := "missing mandatory source field"
 		if err.Error() != e {
 			t.Errorf("Expected error message '%v', but got '%v'", e, err.Error())
 		}
@@ -202,7 +211,7 @@ func TestErrorsWhenUsernameWasNotConfigured(t *testing.T) {
 		}`)
 
 	if err := r.run(); err != nil {
-		e := "missing mandatory field"
+		e := "missing mandatory source field"
 		if err.Error() != e {
 			t.Errorf("Expected error message '%v', but got '%v'", e, err.Error())
 		}
@@ -235,7 +244,42 @@ func TestErrorsWhenPasswordWasNotConfigured(t *testing.T) {
 		}`)
 
 	if err := r.run(); err != nil {
-		e := "missing mandatory field"
+		e := "missing mandatory source field"
+		if err.Error() != e {
+			t.Errorf("Expected error message '%v', but got '%v'", e, err.Error())
+		}
+	} else {
+		t.Error("Should have errored, but didn't")
+	}
+	if called {
+		t.Error("Should not have called Blackduck")
+	}
+}
+
+func TestErrorsWhenDirectoryIsMissing(t *testing.T) {
+	stdIn := &bytes.Buffer{}
+	var called bool
+	r := Runner{
+		stdIn:  stdIn,
+		stdOut: &bytes.Buffer{},
+		stdErr: &bytes.Buffer{},
+		exec: func(name string, arg ...string) *exec.Cmd {
+			called = true
+			return exec.Command("true")
+		},
+	}
+
+	stdIn.WriteString(`{
+			"source": {
+				"url": "https://BLACKDUCK",
+				"username": "username",
+    			"password": "password"
+  			},
+			"params": {}
+		}`)
+
+	if err := r.run(); err != nil {
+		e := "missing mandatory params field"
 		if err.Error() != e {
 			t.Errorf("Expected error message '%v', but got '%v'", e, err.Error())
 		}

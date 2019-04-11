@@ -39,7 +39,10 @@ func (r *Runner) run() error {
 		return err
 	}
 	if !input.Source.Valid() {
-		return errors.New("missing mandatory field")
+		return errors.New("missing mandatory source field")
+	}
+	if !input.Params.Valid() {
+		return errors.New("missing mandatory params field")
 	}
 	cmd := r.exec(
 		"java",
@@ -66,12 +69,16 @@ type Source struct {
 	Password string `json:"password"`
 }
 
-type Params struct {
-	Directory string `json:"directory"`
-}
-
 func (s *Source) Valid() bool {
 	return len(s.Url) != 0 &&
 		len(s.Username) != 0 &&
 		len(s.Password) != 0
+}
+
+type Params struct {
+	Directory string `json:"directory"`
+}
+
+func (p *Params) Valid() bool {
+	return len(p.Directory) != 0
 }
