@@ -18,20 +18,18 @@ func main() {
 }
 
 type Runner struct {
-	stdIn       io.Reader
-	stdOut      io.Writer
-	stdErr      io.Writer
-	downloadDir string
-	exec        func(name string, arg ...string) *exec.Cmd
+	stdIn  io.Reader
+	stdOut io.Writer
+	stdErr io.Writer
+	exec   func(name string, arg ...string) *exec.Cmd
 }
 
 func NewRunner() Runner {
 	return Runner{
-		stdIn:       os.Stdin,
-		stdOut:      os.Stdout,
-		stdErr:      os.Stderr,
-		downloadDir: os.Args[1],
-		exec:        exec.Command,
+		stdIn:  os.Stdin,
+		stdOut: os.Stdout,
+		stdErr: os.Stderr,
+		exec:   exec.Command,
 	}
 }
 
@@ -50,7 +48,7 @@ func (r *Runner) run() error {
 		"--blackduck.url="+input.Source.Url,
 		"--blackduck.username="+input.Source.Username,
 		"--blackduck.password="+input.Source.Password)
-	cmd.Dir = r.downloadDir
+	cmd.Dir = input.Params.Directory
 	cmd.Stdout = r.stdOut
 	cmd.Stderr = r.stdErr
 	fmt.Fprintf(r.stdOut, "[]")
@@ -58,13 +56,18 @@ func (r *Runner) run() error {
 }
 
 type OutRequest struct {
-	Source  Source  `json:"source"`
+	Source Source `json:"source"`
+	Params Params `json:"params"`
 }
 
 type Source struct {
 	Url      string `json:"url"`
 	Username string `json:"username"`
 	Password string `json:"password"`
+}
+
+type Params struct {
+	Directory string `json:"directory"`
 }
 
 func (s *Source) Valid() bool {

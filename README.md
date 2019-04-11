@@ -5,6 +5,8 @@ __The State of this resource is early alpha, so please take care and give feedba
 
 ## Installing
 
+`Shortcut`: [Pipeline example](https://github.com/elgohr/concourse-blackduck/blob/master/example-pipeline.yml)
+
 Use this resource by adding the following to
 the `resource_types` section of a pipeline config:
 
@@ -39,3 +41,13 @@ resources:
 
 ## `out`: Analysis
 The resource will analyse your provided content and push it to the provided Blackduck instance.
+
+### Parameters
+
+```yaml
+  - put: my-blackduck
+    params: {directory: source-code}
+```
+
+* `directory`: *Required.* The path of the repository to analyze.
+

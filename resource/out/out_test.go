@@ -3,28 +3,12 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
 	"os/exec"
 	"testing"
 )
 
-func setup(t *testing.T) (runner Runner) {
-	tmpDir, err := ioutil.TempDir("", "concourse-blackduck")
-	if err != nil {
-		t.Error(err)
-	}
-	return Runner{
-		stdIn:       &bytes.Buffer{},
-		stdOut:      &bytes.Buffer{},
-		stdErr:      &bytes.Buffer{},
-		downloadDir: tmpDir,
-	}
-}
-
 func TestStartsBlackduck(t *testing.T) {
-	r := setup(t)
-
-	stdIn := r.stdIn.(*bytes.Buffer)
+	stdIn := &bytes.Buffer{}
 	targetUrl := "https://BLACKDUCK"
 	username := "USERNAME"
 	password := "PASSWORD"
@@ -37,24 +21,29 @@ func TestStartsBlackduck(t *testing.T) {
 		}`, targetUrl, username, password))
 
 	var called bool
-	r.exec = func(name string, arg ...string) *exec.Cmd {
-		called = true
-		if name != "java" {
-			t.Errorf("Should have started java, but started %v", name)
-		}
-		expectedArgs := []string{
-			"-jar",
-			"synopsys-detect-5.3.3.jar",
-			"--blackduck.url=" + targetUrl,
-			"--blackduck.username=" + username,
-			"--blackduck.password=" + password,
-		}
-		for i, a := range arg {
-			if a != expectedArgs[i] {
-				t.Errorf("Expected argument %v, but got %v", expectedArgs[i], a)
+	r := Runner{
+		stdIn:  stdIn,
+		stdOut: &bytes.Buffer{},
+		stdErr: &bytes.Buffer{},
+		exec: func(name string, arg ...string) *exec.Cmd {
+			called = true
+			if name != "java" {
+				t.Errorf("Should have started java, but started %v", name)
 			}
-		}
-		return exec.Command("true")
+			expectedArgs := []string{
+				"-jar",
+				"synopsys-detect-5.3.3.jar",
+				"--blackduck.url=" + targetUrl,
+				"--blackduck.username=" + username,
+				"--blackduck.password=" + password,
+			}
+			for i, a := range arg {
+				if a != expectedArgs[i] {
+					t.Errorf("Expected argument %v, but got %v", expectedArgs[i], a)
+				}
+			}
+			return exec.Command("true")
+		},
 	}
 
 	if err := r.run(); err != nil {
@@ -66,39 +55,51 @@ func TestStartsBlackduck(t *testing.T) {
 }
 
 func TestSetsTheWorkingDirectoryToTheProvidedSource(t *testing.T) {
-	r := setup(t)
-
+	stdIn := &bytes.Buffer{}
 	command := exec.Command("true")
-	r.exec = func(name string, arg ...string) *exec.Cmd {
-		return command
+
+	r := Runner{
+		stdIn:  stdIn,
+		stdOut: &bytes.Buffer{},
+		stdErr: &bytes.Buffer{},
+		exec: func(name string, arg ...string) *exec.Cmd {
+			return command
+		},
 	}
 
-	stdIn := r.stdIn.(*bytes.Buffer)
-	stdIn.WriteString(`{
+	directory := "."
+
+	stdIn.WriteString(fmt.Sprintf(`{
 			"source": {
     			"url": "https://BLACKDUCK",
 				"username": "username",
     			"password": "password"
-  			}
-		}`)
+  			},
+			"params": {
+				"directory": "%v"
+			}
+		}`, directory))
 
 	if err := r.run(); err != nil {
 		t.Error(err)
 	}
-	if command.Dir != r.downloadDir {
+	if command.Dir != directory {
 		t.Error("Working dir was not set correctly")
 	}
 }
 
 func TestAddsLoggingToSubProcess(t *testing.T) {
-	r := setup(t)
-
+	stdIn := &bytes.Buffer{}
 	command := exec.Command("true")
-	r.exec = func(name string, arg ...string) *exec.Cmd {
-		return command
+	r := Runner{
+		stdIn:  stdIn,
+		stdOut: &bytes.Buffer{},
+		stdErr: &bytes.Buffer{},
+		exec: func(name string, arg ...string) *exec.Cmd {
+			return command
+		},
 	}
 
-	stdIn := r.stdIn.(*bytes.Buffer)
 	stdIn.WriteString(`{
 			"source": {
     			"url": "https://BLACKDUCK",
@@ -119,13 +120,17 @@ func TestAddsLoggingToSubProcess(t *testing.T) {
 }
 
 func TestReturnsValidJson(t *testing.T) {
-	r := setup(t)
-
-	r.exec = func(name string, arg ...string) *exec.Cmd {
-		return exec.Command("true")
+	stdIn := &bytes.Buffer{}
+	stdOut := &bytes.Buffer{}
+	r := Runner{
+		stdIn:  stdIn,
+		stdOut: stdOut,
+		stdErr: &bytes.Buffer{},
+		exec: func(name string, arg ...string) *exec.Cmd {
+			return exec.Command("true")
+		},
 	}
 
-	stdIn := r.stdIn.(*bytes.Buffer)
 	stdIn.WriteString(`{
 			"source": {
     			"url": "https://BLACKDUCK",
@@ -138,22 +143,24 @@ func TestReturnsValidJson(t *testing.T) {
 		t.Error(err)
 	}
 
-	stdout := r.stdOut.(*bytes.Buffer)
-	if stdout.String() != `[]` {
-		t.Errorf("Expected empty array, but got %v", stdout.String())
+	if stdOut.String() != `[]` {
+		t.Errorf("Expected empty array, but got %v", stdOut.String())
 	}
 }
 
 func TestErrorsWhenUrlWasNotConfigured(t *testing.T) {
-	r := setup(t)
-
+	stdIn := &bytes.Buffer{}
 	var called bool
-	r.exec = func(name string, arg ...string) *exec.Cmd {
-		called = true
-		return exec.Command("true")
+	r := Runner{
+		stdIn:  stdIn,
+		stdOut: &bytes.Buffer{},
+		stdErr: &bytes.Buffer{},
+		exec: func(name string, arg ...string) *exec.Cmd {
+			called = true
+			return exec.Command("true")
+		},
 	}
 
-	stdIn := r.stdIn.(*bytes.Buffer)
 	stdIn.WriteString(`{
 			"source": {
 				"username": "username",
@@ -175,15 +182,18 @@ func TestErrorsWhenUrlWasNotConfigured(t *testing.T) {
 }
 
 func TestErrorsWhenUsernameWasNotConfigured(t *testing.T) {
-	r := setup(t)
-
+	stdIn := &bytes.Buffer{}
 	var called bool
-	r.exec = func(name string, arg ...string) *exec.Cmd {
-		called = true
-		return exec.Command("true")
+	r := Runner{
+		stdIn:  stdIn,
+		stdOut: &bytes.Buffer{},
+		stdErr: &bytes.Buffer{},
+		exec: func(name string, arg ...string) *exec.Cmd {
+			called = true
+			return exec.Command("true")
+		},
 	}
 
-	stdIn := r.stdIn.(*bytes.Buffer)
 	stdIn.WriteString(`{
 			"source": {
     			"url": "https://BLACKDUCK",
@@ -205,15 +215,18 @@ func TestErrorsWhenUsernameWasNotConfigured(t *testing.T) {
 }
 
 func TestErrorsWhenPasswordWasNotConfigured(t *testing.T) {
-	r := setup(t)
-
+	stdIn := &bytes.Buffer{}
 	var called bool
-	r.exec = func(name string, arg ...string) *exec.Cmd {
-		called = true
-		return exec.Command("true")
+	r := Runner{
+		stdIn:  stdIn,
+		stdOut: &bytes.Buffer{},
+		stdErr: &bytes.Buffer{},
+		exec: func(name string, arg ...string) *exec.Cmd {
+			called = true
+			return exec.Command("true")
+		},
 	}
 
-	stdIn := r.stdIn.(*bytes.Buffer)
 	stdIn.WriteString(`{
 			"source": {
     			"url": "https://BLACKDUCK",
@@ -235,15 +248,18 @@ func TestErrorsWhenPasswordWasNotConfigured(t *testing.T) {
 }
 
 func TestErrorsWhenConfigurationJsonIsInvalid(t *testing.T) {
-	r := setup(t)
-
+	stdIn := &bytes.Buffer{}
 	var called bool
-	r.exec = func(name string, arg ...string) *exec.Cmd {
-		called = true
-		return exec.Command("true")
+	r := Runner{
+		stdIn:  stdIn,
+		stdOut: &bytes.Buffer{},
+		stdErr: &bytes.Buffer{},
+		exec: func(name string, arg ...string) *exec.Cmd {
+			called = true
+			return exec.Command("true")
+		},
 	}
 
-	stdIn := r.stdIn.(*bytes.Buffer)
 	stdIn.WriteString(`{
 			"source": {
     			:
