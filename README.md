@@ -13,7 +13,7 @@ resource_types:
 - name: blackduck
   type: docker-image
   source:
-    repository: lgohr/blackduck
+    repository: lgohr/blackduck-resource
     tag: latest
 ```
 
