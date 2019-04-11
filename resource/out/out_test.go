@@ -3,9 +3,27 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"os"
 	"os/exec"
+	"reflect"
 	"testing"
 )
+
+func TestConstructsRunnerCorrectly(t *testing.T) {
+	r := NewRunner()
+	if r.stdIn != os.Stdin {
+		t.Error("Didn't set stdIn correctly")
+	}
+	if r.stdOut != os.Stdout {
+		t.Error("Didn't set stdOut correctly")
+	}
+	if r.stdErr != os.Stderr {
+		t.Error("Didn't set stdErr correctly")
+	}
+	if reflect.TypeOf(r.exec) != reflect.TypeOf(exec.Command) {
+		t.Error("Didn't set exec correctly")
+	}
+}
 
 func TestStartsBlackduck(t *testing.T) {
 	stdIn := &bytes.Buffer{}
