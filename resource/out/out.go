@@ -47,7 +47,7 @@ func (r *Runner) run() error {
 	cmd := r.exec(
 		"java",
 		"-jar",
-		"synopsys-detect-5.3.3.jar",
+		"/opt/resource/synopsys-detect-5.3.3.jar",
 		"--blackduck.url="+input.Source.Url,
 		"--blackduck.username="+input.Source.Username,
 		"--blackduck.password="+input.Source.Password)

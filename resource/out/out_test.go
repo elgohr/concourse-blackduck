@@ -35,7 +35,7 @@ func TestStartsBlackduck(t *testing.T) {
 			}
 			expectedArgs := []string{
 				"-jar",
-				"synopsys-detect-5.3.3.jar",
+				"/opt/resource/synopsys-detect-5.3.3.jar",
 				"--blackduck.url=" + targetUrl,
 				"--blackduck.username=" + username,
 				"--blackduck.password=" + password,
