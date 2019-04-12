@@ -1,4 +1,4 @@
-FROM golang:1.12.3-alpine as buildResource
+FROM golang:1.12.4-alpine as buildResource
 WORKDIR /build
 ADD resource ./source
 RUN go test -v ./... \
