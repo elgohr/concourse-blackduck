@@ -50,7 +50,8 @@ func (r *Runner) run() error {
 		"/opt/resource/synopsys-detect-5.3.3.jar",
 		"--blackduck.url="+input.Source.Url,
 		"--blackduck.username="+input.Source.Username,
-		"--blackduck.password="+input.Source.Password)
+		"--blackduck.password="+input.Source.Password,
+		"--blackduck.trust.cert=true")
 	cmd.Dir = input.Params.Directory
 	cmd.Stdout = r.stdOut
 	cmd.Stderr = r.stdErr

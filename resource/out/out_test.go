@@ -57,6 +57,7 @@ func TestStartsBlackduck(t *testing.T) {
 				"--blackduck.url=" + targetUrl,
 				"--blackduck.username=" + username,
 				"--blackduck.password=" + password,
+				"--blackduck.trust.cert=true",
 			}
 			for i, a := range arg {
 				if a != expectedArgs[i] {
