@@ -59,12 +59,14 @@ func (r *Runner) run() error {
 	buf := bytes.Buffer{}
 	cmd.Stdout = &buf
 
-	err := cmd.Run()
-
-	response := interpreter.NewResponse(buf.String())
-	b, err := json.Marshal(response)
-	if err != nil {
+	if err := cmd.Run(); err != nil {
 		return err
+	}
+
+	response, err := interpreter.NewResponse(buf.String())
+	b, marshErr := json.Marshal(response)
+	if marshErr != nil {
+		return marshErr
 	}
 	fmt.Fprintf(r.stdOut, string(b))
 	return err

@@ -1,10 +1,11 @@
 FROM golang:1.12.4 as buildResource
-WORKDIR /build
-ADD resource ./source
+ENV GO111MODULE=on
+WORKDIR /build/source
+ADD resource ./
 RUN go test -v ./... \
- && go build -o compiled/out source/out/out.go \
- && go build -o compiled/in source/in/in.go \
- && go build -o compiled/check source/check/check.go
+ && go build -o ../compiled/out out/out.go \
+ && go build -o ../compiled/in in/in.go \
+ && go build -o ../compiled/check check/check.go
 
 FROM openjdk:13 as buildJava
 RUN jlink --compress=2 \
