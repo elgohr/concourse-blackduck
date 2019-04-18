@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/elgohr/blackduck-resource/out/interpreter"
+	"github.com/elgohr/blackduck-resource/shared"
 	"io"
 	"log"
 	"os"
@@ -36,7 +37,7 @@ func NewRunner() Runner {
 }
 
 func (r *Runner) run() error {
-	var input OutRequest
+	var input shared.Request
 	if err := json.NewDecoder(r.stdIn).Decode(&input); err != nil {
 		return err
 	}
@@ -70,29 +71,4 @@ func (r *Runner) run() error {
 	}
 	fmt.Fprintf(r.stdOut, string(b))
 	return err
-}
-
-type OutRequest struct {
-	Source Source `json:"source"`
-	Params Params `json:"params"`
-}
-
-type Source struct {
-	Url      string `json:"url"`
-	Username string `json:"username"`
-	Password string `json:"password"`
-}
-
-func (s *Source) Valid() bool {
-	return len(s.Url) != 0 &&
-		len(s.Username) != 0 &&
-		len(s.Password) != 0
-}
-
-type Params struct {
-	Directory string `json:"directory"`
-}
-
-func (p *Params) Valid() bool {
-	return len(p.Directory) != 0
 }

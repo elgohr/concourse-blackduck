@@ -36,7 +36,8 @@ func TestStartsBlackduck(t *testing.T) {
 			"source": {
     			"url": "%v",
 				"username": "%v",
-    			"password": "%v"
+    			"password": "%v",
+				"name": "project1"
   			},
 			"params": {
 				"directory": "."
@@ -97,7 +98,8 @@ func TestSetsTheWorkingDirectoryToTheProvidedSource(t *testing.T) {
 			"source": {
     			"url": "https://BLACKDUCK",
 				"username": "username",
-    			"password": "password"
+    			"password": "password",
+				"name": "project1"
   			},
 			"params": {
 				"directory": "%v"
@@ -128,7 +130,8 @@ func TestAddsLoggingToSubProcess(t *testing.T) {
 			"source": {
     			"url": "https://BLACKDUCK",
 				"username": "username",
-    			"password": "password"
+    			"password": "password",
+				"name": "project1"
   			},
 			"params": {
 				"directory": "."
@@ -164,7 +167,8 @@ func TestReturnsTheVersionAndMetaDataOfTheBlackduckScan(t *testing.T) {
 			"source": {
     			"url": "https://BLACKDUCK",
 				"username": "username",
-    			"password": "password"
+    			"password": "password",
+				"name": "project1"
   			},
 			"params": {
 				"directory": "."
@@ -210,7 +214,8 @@ func TestErrorsWhenTheScanFails(t *testing.T) {
 			"source": {
     			"url": "https://BLACKDUCK",
 				"username": "username",
-    			"password": "password"
+    			"password": "password",
+				"name": "project1"
   			},
 			"params": {
 				"directory": "."
@@ -251,7 +256,8 @@ func TestErrorsWhenUrlWasNotConfigured(t *testing.T) {
 	stdIn.WriteString(`{
 			"source": {
 				"username": "username",
-    			"password": "password"
+    			"password": "password",
+				"name": "project1"
   			}
 		}`)
 
@@ -317,7 +323,8 @@ func TestErrorsWhenPasswordWasNotConfigured(t *testing.T) {
 	stdIn.WriteString(`{
 			"source": {
     			"url": "https://BLACKDUCK",
-				"username": "username"
+				"username": "username",
+				"name": "project1"
   			}
 		}`)
 
@@ -351,7 +358,8 @@ func TestErrorsWhenDirectoryIsMissing(t *testing.T) {
 			"source": {
 				"url": "https://BLACKDUCK",
 				"username": "username",
-    			"password": "password"
+    			"password": "password",
+				"name": "project1"
   			},
 			"params": {}
 		}`)

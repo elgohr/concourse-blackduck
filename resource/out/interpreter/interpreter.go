@@ -2,17 +2,16 @@ package interpreter
 
 import (
 	"errors"
+	"github.com/elgohr/blackduck-resource/shared"
 	"strings"
 )
 
 type Response struct {
-	Id       Ref        `json:"version"`
+	Id       shared.Ref        `json:"version"`
 	MetaData []MetaData `json:"metadata"`
 }
 
-type Ref struct {
-	Ref string `json:"ref"`
-}
+
 
 type MetaData struct {
 	Name  string `json:"name"`
@@ -22,7 +21,7 @@ type MetaData struct {
 func NewResponse(logResponse string) (Response, error) {
 	id, name, version, url, err := extractAttributes(logResponse)
 	return Response{
-		Id: Ref{Ref: id},
+		Id: shared.Ref{Ref: id},
 		MetaData: []MetaData{
 			{Name: "name", Value: name},
 			{Name: "version", Value: version},
