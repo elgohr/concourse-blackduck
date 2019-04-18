@@ -3,9 +3,11 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"os/exec"
 	"reflect"
+	"strings"
 	"testing"
 )
 
@@ -139,12 +141,9 @@ func TestAddsLoggingToSubProcess(t *testing.T) {
 	if command.Stderr != r.stdErr {
 		t.Error("StdErr was not added correctly")
 	}
-	if command.Stdout != r.stdOut {
-		t.Error("Stdout was not added correctly")
-	}
 }
 
-func TestReturnsValidJson(t *testing.T) {
+func TestReturnsTheVersionAndMetaDataOfTheBlackduckScan(t *testing.T) {
 	stdIn := &bytes.Buffer{}
 	stdOut := &bytes.Buffer{}
 	r := Runner{
@@ -152,7 +151,12 @@ func TestReturnsValidJson(t *testing.T) {
 		stdOut: stdOut,
 		stdErr: &bytes.Buffer{},
 		exec: func(name string, arg ...string) *exec.Cmd {
-			return exec.Command("true")
+			b, err := ioutil.ReadFile("testdata/blackduckResponse.txt")
+			if err != nil {
+				t.Error(err)
+			}
+			command := exec.Command("echo", string(b))
+			return command
 		},
 	}
 
@@ -171,8 +175,63 @@ func TestReturnsValidJson(t *testing.T) {
 		t.Error(err)
 	}
 
-	if stdOut.String() != `[]` {
-		t.Errorf("Expected empty array, but got %v", stdOut.String())
+	expRes := strings.ReplaceAll(strings.ReplaceAll(strings.ReplaceAll(`{
+		"version": { "ref": "d1530c19-1541-443f-8a5e-ea4e17c856a8" },
+		"metadata": [
+			{ "name": "name", "value": "presentations" },
+			{ "name": "version", "value": "1.0.0" },
+			{ "name": "url", "value": "https://my.host/api/projects/d6aed8bb-0b9a-46a2-a1ce-60101939eb10/versions/d1530c19-1541-443f-8a5e-ea4e17c856a8/components" }
+		]
+	}`, "\n", ""), "	", "")," ", "")
+	if stdOut.String() != expRes {
+		t.Errorf(`Expected: %v
+				Got:   %v`, expRes, stdOut.String())
+	}
+}
+
+func TestErrorsWhenTheScanFails(t *testing.T) {
+	stdIn := &bytes.Buffer{}
+	stdOut := &bytes.Buffer{}
+	r := Runner{
+		stdIn:  stdIn,
+		stdOut: stdOut,
+		stdErr: &bytes.Buffer{},
+		exec: func(name string, arg ...string) *exec.Cmd {
+			b, err := ioutil.ReadFile("testdata/blackduckError.txt")
+			if err != nil {
+				t.Error(err)
+			}
+			command := exec.Command("echo", string(b))
+			return command
+		},
+	}
+
+	stdIn.WriteString(`{
+			"source": {
+    			"url": "https://BLACKDUCK",
+				"username": "username",
+    			"password": "password"
+  			},
+			"params": {
+				"directory": "."
+			}
+		}`)
+
+	if err := r.run(); err == nil {
+		t.Error("Expected resource to error")
+	}
+
+	expRes := fmt.Sprintf(strings.ReplaceAll(strings.ReplaceAll(strings.ReplaceAll(`{
+		"version": { "ref": "509ce50d-b7a2-4303-89bf-bde16e4b7bef" },
+		"metadata": [
+			{ "name": "name", "value": "accountant" },
+			{ "name": "version", "value": "%v" },
+			{ "name": "url", "value": "https://my.Host/api/projects/01883e41-d4c9-420a-b41b-0ddcaadda2b5/versions/509ce50d-b7a2-4303-89bf-bde16e4b7bef/components" }
+		]
+	}`, "\n", ""), "	", "")," ", ""),"Default Detect Version")
+	if stdOut.String() != expRes {
+		t.Errorf(`Expected: %v
+				Got:   %v`, expRes, stdOut.String())
 	}
 }
 

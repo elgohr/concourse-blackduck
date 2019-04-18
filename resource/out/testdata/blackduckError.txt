@@ -1,0 +1,280 @@
+______     _            _
+|  _  \   | |          | |
+| | | |___| |_ ___  ___| |_
+| | | / _ \ __/ _ \/ __| __|
+| |/ /  __/ ||  __/ (__| |_
+|___/ \___|\__\___|\___|\__|
+
+WARNING: An illegal reflective access operation has occurred
+WARNING: Illegal reflective access by org.codehaus.groovy.reflection.CachedClass (jar:file:/opt/resource/synopsys-detect-5.3.3.jar!/BOOT-INF/lib/groovy-all-2.4.12.jar!/) to method java.lang.Object.finalize()
+WARNING: Please consider reporting this to the maintainers of org.codehaus.groovy.reflection.CachedClass
+WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
+WARNING: All illegal access operations will be denied in a future release
+2019-04-18 09:10:04 INFO  [main] --- Refreshing org.springframework.context.annotation.AnnotationConfigApplicationContext@4a22f9e2: startup date [Thu Apr 18 09:10:04 UTC 2019]; root of context hierarchy
+2019-04-18 09:10:04 INFO  [main] --- Preparing detect.
+2019-04-18 09:10:04 INFO  [main] --- Detect boot begin.
+2019-04-18 09:10:04 INFO  [main] --- You seem to be running in a LINUX operating system.
+
+Detect Version: 5.3.3
+
+2019-04-18 09:10:05 INFO  [main] --- Configuration processed completely.
+2019-04-18 09:10:05 INFO  [main] --- 
+2019-04-18 09:10:05 INFO  [main] --- Current property values:
+2019-04-18 09:10:05 INFO  [main] --- --property = value [notes]
+2019-04-18 09:10:05 INFO  [main] --- ------------------------------------------------------------
+2019-04-18 09:10:05 INFO  [main] --- blackduck.hub.offline.mode = false
+2019-04-18 09:10:05 INFO  [main] --- blackduck.hub.password = ****************
+2019-04-18 09:10:05 INFO  [main] --- blackduck.hub.timeout = 120
+2019-04-18 09:10:05 INFO  [main] --- blackduck.hub.trust.cert = true [copied]
+2019-04-18 09:10:05 INFO  [main] --- blackduck.hub.url = https://my.Host [copied]
+2019-04-18 09:10:05 INFO  [main] --- blackduck.hub.username = **************** [copied]
+2019-04-18 09:10:05 INFO  [main] --- blackduck.offline.mode = false
+2019-04-18 09:10:05 INFO  [main] --- blackduck.password = ****************
+2019-04-18 09:10:05 INFO  [main] --- blackduck.timeout = 120
+2019-04-18 09:10:05 INFO  [main] --- blackduck.trust.cert = true
+2019-04-18 09:10:05 INFO  [main] --- blackduck.url = https://my.Host
+2019-04-18 09:10:05 INFO  [main] --- blackduck.username = ****************
+2019-04-18 09:10:05 INFO  [main] --- detect.api.timeout = 300000
+2019-04-18 09:10:05 INFO  [main] --- detect.bitbake.build.env.name = oe-init-build-env
+2019-04-18 09:10:05 INFO  [main] --- detect.blackduck.signature.scanner.disabled = false
+2019-04-18 09:10:05 INFO  [main] --- detect.blackduck.signature.scanner.dry.run = false
+2019-04-18 09:10:05 INFO  [main] --- detect.blackduck.signature.scanner.exclusion.name.patterns = node_modules
+2019-04-18 09:10:05 INFO  [main] --- detect.blackduck.signature.scanner.exclusion.pattern.search.depth = 4
+2019-04-18 09:10:05 INFO  [main] --- detect.blackduck.signature.scanner.memory = 4096
+2019-04-18 09:10:05 INFO  [main] --- detect.blackduck.signature.scanner.parallel.processors = 1
+2019-04-18 09:10:05 INFO  [main] --- detect.blackduck.signature.scanner.snippet.mode = false
+2019-04-18 09:10:05 INFO  [main] --- detect.bom.tool.search.continue = false
+2019-04-18 09:10:05 INFO  [main] --- detect.bom.tool.search.depth = 0
+2019-04-18 09:10:05 INFO  [main] --- detect.bom.tool.search.exclusion = bin,build,.git,.gradle,node_modules,out,packages,target [calculated]
+2019-04-18 09:10:05 INFO  [main] --- detect.bom.tool.search.exclusion.defaults = true
+2019-04-18 09:10:05 INFO  [main] --- detect.cleanup = true
+2019-04-18 09:10:05 INFO  [main] --- detect.default.project.version.scheme = text
+2019-04-18 09:10:05 INFO  [main] --- detect.default.project.version.text = Default Detect Version
+2019-04-18 09:10:05 INFO  [main] --- detect.default.project.version.timeformat = yyyy-MM-dd\'T\'HH:mm:ss.SSS
+2019-04-18 09:10:05 INFO  [main] --- detect.detector.search.continue = false
+2019-04-18 09:10:05 INFO  [main] --- detect.detector.search.depth = 0
+2019-04-18 09:10:05 INFO  [main] --- detect.detector.search.exclusion = bin,build,.git,.gradle,node_modules,out,packages,target [copied]
+2019-04-18 09:10:05 INFO  [main] --- detect.detector.search.exclusion.defaults = true
+2019-04-18 09:10:05 INFO  [main] --- detect.disable.without.blackduck = false
+2019-04-18 09:10:05 INFO  [main] --- detect.docker.path.required = true
+2019-04-18 09:10:05 INFO  [main] --- detect.force.success = false
+2019-04-18 09:10:05 INFO  [main] --- detect.go.run.dep.init = false
+2019-04-18 09:10:05 INFO  [main] --- detect.hub.signature.scanner.disabled = false
+2019-04-18 09:10:05 INFO  [main] --- detect.hub.signature.scanner.dry.run = false
+2019-04-18 09:10:05 INFO  [main] --- detect.hub.signature.scanner.exclusion.name.patterns = node_modules
+2019-04-18 09:10:05 INFO  [main] --- detect.hub.signature.scanner.memory = 4096
+2019-04-18 09:10:05 INFO  [main] --- detect.hub.signature.scanner.parallel.processors = 1
+2019-04-18 09:10:05 INFO  [main] --- detect.hub.signature.scanner.snippet.mode = false
+2019-04-18 09:10:05 INFO  [main] --- detect.ignore.connection.failures = false
+2019-04-18 09:10:05 INFO  [main] --- detect.notices.report = false
+2019-04-18 09:10:05 INFO  [main] --- detect.notices.report.path = .
+2019-04-18 09:10:05 INFO  [main] --- detect.npm.include.dev.dependencies = true
+2019-04-18 09:10:05 INFO  [main] --- detect.nuget.ignore.failure = false
+2019-04-18 09:10:05 INFO  [main] --- detect.nuget.inspector.name = IntegrationNugetInspector
+2019-04-18 09:10:05 INFO  [main] --- detect.nuget.packages.repo.url = https://api.nuget.org/v3/index.json
+2019-04-18 09:10:05 INFO  [main] --- detect.packagist.include.dev.dependencies = true
+2019-04-18 09:10:05 INFO  [main] --- detect.pear.only.required.deps = false
+2019-04-18 09:10:05 INFO  [main] --- detect.polaris.enabled = false
+2019-04-18 09:10:05 INFO  [main] --- detect.project.clone.categories = COMPONENT_DATA,VULN_DATA
+2019-04-18 09:10:05 INFO  [main] --- detect.project.codelocation.unmap = false
+2019-04-18 09:10:05 INFO  [main] --- detect.project.level.adjustments = true
+2019-04-18 09:10:05 INFO  [main] --- detect.project.tool = DOCKER,DETECTOR,BAZEL
+2019-04-18 09:10:05 INFO  [main] --- detect.project.version.distribution = External
+2019-04-18 09:10:05 INFO  [main] --- detect.project.version.phase = Development
+2019-04-18 09:10:05 INFO  [main] --- detect.project.version.update = false
+2019-04-18 09:10:05 INFO  [main] --- detect.python.python3 = false
+2019-04-18 09:10:05 INFO  [main] --- detect.report.timeout = 300
+2019-04-18 09:10:05 INFO  [main] --- detect.resolve.tilde.in.paths = true
+2019-04-18 09:10:05 INFO  [main] --- detect.risk.report.pdf = false
+2019-04-18 09:10:05 INFO  [main] --- detect.risk.report.pdf.path = .
+2019-04-18 09:10:05 INFO  [main] --- detect.sbt.report.search.depth = 3
+2019-04-18 09:10:05 INFO  [main] --- detect.search.depth = 3
+2019-04-18 09:10:05 INFO  [main] --- detect.suppress.configuration.output = false
+2019-04-18 09:10:05 INFO  [main] --- detect.suppress.results.output = false
+2019-04-18 09:10:05 INFO  [main] --- detect.test.connection = false
+2019-04-18 09:10:05 INFO  [main] --- detect.yarn.prod.only = false
+2019-04-18 09:10:05 INFO  [main] --- logging.level.com.blackducksoftware.integration = INFO
+2019-04-18 09:10:05 INFO  [main] --- logging.level.com.synopsys.integration = INFO
+2019-04-18 09:10:05 INFO  [main] --- ------------------------------------------------------------
+2019-04-18 09:10:05 INFO  [main] --- 
+2019-04-18 09:10:05 INFO  [main] --- Initializing detect.
+2019-04-18 09:10:05 INFO  [main] --- Source directory: /accountant
+2019-04-18 09:10:05 INFO  [main] --- Output directory: /home/blackduck/blackduck
+2019-04-18 09:10:05 INFO  [main] --- Run directory: /home/blackduck/blackduck/runs/2019-04-18-09-10-04-657
+2019-04-18 09:10:05 INFO  [main] --- Main boot completed. Deciding what detect should do.
+2019-04-18 09:10:05 INFO  [main] --- Black Duck will run: A Black Duck url was found.
+2019-04-18 09:10:05 INFO  [main] --- Polaris will NOT run: The Polaris url must be specified. A valid Polaris home directory could not be found. An access token must be resolvable from one of the following (this is also the order of precedence):  - set explicitly  - set from property (POLARIS_ACCESS_TOKEN, SWIP_ACCESS_TOKEN)  - found in a provided file path (POLARIS_ACCESS_TOKEN_FILE, SWIP_ACCESS_TOKEN_FILE)  - found in the '.access_token' file in a Polaris home directory (POLARIS_HOME, SWIP_HOME, or defaults to USER_HOME/.swip)
+2019-04-18 09:10:05 INFO  [main] --- Decided what products will be run. Starting product boot.
+2019-04-18 09:10:05 INFO  [main] --- Detect product boot start.
+2019-04-18 09:10:05 INFO  [main] --- Will boot Black Duck product.
+2019-04-18 09:10:05 INFO  [main] --- Detect will check if it can communicate with the Black Duck Server.
+2019-04-18 09:10:05 INFO  [main] --- Connection to the Black Duck server was successful
+2019-04-18 09:10:06 INFO  [main] --- Successfully connected to BlackDuck (version 2019.2.2)!
+2019-04-18 09:10:06 INFO  [main] --- Detect product boot completed.
+2019-04-18 09:10:06 INFO  [main] --- Configuration has finished.
+2019-04-18 09:10:06 INFO  [main] --- Refreshing Detect Context 2019-04-18-09-10-04-657: startup date [Thu Apr 18 09:10:06 UTC 2019]; root of context hierarchy
+2019-04-18 09:10:07 INFO  [main] --- Detect boot completed.
+2019-04-18 09:10:07 INFO  [main] --- Detect will attempt to run.
+2019-04-18 09:10:07 INFO  [main] --- Detect run begin: 2019-04-18-09-10-04-657
+2019-04-18 09:10:07 INFO  [main] --- Polaris tools will NOT be run.
+2019-04-18 09:10:07 INFO  [main] --- Black Duck tools will run.
+2019-04-18 09:10:08 INFO  [main] --- ----------------------------------
+2019-04-18 09:10:08 INFO  [main] --- Will include the docker tool.
+2019-04-18 09:10:08 INFO  [main] --- Checking if DOCKER applies.
+2019-04-18 09:10:08 INFO  [main] --- DOCKER was not applicable, will not actually run DOCKER tool.
+2019-04-18 09:10:08 INFO  [main] --- The properties are insufficient to run.
+2019-04-18 09:10:08 INFO  [main] --- Docker actions finished.
+2019-04-18 09:10:08 INFO  [main] --- ----------------------------------
+2019-04-18 09:10:08 INFO  [main] --- Will include the bazel tool.
+2019-04-18 09:10:08 INFO  [main] --- Checking if BAZEL applies.
+2019-04-18 09:10:08 INFO  [main] --- BAZEL was not applicable, will not actually run BAZEL tool.
+2019-04-18 09:10:08 INFO  [main] --- The properties are insufficient to run.
+2019-04-18 09:10:08 INFO  [main] --- Bazel actions finished.
+2019-04-18 09:10:08 INFO  [main] --- ----------------------------------
+2019-04-18 09:10:08 INFO  [main] --- Will include the detector tool.
+2019-04-18 09:10:08 INFO  [main] --- Preparing to initialize detectors.
+2019-04-18 09:10:08 INFO  [main] --- Building detector system.
+2019-04-18 09:10:08 INFO  [main] --- Running detectors.
+2019-04-18 09:10:08 INFO  [main] --- Starting search for detectors.
+2019-04-18 09:10:08 INFO  [main] --- Searching directory: /accountant
+2019-04-18 09:10:08 INFO  [main] --- 
+2019-04-18 09:10:08 INFO  [main] --- ======================================================================================================
+2019-04-18 09:10:08 INFO  [main] --- Search results
+2019-04-18 09:10:08 INFO  [main] --- ======================================================================================================
+2019-04-18 09:10:08 INFO  [main] --- /accountant
+2019-04-18 09:10:08 INFO  [main] --- 	APPLIES: GO_DEP - Go Cli
+2019-04-18 09:10:08 INFO  [main] --- ======================================================================================================
+2019-04-18 09:10:08 INFO  [main] --- 
+2019-04-18 09:10:10 INFO  [main] --- Unable to resolve executable GO
+2019-04-18 09:10:10 ERROR [main] --- Detector GO_DEP - Go Cli was not extractable.
+
+java.lang.NullPointerException: null
+	at com.synopsys.integration.detect.util.executable.CacheableExecutableFinder.getExecutable(CacheableExecutableFinder.java:83) ~[classes!/:na]
+	at com.synopsys.integration.detect.detector.go.GoCliDetector.extractable(GoCliDetector.java:75) ~[classes!/:na]
+	at com.synopsys.integration.detect.workflow.extraction.PreparationManager.prepare(PreparationManager.java:51) ~[classes!/:na]
+	at com.synopsys.integration.detect.workflow.extraction.PreparationManager.prepareExtractions(PreparationManager.java:62) ~[classes!/:na]
+	at com.synopsys.integration.detect.workflow.detector.DetectorManager.runDetectors(DetectorManager.java:68) ~[classes!/:na]
+	at com.synopsys.integration.detect.tool.detector.DetectorTool.performDetectors(DetectorTool.java:69) ~[classes!/:na]
+	at com.synopsys.integration.detect.lifecycle.run.RunManager.run(RunManager.java:168) ~[classes!/:na]
+	at com.synopsys.integration.detect.Application.run(Application.java:113) ~[classes!/:na]
+	at org.springframework.boot.SpringApplication.callRunner(SpringApplication.java:788) ~[spring-boot-2.0.3.RELEASE.jar!/:2.0.3.RELEASE]
+	at org.springframework.boot.SpringApplication.callRunners(SpringApplication.java:778) ~[spring-boot-2.0.3.RELEASE.jar!/:2.0.3.RELEASE]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:335) ~[spring-boot-2.0.3.RELEASE.jar!/:2.0.3.RELEASE]
+	at org.springframework.boot.builder.SpringApplicationBuilder.run(SpringApplicationBuilder.java:137) ~[spring-boot-2.0.3.RELEASE.jar!/:2.0.3.RELEASE]
+	at com.synopsys.integration.detect.Application.main(Application.java:76) ~[classes!/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:567) ~[na:na]
+	at org.springframework.boot.loader.MainMethodRunner.run(MainMethodRunner.java:48) ~[synopsys-detect-5.3.3.jar:na]
+	at org.springframework.boot.loader.Launcher.launch(Launcher.java:87) ~[synopsys-detect-5.3.3.jar:na]
+	at org.springframework.boot.loader.Launcher.launch(Launcher.java:50) ~[synopsys-detect-5.3.3.jar:na]
+	at org.springframework.boot.loader.JarLauncher.main(JarLauncher.java:51) ~[synopsys-detect-5.3.3.jar:na]
+
+2019-04-18 09:10:10 INFO  [main] --- 
+2019-04-18 09:10:10 INFO  [main] --- ======================================================================================================
+2019-04-18 09:10:10 INFO  [main] --- Preparation for extraction
+2019-04-18 09:10:10 INFO  [main] --- ======================================================================================================
+2019-04-18 09:10:10 INFO  [main] --- /accountant
+2019-04-18 09:10:10 INFO  [main] --- 	FAILED: GO_DEP - Go Cli - Exception occured: null
+2019-04-18 09:10:10 INFO  [main] --- ======================================================================================================
+2019-04-18 09:10:10 INFO  [main] --- 
+2019-04-18 09:10:10 INFO  [main] --- Finished running detectors.
+2019-04-18 09:10:12 INFO  [main] --- Evaluating detectors for project info.
+2019-04-18 09:10:12 INFO  [main] --- No unique detector was found. Project info could not be found in a detector.
+2019-04-18 09:10:12 INFO  [main] --- Finished evaluating detectors for project info.
+2019-04-18 09:10:12 INFO  [main] --- Detector actions finished.
+2019-04-18 09:10:12 INFO  [main] --- ----------------------------------
+2019-04-18 09:10:12 INFO  [main] --- Completed code location tools.
+2019-04-18 09:10:12 INFO  [main] --- Determining project info.
+2019-04-18 09:10:12 INFO  [main] --- A project name could not be decided. Using the name of the source path.
+2019-04-18 09:10:12 INFO  [main] --- A project version name could not be decided. Using the default version text.
+2019-04-18 09:10:12 INFO  [main] --- Project name: accountant
+2019-04-18 09:10:12 INFO  [main] --- Project version: Default Detect Version
+2019-04-18 09:10:12 INFO  [main] --- Getting or creating project.
+2019-04-18 09:10:13 INFO  [main] --- No Application ID to set
+2019-04-18 09:10:13 INFO  [main] --- Completed project and version actions.
+2019-04-18 09:10:13 INFO  [main] --- Processing Detect Code Locations.
+2019-04-18 09:10:13 INFO  [main] --- Creating BDIO code locations.
+2019-04-18 09:10:13 INFO  [main] --- 
+2019-04-18 09:10:13 INFO  [main] --- ======================================================================================================
+2019-04-18 09:10:13 INFO  [main] --- Extraction results:
+2019-04-18 09:10:13 INFO  [main] --- ======================================================================================================
+2019-04-18 09:10:13 INFO  [main] --- ======================================================================================================
+2019-04-18 09:10:13 INFO  [main] --- 
+2019-04-18 09:10:13 INFO  [main] --- Creating BDIO files from code locations.
+2019-04-18 09:10:13 INFO  [main] --- Completed Detect Code Location processing.
+2019-04-18 09:10:13 INFO  [main] --- ----------------------------------
+2019-04-18 09:10:13 INFO  [main] --- Will include the signature scanner tool.
+2019-04-18 09:10:13 INFO  [main] --- Will run the signature scanner tool.
+2019-04-18 09:10:13 INFO  [main] --- No scan targets provided - registering the source path /accountant to scan
+2019-04-18 09:10:13 INFO  [main] --- The version file has not been created yet so creating it now.
+2019-04-18 09:10:14 INFO  [main] --- Downloading the Black Duck Signature Scanner.
+2019-04-18 09:12:36 INFO  [main] --- Black Duck Signature Scanner downloaded successfully.
+2019-04-18 09:12:36 INFO  [main] --- The Black Duck Signature Scanner downloaded/found successfully: /home/blackduck/blackduck/tools
+2019-04-18 09:12:36 INFO  [main] --- Starting the Black Duck Signature Scan commands.
+2019-04-18 09:12:36 INFO  [pool-2-thread-1] --- Black Duck CLI command: /home/blackduck/blackduck/tools/Black_Duck_Scan_Installation/scan.cli-2019.2.2/jre/bin/java -Done-jar.silent=true -Done-jar.jar.path=/home/blackduck/blackduck/tools/Black_Duck_Scan_Installation/scan.cli-2019.2.2/lib/cache/scan.cli.impl-standalone.jar -Xmx4096m -jar /home/blackduck/blackduck/tools/Black_Duck_Scan_Installation/scan.cli-2019.2.2/lib/scan.cli-2019.2.2-standalone.jar --no-prompt --scheme https --host my.Host --username **************** --port 443 --insecure -v --logDir /home/blackduck/blackduck/runs/2019-04-18-09-10-04-657/scan/BlackDuckScanOutput/2019-04-18_09-12-36-619_1 --statusWriteDir /home/blackduck/blackduck/runs/2019-04-18-09-10-04-657/scan/BlackDuckScanOutput/2019-04-18_09-12-36-619_1 --project accountant --release Default Detect Version --name accountant/accountant/Default Detect Version scan /accountant
+2019-04-18 09:12:37 INFO  [pool-2-thread-1-Stream Redirect Thread] --- INFO: Start wrapper: ScanCliWrapperSettings [commandLine=org.apache.commons.cli.CommandLine@27d415d9, fileUriSet=null, scheme=https, host=my.Host, port=443]...
+Cleaning up unclosed ZipFile for archive unknown archive
+2019-04-18 09:12:39 INFO  [pool-2-thread-1-Stream Redirect Thread] --- INFO: Start scan loop: ScanClientSettings [commandLine=[--no-prompt, --scheme, https, --host, my.Host, --username, ****************, --port, 443, --insecure, -v, --logDir, /home/blackduck/blackduck/runs/2019-04-18-09-10-04-657/scan/BlackDuckScanOutput/2019-04-18_09-12-36-619_1, --statusWriteDir, /home/blackduck/blackduck/runs/2019-04-18-09-10-04-657/scan/BlackDuckScanOutput/2019-04-18_09-12-36-619_1, --project, accountant, --release, Default Detect Version, --name, accountant/accountant/Default Detect Version scan, /accountant], fileUriSet=[file://ebdbc5ca18b0/accountant], dryRunWriteDir=No dry run file., dryRunReadFile=No dry run file., snippetMatching=false, snippetMatchingOnly=false, fullSnippetScan=false, logDir=/home/blackduck/blackduck/runs/2019-04-18-09-10-04-657/scan/BlackDuckScanOutput/2019-04-18_09-12-36-619_1, scheme=https, host=my.Host, port=443, name=Optional[accountant/accountant/Default Detect Version scan], project=Optional[accountant], release=Optional[Default Detect Version], username=****************, password=<NOT SHOWN>]...
+2019-04-18 09:12:39 INFO  [pool-2-thread-1-Stream Redirect Thread] --- INFO: Initialize client for my.Host:443
+2019-04-18 09:12:39 INFO  [pool-2-thread-1-Stream Redirect Thread] --- INFO: RestResourceClient created. SingleRelativePath = {scanId}, URI = https://my.Host:443/api/v1/scans
+2019-04-18 09:12:39 INFO  [pool-2-thread-1-Stream Redirect Thread] --- INFO: RestResourceClient created. SingleRelativePath = {scanId}, URI = https://my.Host:443/api/scan-summaries
+2019-04-18 09:12:39 INFO  [pool-2-thread-1-Stream Redirect Thread] --- INFO: RestResourceClient created. SingleRelativePath = {scanId}, URI = https://my.Host:443/api/v1/scanstatus
+2019-04-18 09:12:39 INFO  [pool-2-thread-1-Stream Redirect Thread] --- INFO: RestResourceClient created. SingleRelativePath = null, URI = https://my.Host:443/api/v1/scans/signatureVersion
+2019-04-18 09:12:39 INFO  [pool-2-thread-1-Stream Redirect Thread] --- INFO: RestResourceClient created. SingleRelativePath = null, URI = https://my.Host:443/api/internal/scans/{scanId}/unmatched-files?limit={limit}&offset={offset}
+2019-04-18 09:12:39 INFO  [pool-2-thread-1-Stream Redirect Thread] --- INFO: RestResourceClient created. SingleRelativePath = null, URI = https://my.Host:443/api/fp-import/scans/{scanId}
+2019-04-18 09:12:39 INFO  [pool-2-thread-1-Stream Redirect Thread] --- INFO: RestResourceClient created. SingleRelativePath = null, URI = https://my.Host:443/api/projects?q=name:{projname}&limit={limit}&offset={offset}
+2019-04-18 09:12:40 INFO  [pool-2-thread-1-Stream Redirect Thread] --- INFO: Execute scan file://ebdbc5ca18b0/accountant....
+2019-04-18 09:12:40 INFO  [pool-2-thread-1-Stream Redirect Thread] --- INFO: Scan engine initialized with niceness set to false
+2019-04-18 09:12:41 INFO  [pool-2-thread-1-Stream Redirect Thread] --- INFO: Total time: 0 seconds to scan path: /accountant
+2019-04-18 09:12:41 INFO  [pool-2-thread-1-Stream Redirect Thread] --- INFO: Post Scan...
+2019-04-18 09:12:41 INFO  [pool-2-thread-1-Stream Redirect Thread] --- INFO: ScanExecResult: ScanExecResult [scanClientSettings=ScanClientSettings [commandLine=[--no-prompt, --scheme, https, --host, my.Host, --username, ****************, --port, 443, --insecure, -v, --logDir, /home/blackduck/blackduck/runs/2019-04-18-09-10-04-657/scan/BlackDuckScanOutput/2019-04-18_09-12-36-619_1, --statusWriteDir, /home/blackduck/blackduck/runs/2019-04-18-09-10-04-657/scan/BlackDuckScanOutput/2019-04-18_09-12-36-619_1, --project, accountant, --release, Default Detect Version, --name, accountant/accountant/Default Detect Version scan, /accountant], fileUriSet=[file://ebdbc5ca18b0/accountant], dryRunWriteDir=No dry run file., dryRunReadFile=No dry run file., snippetMatching=false, snippetMatchingOnly=false, fullSnippetScan=false, logDir=/home/blackduck/blackduck/runs/2019-04-18-09-10-04-657/scan/BlackDuckScanOutput/2019-04-18_09-12-36-619_1, scheme=https, host=my.Host, port=443, name=Optional[accountant/accountant/Default Detect Version scan], project=Optional[accountant], release=Optional[Default Detect Version], username=****************, password=<NOT SHOWN>], result=0, dataFileName=null, scanContainer=ScanContainerView{scanId=f7268dd9-12c5-4158-8060-b2d2558d89a4, createdOn=2019-04-18T09:12:40.006Z, timeToScan=318, scannerVersion=2019.2.2, signatureVersion=7.0.0, hostName=ebdbc5ca18b0, ownerEntityKeyToken=SN#ebdbc5ca18b0-accountant, baseDir=/accountant, name=Optional[accountant/accountant/Default Detect Version scan], project=Optional[accountant], release=Optional[Default Detect Version], scanProblem=null, scanProblemList.size()=0, scanNodeList.size()=31}, scanResult=ScanView{id=f7268dd9-12c5-4158-8060-b2d2558d89a4, scannerVersion=2019.2.2, signatureVersion=7.0.0, name=accountant/accountant/Default Detect Version scan, hostName=ebdbc5ca18b0, ownerEntityKeyToken=SN#f7268dd9-12c5-4158-8060-b2d2558d89a4, baseDir=/, createdOn=2019-04-18T09:12:40.006Z, lastModifiedOn=2019-04-18T09:12:41.313Z, timeToScan=0, createdByUserId=7cfb0b1f-6b0a-4e6c-ab6c-281841674aba, matchCount=0, numDirs=0, numNonDirFiles=0, status=SAVING_SCAN_DATA, deepSystemSize=Optional.empty, scanSourceType=SN, scanSourceId=f7268dd9-12c5-4158-8060-b2d2558d89a4, timeLastModified=1555578761313, timeToPersistMs=0, scanTime=1555578760006}, scanSummary=com.blackducksoftware.scan.api.ScanSummaryView@edfff36a, scanDate=Thu Apr 18 09:12:39 UTC 2019, scanEndDate=Thu Apr 18 09:12:41 UTC 2019, scanCreated=true]
+2019-04-18 09:12:41 INFO  [pool-2-thread-1-Stream Redirect Thread] --- INFO: Creating data output file: /home/blackduck/blackduck/runs/2019-04-18-09-10-04-657/scan/BlackDuckScanOutput/2019-04-18_09-12-36-619_1/log/ebdbc5ca18b0-accountant-2019-04-18T091240.006Z.log
+2019-04-18 09:12:41 INFO  [pool-2-thread-1-Stream Redirect Thread] --- INFO: Logging to file:
+2019-04-18 09:12:41 INFO  [pool-2-thread-1-Stream Redirect Thread] --- INFO: Creating data output file: /home/blackduck/blackduck/runs/2019-04-18-09-10-04-657/scan/BlackDuckScanOutput/2019-04-18_09-12-36-619_1/status/ebdbc5ca18b0-accountant-2019-04-18T091240.006Z.json
+2019-04-18 09:12:41 INFO  [pool-2-thread-1-Stream Redirect Thread] --- INFO: Persist ScanSummary to file...
+2019-04-18 09:12:41 INFO  [pool-2-thread-1] --- INFO: Persisted status: /home/blackduck/blackduck/runs/2019-04-18-09-10-04-657/scan/BlackDuckScanOutput/2019-04-18_09-12-36-619_1/status/ebdbc5ca18b0-accountant-2019-04-18T091240.006Z.json
+2019-04-18 09:12:41 INFO  [pool-2-thread-1] --- Logging to file: /home/blackduck/blackduck/runs/2019-04-18-09-10-04-657/scan/BlackDuckScanOutput/2019-04-18_09-12-36-619_1/log/ebdbc5ca18b0-accountant-2019-04-18T091240.006Z.log
+
+2019-04-18 09:12:41 INFO  [pool-2-thread-1] --- Black Duck Signature Scanner return code: 0
+2019-04-18 09:12:41 INFO  [pool-2-thread-1] --- You can view the logs at: '/home/blackduck/blackduck/runs/2019-04-18-09-10-04-657/scan/BlackDuckScanOutput/2019-04-18_09-12-36-619_1'
+2019-04-18 09:12:41 INFO  [main] --- Completed the Black Duck Signature Scan commands.
+2019-04-18 09:12:41 INFO  [main] --- /accountant was successfully scanned by the BlackDuck CLI.
+2019-04-18 09:12:41 INFO  [main] --- Signature scanner actions finished.
+2019-04-18 09:12:41 INFO  [main] --- ----------------------------------
+2019-04-18 09:12:41 INFO  [main] --- Will include the binary scanner tool.
+2019-04-18 09:12:41 INFO  [main] --- Binary scanner actions finished.
+2019-04-18 09:12:41 INFO  [main] --- ----------------------------------
+2019-04-18 09:12:41 INFO  [main] --- Will perform Black Duck post actions.
+2019-04-18 09:12:41 INFO  [main] --- To see your results, follow the URL: https://my.Host/api/projects/01883e41-d4c9-420a-b41b-0ddcaadda2b5/versions/509ce50d-b7a2-4303-89bf-bde16e4b7bef/components
+2019-04-18 09:12:41 INFO  [main] --- Black Duck actions have finished.
+2019-04-18 09:12:41 INFO  [main] --- All tools have finished.
+2019-04-18 09:12:41 INFO  [main] --- ----------------------------------
+2019-04-18 09:12:41 INFO  [main] --- Detect run completed.
+2019-04-18 09:12:41 INFO  [main] --- Detect will attempt to shutdown.
+2019-04-18 09:12:41 INFO  [main] --- Detect shutdown begin.
+2019-04-18 09:12:41 INFO  [main] --- Detect will cleanup.
+2019-04-18 09:12:41 INFO  [main] --- Detect shutdown completed.
+2019-04-18 09:12:41 INFO  [main] --- All detect actions completed.
+2019-04-18 09:12:41 INFO  [main] --- 
+2019-04-18 09:12:41 INFO  [main] --- ======================================================================================================
+2019-04-18 09:12:41 INFO  [main] --- Detector Issue Summary
+2019-04-18 09:12:41 INFO  [main] --- ======================================================================================================
+2019-04-18 09:12:41 INFO  [main] --- /accountant
+2019-04-18 09:12:41 INFO  [main] --- 	Not Extractable: GO_DEP - Go Cli
+2019-04-18 09:12:41 INFO  [main] --- 		Exception occured: null
+2019-04-18 09:12:41 INFO  [main] --- ======================================================================================================
+2019-04-18 09:12:41 INFO  [main] --- 
+2019-04-18 09:12:41 INFO  [main] --- 
+2019-04-18 09:12:41 INFO  [main] --- 
+2019-04-18 09:12:41 INFO  [main] --- ======== Detect Results ========
+2019-04-18 09:12:41 INFO  [main] --- GO_DEP: FAILURE
+2019-04-18 09:12:41 INFO  [main] --- 
+2019-04-18 09:12:41 INFO  [main] --- Scan Target /accountant: SUCCESS
+2019-04-18 09:12:41 INFO  [main] --- Overall Status: FAILURE_DETECTOR
+2019-04-18 09:12:41 INFO  [main] --- ================================
+2019-04-18 09:12:41 INFO  [main] --- 
+2019-04-18 09:12:41 INFO  [main] --- Detect duration: 00h 02m 36s 904ms
+2019-04-18 09:12:41 ERROR [main] --- Exiting with code 5 - FAILURE_DETECTOR
+2019-04-18 09:12:41 INFO  [Thread-0] --- Closing org.springframework.context.annotation.AnnotationConfigApplicationContext@4a22f9e2: startup date [Thu Apr 18 09:10:04 UTC 2019]; root of context hierarchy

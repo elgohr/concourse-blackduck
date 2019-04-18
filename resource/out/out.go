@@ -1,9 +1,11 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/elgohr/blackduck-resource/out/interpreter"
 	"io"
 	"log"
 	"os"
@@ -53,10 +55,19 @@ func (r *Runner) run() error {
 		"--blackduck.password="+input.Source.Password,
 		"--blackduck.trust.cert=true")
 	cmd.Dir = input.Params.Directory
-	cmd.Stdout = r.stdOut
 	cmd.Stderr = r.stdErr
-	fmt.Fprintf(r.stdOut, "[]")
-	return cmd.Run()
+	buf := bytes.Buffer{}
+	cmd.Stdout = &buf
+
+	err := cmd.Run()
+
+	response := interpreter.NewResponse(buf.String())
+	b, err := json.Marshal(response)
+	if err != nil {
+		return err
+	}
+	fmt.Fprintf(r.stdOut, string(b))
+	return err
 }
 
 type OutRequest struct {

@@ -1,0 +1,266 @@
+|  _  \   | |          | |
+| | | |___| |_ ___  ___| |_
+| | | / _ \ __/ _ \/ __| __|
+| |/ /  __/ ||  __/ (__| |_
+|___/ \___|\__\___|\___|\__|
+
+WARNING: An illegal reflective access operation has occurred
+WARNING: Illegal reflective access by org.codehaus.groovy.reflection.CachedClass (jar:file:/opt/resource/synopsys-detect-5.3.3.jar!/BOOT-INF/lib/groovy-all-2.4.12.jar!/) to method java.lang.Object.finalize()
+WARNING: Please consider reporting this to the maintainers of org.codehaus.groovy.reflection.CachedClass
+WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
+WARNING: All illegal access operations will be denied in a future release
+2019-04-18 07:08:44 INFO  [main] --- Refreshing org.springframework.context.annotation.AnnotationConfigApplicationContext@19bb07ed: startup date [Thu Apr 18 07:08:44 UTC 2019]; root of context hierarchy
+2019-04-18 07:08:44 INFO  [main] --- Preparing detect.
+2019-04-18 07:08:44 INFO  [main] --- Detect boot begin.
+2019-04-18 07:08:45 INFO  [main] --- You seem to be running in a LINUX operating system.
+
+Detect Version: 5.3.3
+
+2019-04-18 07:08:45 INFO  [main] --- Configuration processed completely.
+2019-04-18 07:08:45 INFO  [main] ---
+2019-04-18 07:08:45 INFO  [main] --- Current property values:
+2019-04-18 07:08:45 INFO  [main] --- --property = value [notes]
+2019-04-18 07:08:45 INFO  [main] --- ------------------------------------------------------------
+2019-04-18 07:08:45 INFO  [main] --- blackduck.hub.offline.mode = false
+2019-04-18 07:08:45 INFO  [main] --- blackduck.hub.password = ****************
+2019-04-18 07:08:45 INFO  [main] --- blackduck.hub.timeout = 120
+2019-04-18 07:08:45 INFO  [main] --- blackduck.hub.trust.cert = true [copied]
+2019-04-18 07:08:45 INFO  [main] --- blackduck.hub.url = ****************
+2019-04-18 07:08:45 INFO  [main] --- blackduck.hub.username = **************** [copied]
+2019-04-18 07:08:45 INFO  [main] --- blackduck.offline.mode = false
+2019-04-18 07:08:45 INFO  [main] --- blackduck.password = ****************
+2019-04-18 07:08:45 INFO  [main] --- blackduck.timeout = 120
+2019-04-18 07:08:45 INFO  [main] --- blackduck.trust.cert = true
+2019-04-18 07:08:45 INFO  [main] --- blackduck.url = ****************
+2019-04-18 07:08:45 INFO  [main] --- blackduck.username = ****************
+2019-04-18 07:08:45 INFO  [main] --- detect.api.timeout = 300000
+2019-04-18 07:08:45 INFO  [main] --- detect.bitbake.build.env.name = oe-init-build-env
+2019-04-18 07:08:45 INFO  [main] --- detect.blackduck.signature.scanner.disabled = false
+2019-04-18 07:08:45 INFO  [main] --- detect.blackduck.signature.scanner.dry.run = false
+2019-04-18 07:08:45 INFO  [main] --- detect.blackduck.signature.scanner.exclusion.name.patterns = node_modules
+2019-04-18 07:08:45 INFO  [main] --- detect.blackduck.signature.scanner.exclusion.pattern.search.depth = 4
+2019-04-18 07:08:45 INFO  [main] --- detect.blackduck.signature.scanner.memory = 4096
+2019-04-18 07:08:45 INFO  [main] --- detect.blackduck.signature.scanner.parallel.processors = 1
+2019-04-18 07:08:45 INFO  [main] --- detect.blackduck.signature.scanner.snippet.mode = false
+2019-04-18 07:08:45 INFO  [main] --- detect.bom.tool.search.continue = false
+2019-04-18 07:08:45 INFO  [main] --- detect.bom.tool.search.depth = 0
+2019-04-18 07:08:45 INFO  [main] --- detect.bom.tool.search.exclusion = bin,build,.git,.gradle,node_modules,out,packages,target [calculated]
+2019-04-18 07:08:45 INFO  [main] --- detect.bom.tool.search.exclusion.defaults = true
+2019-04-18 07:08:45 INFO  [main] --- detect.cleanup = true
+2019-04-18 07:08:45 INFO  [main] --- detect.default.project.version.scheme = text
+2019-04-18 07:08:45 INFO  [main] --- detect.default.project.version.text = Default Detect Version
+2019-04-18 07:08:45 INFO  [main] --- detect.default.project.version.timeformat = yyyy-MM-dd\'T\'HH:mm:ss.SSS
+2019-04-18 07:08:45 INFO  [main] --- detect.detector.search.continue = false
+2019-04-18 07:08:45 INFO  [main] --- detect.detector.search.depth = 0
+2019-04-18 07:08:45 INFO  [main] --- detect.detector.search.exclusion = bin,build,.git,.gradle,node_modules,out,packages,target [copied]
+2019-04-18 07:08:45 INFO  [main] --- detect.detector.search.exclusion.defaults = true
+2019-04-18 07:08:45 INFO  [main] --- detect.disable.without.blackduck = false
+2019-04-18 07:08:45 INFO  [main] --- detect.docker.path.required = true
+2019-04-18 07:08:45 INFO  [main] --- detect.force.success = false
+2019-04-18 07:08:45 INFO  [main] --- detect.go.run.dep.init = false
+2019-04-18 07:08:45 INFO  [main] --- detect.hub.signature.scanner.disabled = false
+2019-04-18 07:08:45 INFO  [main] --- detect.hub.signature.scanner.dry.run = false
+2019-04-18 07:08:45 INFO  [main] --- detect.hub.signature.scanner.exclusion.name.patterns = node_modules
+2019-04-18 07:08:45 INFO  [main] --- detect.hub.signature.scanner.memory = 4096
+2019-04-18 07:08:45 INFO  [main] --- detect.hub.signature.scanner.parallel.processors = 1
+2019-04-18 07:08:45 INFO  [main] --- detect.hub.signature.scanner.snippet.mode = false
+2019-04-18 07:08:45 INFO  [main] --- detect.ignore.connection.failures = false
+2019-04-18 07:08:45 INFO  [main] --- detect.notices.report = false
+2019-04-18 07:08:45 INFO  [main] --- detect.notices.report.path = .
+2019-04-18 07:08:45 INFO  [main] --- detect.npm.include.dev.dependencies = true
+2019-04-18 07:08:45 INFO  [main] --- detect.nuget.ignore.failure = false
+2019-04-18 07:08:45 INFO  [main] --- detect.nuget.inspector.name = IntegrationNugetInspector
+2019-04-18 07:08:45 INFO  [main] --- detect.nuget.packages.repo.url = https://api.nuget.org/v3/index.json
+2019-04-18 07:08:45 INFO  [main] --- detect.packagist.include.dev.dependencies = true
+2019-04-18 07:08:45 INFO  [main] --- detect.pear.only.required.deps = false
+2019-04-18 07:08:45 INFO  [main] --- detect.polaris.enabled = false
+2019-04-18 07:08:45 INFO  [main] --- detect.project.clone.categories = COMPONENT_DATA,VULN_DATA
+2019-04-18 07:08:45 INFO  [main] --- detect.project.codelocation.unmap = false
+2019-04-18 07:08:45 INFO  [main] --- detect.project.level.adjustments = true
+2019-04-18 07:08:45 INFO  [main] --- detect.project.tool = DOCKER,DETECTOR,BAZEL
+2019-04-18 07:08:45 INFO  [main] --- detect.project.version.distribution = External
+2019-04-18 07:08:45 INFO  [main] --- detect.project.version.phase = Development
+2019-04-18 07:08:45 INFO  [main] --- detect.project.version.update = false
+2019-04-18 07:08:45 INFO  [main] --- detect.python.python3 = false
+2019-04-18 07:08:45 INFO  [main] --- detect.report.timeout = 300
+2019-04-18 07:08:45 INFO  [main] --- detect.resolve.tilde.in.paths = true
+2019-04-18 07:08:45 INFO  [main] --- detect.risk.report.pdf = false
+2019-04-18 07:08:45 INFO  [main] --- detect.risk.report.pdf.path = .
+2019-04-18 07:08:45 INFO  [main] --- detect.sbt.report.search.depth = 3
+2019-04-18 07:08:45 INFO  [main] --- detect.search.depth = 3
+2019-04-18 07:08:45 INFO  [main] --- detect.suppress.configuration.output = false
+2019-04-18 07:08:45 INFO  [main] --- detect.suppress.results.output = false
+2019-04-18 07:08:45 INFO  [main] --- detect.test.connection = false
+2019-04-18 07:08:45 INFO  [main] --- detect.yarn.prod.only = false
+2019-04-18 07:08:45 INFO  [main] --- logging.level.com.blackducksoftware.integration = INFO
+2019-04-18 07:08:45 INFO  [main] --- logging.level.com.synopsys.integration = INFO
+2019-04-18 07:08:45 INFO  [main] --- ------------------------------------------------------------
+2019-04-18 07:08:45 INFO  [main] ---
+2019-04-18 07:08:45 INFO  [main] --- Initializing detect.
+2019-04-18 07:08:45 INFO  [main] --- Source directory: /pres
+2019-04-18 07:08:45 INFO  [main] --- Output directory: /home/blackduck/blackduck
+2019-04-18 07:08:45 INFO  [main] --- Run directory: /home/blackduck/blackduck/runs/2019-04-18-07-08-44-914
+2019-04-18 07:08:45 INFO  [main] --- Main boot completed. Deciding what detect should do.
+2019-04-18 07:08:45 INFO  [main] --- Black Duck will run: A Black Duck url was found.
+2019-04-18 07:08:45 INFO  [main] --- Polaris will NOT run: The Polaris url must be specified. A valid Polaris home directory could not be found. An access token must be resolvable from one of the following (this is also the order of precedence):  - set explicitly  - set from property (POLARIS_ACCESS_TOKEN, SWIP_ACCESS_TOKEN)  - found in a provided file path (POLARIS_ACCESS_TOKEN_FILE, SWIP_ACCESS_TOKEN_FILE)  - found in the '.access_token' file in a Polaris home directory (POLARIS_HOME, SWIP_HOME, or defaults to USER_HOME/.swip)
+2019-04-18 07:08:45 INFO  [main] --- Decided what products will be run. Starting product boot.
+2019-04-18 07:08:45 INFO  [main] --- Detect product boot start.
+2019-04-18 07:08:45 INFO  [main] --- Will boot Black Duck product.
+2019-04-18 07:08:45 INFO  [main] --- Detect will check if it can communicate with the Black Duck Server.
+2019-04-18 07:08:46 INFO  [main] --- Connection to the Black Duck server was successful
+2019-04-18 07:08:46 INFO  [main] --- Successfully connected to BlackDuck (version 2019.2.2)!
+2019-04-18 07:08:46 INFO  [main] --- Detect product boot completed.
+2019-04-18 07:08:46 INFO  [main] --- Configuration has finished.
+2019-04-18 07:08:46 INFO  [main] --- Refreshing Detect Context 2019-04-18-07-08-44-914: startup date [Thu Apr 18 07:08:46 UTC 2019]; root of context hierarchy
+2019-04-18 07:08:47 INFO  [main] --- Detect boot completed.
+2019-04-18 07:08:47 INFO  [main] --- Detect will attempt to run.
+2019-04-18 07:08:47 INFO  [main] --- Detect run begin: 2019-04-18-07-08-44-914
+2019-04-18 07:08:47 INFO  [main] --- Polaris tools will NOT be run.
+2019-04-18 07:08:47 INFO  [main] --- Black Duck tools will run.
+2019-04-18 07:08:49 INFO  [main] --- ----------------------------------
+2019-04-18 07:08:49 INFO  [main] --- Will include the docker tool.
+2019-04-18 07:08:49 INFO  [main] --- Checking if DOCKER applies.
+2019-04-18 07:08:49 INFO  [main] --- DOCKER was not applicable, will not actually run DOCKER tool.
+2019-04-18 07:08:49 INFO  [main] --- The properties are insufficient to run.
+2019-04-18 07:08:49 INFO  [main] --- Docker actions finished.
+2019-04-18 07:08:49 INFO  [main] --- ----------------------------------
+2019-04-18 07:08:49 INFO  [main] --- Will include the bazel tool.
+2019-04-18 07:08:49 INFO  [main] --- Checking if BAZEL applies.
+2019-04-18 07:08:49 INFO  [main] --- BAZEL was not applicable, will not actually run BAZEL tool.
+2019-04-18 07:08:49 INFO  [main] --- The properties are insufficient to run.
+2019-04-18 07:08:49 INFO  [main] --- Bazel actions finished.
+2019-04-18 07:08:49 INFO  [main] --- ----------------------------------
+2019-04-18 07:08:49 INFO  [main] --- Will include the detector tool.
+2019-04-18 07:08:49 INFO  [main] --- Preparing to initialize detectors.
+2019-04-18 07:08:49 INFO  [main] --- Building detector system.
+2019-04-18 07:08:49 INFO  [main] --- Running detectors.
+2019-04-18 07:08:49 INFO  [main] --- Starting search for detectors.
+2019-04-18 07:08:49 INFO  [main] --- Searching directory: /pres
+2019-04-18 07:08:49 INFO  [main] ---
+2019-04-18 07:08:49 INFO  [main] --- ======================================================================================================
+2019-04-18 07:08:49 INFO  [main] --- Search results
+2019-04-18 07:08:49 INFO  [main] --- ======================================================================================================
+2019-04-18 07:08:49 INFO  [main] --- /pres
+2019-04-18 07:08:49 INFO  [main] --- 	APPLIES: NPM - Package Lock
+2019-04-18 07:08:49 INFO  [main] --- ======================================================================================================
+2019-04-18 07:08:49 INFO  [main] ---
+2019-04-18 07:08:51 INFO  [main] ---
+2019-04-18 07:08:51 INFO  [main] --- ======================================================================================================
+2019-04-18 07:08:51 INFO  [main] --- Preparation for extraction
+2019-04-18 07:08:51 INFO  [main] --- ======================================================================================================
+2019-04-18 07:08:51 INFO  [main] --- /pres
+2019-04-18 07:08:51 INFO  [main] --- 	 READY: NPM - Package Lock
+2019-04-18 07:08:51 INFO  [main] --- ======================================================================================================
+2019-04-18 07:08:51 INFO  [main] ---
+2019-04-18 07:08:51 INFO  [main] --- Extracting 1 of 1 (0%)
+2019-04-18 07:08:51 INFO  [main] --- ------------------------------------------------------------------------------------------------------
+2019-04-18 07:08:51 INFO  [main] --- Starting extraction: NPM - Package Lock
+2019-04-18 07:08:51 INFO  [main] --- Identifier: NPM-0
+2019-04-18 07:08:51 INFO  [main] --- lockfile: /pres/package-lock.json
+2019-04-18 07:08:51 INFO  [main] --- packageJson: Optional[/pres/package.json]
+2019-04-18 07:08:51 INFO  [main] --- ------------------------------------------------------------------------------------------------------
+2019-04-18 07:08:51 INFO  [main] --- Parsing lock file text:
+2019-04-18 07:08:51 INFO  [main] --- Processing project.
+2019-04-18 07:08:51 INFO  [main] --- Found 116 dependencies.
+2019-04-18 07:08:51 INFO  [main] --- Finished processing.
+2019-04-18 07:08:51 INFO  [main] --- ------------------------------------------------------------------------------------------------------
+2019-04-18 07:08:51 INFO  [main] --- Finished extraction: SUCCESS
+2019-04-18 07:08:51 INFO  [main] --- Code locations found: 1
+2019-04-18 07:08:51 INFO  [main] --- ------------------------------------------------------------------------------------------------------
+2019-04-18 07:08:51 INFO  [main] --- Finished running detectors.
+2019-04-18 07:08:53 INFO  [main] --- Evaluating detectors for project info.
+2019-04-18 07:08:53 INFO  [main] --- Exactly one unique detector was found. Using NPM found at depth 0 as project info.
+2019-04-18 07:08:53 INFO  [main] --- Finished evaluating detectors for project info.
+2019-04-18 07:08:53 INFO  [main] --- Detector actions finished.
+2019-04-18 07:08:53 INFO  [main] --- ----------------------------------
+2019-04-18 07:08:53 INFO  [main] --- Completed code location tools.
+2019-04-18 07:08:53 INFO  [main] --- Determining project info.
+2019-04-18 07:08:53 INFO  [main] --- Using the first ordered tool with project info: DETECTOR
+2019-04-18 07:08:53 INFO  [main] --- Project name: presentations
+2019-04-18 07:08:53 INFO  [main] --- Project version: 1.0.0
+2019-04-18 07:08:53 INFO  [main] --- Getting or creating project.
+2019-04-18 07:08:54 INFO  [main] --- No Application ID to set
+2019-04-18 07:08:54 INFO  [main] --- Completed project and version actions.
+2019-04-18 07:08:54 INFO  [main] --- Processing Detect Code Locations.
+2019-04-18 07:08:54 INFO  [main] --- Creating BDIO code locations.
+2019-04-18 07:08:54 INFO  [main] ---
+2019-04-18 07:08:54 INFO  [main] --- ======================================================================================================
+2019-04-18 07:08:54 INFO  [main] --- Extraction results:
+2019-04-18 07:08:54 INFO  [main] --- ======================================================================================================
+2019-04-18 07:08:54 INFO  [main] --- /pres
+2019-04-18 07:08:54 INFO  [main] --- 	Code locations: 1
+2019-04-18 07:08:54 INFO  [main] --- 		pres/presentations/1.0.0 npm/bom
+2019-04-18 07:08:54 INFO  [main] --- 	Success: NPM - Package Lock
+2019-04-18 07:08:54 INFO  [main] --- ======================================================================================================
+2019-04-18 07:08:54 INFO  [main] ---
+2019-04-18 07:08:54 INFO  [main] --- Creating BDIO files from code locations.
+2019-04-18 07:08:54 INFO  [main] --- BDIO Generated: /home/blackduck/blackduck/runs/2019-04-18-07-08-44-914/bdio/pres_presentations_1_0_0_npm_bom.jsonld
+2019-04-18 07:08:54 INFO  [main] --- Created 1 BDIO files.
+2019-04-18 07:08:54 INFO  [main] --- Uploading BDIO files.
+2019-04-18 07:08:54 INFO  [main] --- uploading pres_presentations_1_0_0_npm_bom.jsonld to https://my.host
+2019-04-18 07:08:54 INFO  [main] --- Starting the codelocation file uploads.
+2019-04-18 07:08:56 INFO  [main] --- Completed the codelocation file uploads.
+2019-04-18 07:08:56 INFO  [main] --- Completed Detect Code Location processing.
+2019-04-18 07:08:56 INFO  [main] --- ----------------------------------
+2019-04-18 07:08:56 INFO  [main] --- Will include the signature scanner tool.
+2019-04-18 07:08:56 INFO  [main] --- Will run the signature scanner tool.
+2019-04-18 07:08:57 INFO  [main] --- No scan targets provided - registering the source path /pres to scan
+2019-04-18 07:08:57 WARN  [main] --- Maximum depth 4 hit while traversing source tree to generate signature scanner exclusion patterns. To search deeper, adjust the value of property Exclusion Patterns Search Depth
+2019-04-18 07:08:58 INFO  [main] --- Downloading the Black Duck Signature Scanner.
+2019-04-18 07:10:29 INFO  [main] --- Black Duck Signature Scanner downloaded successfully.
+2019-04-18 07:10:29 INFO  [main] --- The Black Duck Signature Scanner downloaded/found successfully: /home/blackduck/blackduck/tools
+2019-04-18 07:10:29 INFO  [main] --- Starting the Black Duck Signature Scan commands.
+2019-04-18 07:10:29 INFO  [pool-2-thread-1] --- Black Duck CLI command: /home/blackduck/blackduck/tools/Black_Duck_Scan_Installation/scan.cli-2019.2.2/jre/bin/java -Done-jar.silent=true -Done-jar.jar.path=/home/blackduck/blackduck/tools/Black_Duck_Scan_Installation/scan.cli-2019.2.2/lib/cache/scan.cli.impl-standalone.jar -Xmx4096m -jar /home/blackduck/blackduck/tools/Black_Duck_Scan_Installation/scan.cli-2019.2.2/lib/scan.cli-2019.2.2-standalone.jar --no-prompt --scheme https --host my.host --username **************** --port 443 --insecure -v --logDir /home/blackduck/blackduck/runs/2019-04-18-07-08-44-914/scan/BlackDuckScanOutput/2019-04-18_07-10-29-298_1 --statusWriteDir /home/blackduck/blackduck/runs/2019-04-18-07-08-44-914/scan/BlackDuckScanOutput/2019-04-18_07-10-29-298_1 --project presentations --release 1.0.0 --name pres/presentations/1.0.0 scan --exclude /node_modules/ /pres
+2019-04-18 07:10:30 INFO  [pool-2-thread-1-Stream Redirect Thread] --- INFO: Start wrapper: ScanCliWrapperSettings [commandLine=org.apache.commons.cli.CommandLine@27d415d9, fileUriSet=null, scheme=https, host=my.host, port=443]...
+2019-04-18 07:10:32 INFO  [pool-2-thread-1-Stream Redirect Thread] --- INFO: Start scan loop: ScanClientSettings [commandLine=[--no-prompt, --scheme, https, --host, my.host, --username, ****************, --port, 443, --insecure, -v, --logDir, /home/blackduck/blackduck/runs/2019-04-18-07-08-44-914/scan/BlackDuckScanOutput/2019-04-18_07-10-29-298_1, --statusWriteDir, /home/blackduck/blackduck/runs/2019-04-18-07-08-44-914/scan/BlackDuckScanOutput/2019-04-18_07-10-29-298_1, --project, presentations, --release, 1.0.0, --name, pres/presentations/1.0.0 scan, --exclude, /node_modules/, /pres], fileUriSet=[file://ad14d5434ce9/pres], dryRunWriteDir=No dry run file., dryRunReadFile=No dry run file., snippetMatching=false, snippetMatchingOnly=false, fullSnippetScan=false, logDir=/home/blackduck/blackduck/runs/2019-04-18-07-08-44-914/scan/BlackDuckScanOutput/2019-04-18_07-10-29-298_1, scheme=https, host=my.host, port=443, name=Optional[pres/presentations/1.0.0 scan], project=Optional[presentations], release=Optional[1.0.0], username=****************, password=<NOT SHOWN>]...
+2019-04-18 07:10:32 INFO  [pool-2-thread-1-Stream Redirect Thread] --- INFO: Initialize client for my.host:443
+2019-04-18 07:10:32 INFO  [pool-2-thread-1-Stream Redirect Thread] --- INFO: RestResourceClient created. SingleRelativePath = {scanId}, URI = https://my.host:443/api/v1/scans
+2019-04-18 07:10:32 INFO  [pool-2-thread-1-Stream Redirect Thread] --- INFO: RestResourceClient created. SingleRelativePath = {scanId}, URI = https://my.host:443/api/scan-summaries
+2019-04-18 07:10:32 INFO  [pool-2-thread-1-Stream Redirect Thread] --- INFO: RestResourceClient created. SingleRelativePath = {scanId}, URI = https://my.host:443/api/v1/scanstatus
+2019-04-18 07:10:32 INFO  [pool-2-thread-1-Stream Redirect Thread] --- INFO: RestResourceClient created. SingleRelativePath = null, URI = https://my.host:443/api/v1/scans/signatureVersion
+2019-04-18 07:10:32 INFO  [pool-2-thread-1-Stream Redirect Thread] --- INFO: RestResourceClient created. SingleRelativePath = null, URI = https://my.host:443/api/internal/scans/{scanId}/unmatched-files?limit={limit}&offset={offset}
+2019-04-18 07:10:32 INFO  [pool-2-thread-1-Stream Redirect Thread] --- INFO: RestResourceClient created. SingleRelativePath = null, URI = https://my.host:443/api/fp-import/scans/{scanId}
+2019-04-18 07:10:32 INFO  [pool-2-thread-1-Stream Redirect Thread] --- INFO: RestResourceClient created. SingleRelativePath = null, URI = https://my.host:443/api/projects?q=name:{projname}&limit={limit}&offset={offset}
+2019-04-18 07:10:32 INFO  [pool-2-thread-1-Stream Redirect Thread] --- INFO: Execute scan file://ad14d5434ce9/pres....
+2019-04-18 07:10:33 INFO  [pool-2-thread-1-Stream Redirect Thread] --- INFO: Scan engine initialized with niceness set to false
+2019-04-18 07:10:33 INFO  [pool-2-thread-1-Stream Redirect Thread] --- INFO: Total time: 0 seconds to scan path: /pres
+2019-04-18 07:10:33 INFO  [pool-2-thread-1-Stream Redirect Thread] --- INFO: Post Scan...
+2019-04-18 07:10:34 INFO  [pool-2-thread-1-Stream Redirect Thread] --- INFO: ScanExecResult: ScanExecResult [scanClientSettings=ScanClientSettings [commandLine=[--no-prompt, --scheme, https, --host, my.host, --username, ****************, --port, 443, --insecure, -v, --logDir, /home/blackduck/blackduck/runs/2019-04-18-07-08-44-914/scan/BlackDuckScanOutput/2019-04-18_07-10-29-298_1, --statusWriteDir, /home/blackduck/blackduck/runs/2019-04-18-07-08-44-914/scan/BlackDuckScanOutput/2019-04-18_07-10-29-298_1, --project, presentations, --release, 1.0.0, --name, pres/presentations/1.0.0 scan, --exclude, /node_modules/, /pres], fileUriSet=[file://ad14d5434ce9/pres], dryRunWriteDir=No dry run file., dryRunReadFile=No dry run file., snippetMatching=false, snippetMatchingOnly=false, fullSnippetScan=false, logDir=/home/blackduck/blackduck/runs/2019-04-18-07-08-44-914/scan/BlackDuckScanOutput/2019-04-18_07-10-29-298_1, scheme=https, host=my.host, port=443, name=Optional[pres/presentations/1.0.0 scan], project=Optional[presentations], release=Optional[1.0.0], username=****************, password=<NOT SHOWN>], result=0, dataFileName=null, scanContainer=ScanContainerView{scanId=40718e11-b879-46ea-a746-224faa92d160, createdOn=2019-04-18T07:10:32.333Z, timeToScan=862, scannerVersion=2019.2.2, signatureVersion=7.0.0, hostName=ad14d5434ce9, ownerEntityKeyToken=SN#ad14d5434ce9-pres, baseDir=/pres, name=Optional[pres/presentations/1.0.0 scan], project=Optional[presentations], release=Optional[1.0.0], scanProblem=null, scanProblemList.size()=0, scanNodeList.size()=139}, scanResult=ScanView{id=40718e11-b879-46ea-a746-224faa92d160, scannerVersion=2019.2.2, signatureVersion=7.0.0, name=pres/presentations/1.0.0 scan, hostName=ad14d5434ce9, ownerEntityKeyToken=SN#40718e11-b879-46ea-a746-224faa92d160, baseDir=/, createdOn=2019-04-18T07:10:32.333Z, lastModifiedOn=2019-04-18T07:10:34.238Z, timeToScan=0, createdByUserId=7cfb0b1f-6b0a-4e6c-ab6c-281841674aba, matchCount=0, numDirs=0, numNonDirFiles=0, status=SAVING_SCAN_DATA, deepSystemSize=Optional.empty, scanSourceType=SN, scanSourceId=40718e11-b879-46ea-a746-224faa92d160, timeLastModified=1555571434238, timeToPersistMs=0, scanTime=1555571432333}, scanSummary=com.blackducksoftware.scan.api.ScanSummaryView@ab24f5c1, scanDate=Thu Apr 18 07:10:32 UTC 2019, scanEndDate=Thu Apr 18 07:10:34 UTC 2019, scanCreated=true]
+2019-04-18 07:10:34 INFO  [pool-2-thread-1-Stream Redirect Thread] --- INFO: Creating data output file: /home/blackduck/blackduck/runs/2019-04-18-07-08-44-914/scan/BlackDuckScanOutput/2019-04-18_07-10-29-298_1/log/ad14d5434ce9-pres-2019-04-18T071032.333Z.log
+2019-04-18 07:10:34 INFO  [pool-2-thread-1-Stream Redirect Thread] --- INFO: Logging to file:
+2019-04-18 07:10:34 INFO  [pool-2-thread-1-Stream Redirect Thread] --- INFO: Creating data output file: /home/blackduck/blackduck/runs/2019-04-18-07-08-44-914/scan/BlackDuckScanOutput/2019-04-18_07-10-29-298_1/status/ad14d5434ce9-pres-2019-04-18T071032.333Z.json
+2019-04-18 07:10:34 INFO  [pool-2-thread-1-Stream Redirect Thread] --- INFO: Persist ScanSummary to file...
+2019-04-18 07:10:34 INFO  [pool-2-thread-1] --- INFO: Persisted status: /home/blackduck/blackduck/runs/2019-04-18-07-08-44-914/scan/BlackDuckScanOutput/2019-04-18_07-10-29-298_1/status/ad14d5434ce9-pres-2019-04-18T071032.333Z.json
+2019-04-18 07:10:34 INFO  [pool-2-thread-1] --- Logging to file: /home/blackduck/blackduck/runs/2019-04-18-07-08-44-914/scan/BlackDuckScanOutput/2019-04-18_07-10-29-298_1/log/ad14d5434ce9-pres-2019-04-18T071032.333Z.log
+
+2019-04-18 07:10:34 INFO  [pool-2-thread-1] --- Black Duck Signature Scanner return code: 0
+2019-04-18 07:10:34 INFO  [pool-2-thread-1] --- You can view the logs at: '/home/blackduck/blackduck/runs/2019-04-18-07-08-44-914/scan/BlackDuckScanOutput/2019-04-18_07-10-29-298_1'
+2019-04-18 07:10:34 INFO  [main] --- Completed the Black Duck Signature Scan commands.
+2019-04-18 07:10:34 INFO  [main] --- /pres was successfully scanned by the BlackDuck CLI.
+2019-04-18 07:10:34 INFO  [main] --- Signature scanner actions finished.
+2019-04-18 07:10:34 INFO  [main] --- ----------------------------------
+2019-04-18 07:10:34 INFO  [main] --- Will include the binary scanner tool.
+2019-04-18 07:10:34 INFO  [main] --- Binary scanner actions finished.
+2019-04-18 07:10:34 INFO  [main] --- ----------------------------------
+2019-04-18 07:10:34 INFO  [main] --- Will perform Black Duck post actions.
+2019-04-18 07:10:34 INFO  [main] --- To see your results, follow the URL: https://my.host/api/projects/d6aed8bb-0b9a-46a2-a1ce-60101939eb10/versions/d1530c19-1541-443f-8a5e-ea4e17c856a8/components
+2019-04-18 07:10:34 INFO  [main] --- Black Duck actions have finished.
+2019-04-18 07:10:34 INFO  [main] --- All tools have finished.
+2019-04-18 07:10:34 INFO  [main] --- ----------------------------------
+2019-04-18 07:10:34 INFO  [main] --- Detect run completed.
+2019-04-18 07:10:34 INFO  [main] --- Detect will attempt to shutdown.
+2019-04-18 07:10:34 INFO  [main] --- Detect shutdown begin.
+2019-04-18 07:10:34 INFO  [main] --- Detect will cleanup.
+2019-04-18 07:10:34 INFO  [main] --- Detect shutdown completed.
+2019-04-18 07:10:34 INFO  [main] --- All detect actions completed.
+2019-04-18 07:10:34 INFO  [main] ---
+2019-04-18 07:10:34 INFO  [main] ---
+2019-04-18 07:10:34 INFO  [main] --- ======== Detect Results ========
+2019-04-18 07:10:34 INFO  [main] --- NPM: SUCCESS
+2019-04-18 07:10:34 INFO  [main] ---
+2019-04-18 07:10:34 INFO  [main] --- Scan Target /pres: SUCCESS
+2019-04-18 07:10:34 INFO  [main] --- Overall Status: SUCCESS
+2019-04-18 07:10:34 INFO  [main] --- ================================
+2019-04-18 07:10:34 INFO  [main] ---
+2019-04-18 07:10:34 INFO  [main] --- Detect duration: 00h 01m 49s 579ms
+2019-04-18 07:10:34 INFO  [Thread-0] --- Closing org.springframework.context.annotation.AnnotationConfigApplicationContext@19bb07ed: startup date [Thu Apr 18 07:08:44 UTC 2019]; root of context hierarchy
