@@ -31,11 +31,14 @@ resources:
     url: https://my.blackduck.server
     username: ((my-secret-username))
     password: ((my-secret-password))
+    name: myScanProject
 ```
 
-* `url`: *Required.* URL of your Blackduck instance e.g. `https://my-synopsys.com/blackduck`.
-* `username`: *Required.* Username, which is used to authenticate on Blackduck.
-* `password`: *Required.* Password, which is used to authenticate on Blackduck.
+* `url`: *Required* URL of your Blackduck instance e.g. `https://my-synopsys.com/blackduck`.
+* `username`: *Optional* Username, which is used to authenticate on Blackduck.
+* `password`: *Optional* Password, which is used to authenticate on Blackduck.
+* `token`: *Optional* API-Token, which is used to authenticate on Blackduck.
+* `name`: *Required* Project name in Blackduck.
 
 ## `in`: Nothing yet
 

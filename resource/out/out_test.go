@@ -27,7 +27,7 @@ func TestConstructsRunnerCorrectly(t *testing.T) {
 	}
 }
 
-func TestStartsBlackduck(t *testing.T) {
+func TestStartsBlackduckWithUsernamePassword(t *testing.T) {
 	stdIn := &bytes.Buffer{}
 	targetUrl := "https://BLACKDUCK"
 	username := "USERNAME"
@@ -61,6 +61,57 @@ func TestStartsBlackduck(t *testing.T) {
 				"--blackduck.url=" + targetUrl,
 				"--blackduck.username=" + username,
 				"--blackduck.password=" + password,
+				"--detect.project.name=" + name,
+				"--blackduck.trust.cert=true",
+			}
+			for i, a := range arg {
+				if a != expectedArgs[i] {
+					t.Errorf("Expected argument %v, but got %v", expectedArgs[i], a)
+				}
+			}
+			return exec.Command("true")
+		},
+	}
+
+	if err := r.run(); err != nil {
+		t.Error(err)
+	}
+	if !called {
+		t.Error("Blackduck wasn't started")
+	}
+}
+
+func TestStartsBlackduckWithToken(t *testing.T) {
+	stdIn := &bytes.Buffer{}
+	targetUrl := "https://BLACKDUCK"
+	token := "TOKEN"
+	name := "project1"
+	stdIn.WriteString(fmt.Sprintf(`{
+			"source": {
+    			"url": "%v",
+				"token": "%v",
+				"name": "%v"
+  			},
+			"params": {
+				"directory": "."
+			}
+		}`, targetUrl, token, name))
+
+	var called bool
+	r := Runner{
+		stdIn:  stdIn,
+		stdOut: &bytes.Buffer{},
+		stdErr: &bytes.Buffer{},
+		exec: func(command string, arg ...string) *exec.Cmd {
+			called = true
+			if command != "java" {
+				t.Errorf("Should have started java, but started %v", command)
+			}
+			expectedArgs := []string{
+				"-jar",
+				"/opt/resource/synopsys-detect-5.3.3.jar",
+				"--blackduck.url=" + targetUrl,
+				"--blackduck.api.token=" + token,
 				"--detect.project.name=" + name,
 				"--blackduck.trust.cert=true",
 			}

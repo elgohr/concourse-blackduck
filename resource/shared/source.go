@@ -9,12 +9,12 @@ type Source struct {
 	Url      string `json:"url"`
 	Username string `json:"username"`
 	Password string `json:"password"`
+	Token    string `json:"token"`
 	Name     string `json:"name"`
 }
 
 func (s *Source) Valid() bool {
 	return len(s.Url) != 0 &&
-		len(s.Username) != 0 &&
-		len(s.Password) != 0 &&
+		((len(s.Username) != 0 && len(s.Password) != 0) || len(s.Token) != 0) &&
 		len(s.Name) != 0
 }
