@@ -32,27 +32,28 @@ func TestStartsBlackduck(t *testing.T) {
 	targetUrl := "https://BLACKDUCK"
 	username := "USERNAME"
 	password := "PASSWORD"
+	name := "project1"
 	stdIn.WriteString(fmt.Sprintf(`{
 			"source": {
     			"url": "%v",
 				"username": "%v",
     			"password": "%v",
-				"name": "project1"
+				"name": "%v"
   			},
 			"params": {
 				"directory": "."
 			}
-		}`, targetUrl, username, password))
+		}`, targetUrl, username, password, name))
 
 	var called bool
 	r := Runner{
 		stdIn:  stdIn,
 		stdOut: &bytes.Buffer{},
 		stdErr: &bytes.Buffer{},
-		exec: func(name string, arg ...string) *exec.Cmd {
+		exec: func(command string, arg ...string) *exec.Cmd {
 			called = true
-			if name != "java" {
-				t.Errorf("Should have started java, but started %v", name)
+			if command != "java" {
+				t.Errorf("Should have started java, but started %v", command)
 			}
 			expectedArgs := []string{
 				"-jar",
@@ -60,6 +61,7 @@ func TestStartsBlackduck(t *testing.T) {
 				"--blackduck.url=" + targetUrl,
 				"--blackduck.username=" + username,
 				"--blackduck.password=" + password,
+				"--detect.project.name=" + name,
 				"--blackduck.trust.cert=true",
 			}
 			for i, a := range arg {
@@ -186,7 +188,7 @@ func TestReturnsTheVersionAndMetaDataOfTheBlackduckScan(t *testing.T) {
 			{ "name": "version", "value": "1.0.0" },
 			{ "name": "url", "value": "https://my.host/api/projects/d6aed8bb-0b9a-46a2-a1ce-60101939eb10/versions/d1530c19-1541-443f-8a5e-ea4e17c856a8/components" }
 		]
-	}`, "\n", ""), "	", "")," ", "")
+	}`, "\n", ""), "	", ""), " ", "")
 	if stdOut.String() != expRes {
 		t.Errorf(`Expected: %v
 				Got:   %v`, expRes, stdOut.String())
@@ -233,7 +235,7 @@ func TestErrorsWhenTheScanFails(t *testing.T) {
 			{ "name": "version", "value": "%v" },
 			{ "name": "url", "value": "https://my.Host/api/projects/01883e41-d4c9-420a-b41b-0ddcaadda2b5/versions/509ce50d-b7a2-4303-89bf-bde16e4b7bef/components" }
 		]
-	}`, "\n", ""), "	", "")," ", ""),"Default Detect Version")
+	}`, "\n", ""), "	", ""), " ", ""), "Default Detect Version")
 	if stdOut.String() != expRes {
 		t.Errorf(`Expected: %v
 				Got:   %v`, expRes, stdOut.String())

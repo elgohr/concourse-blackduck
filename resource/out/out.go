@@ -54,6 +54,7 @@ func (r *Runner) run() error {
 		"--blackduck.url="+input.Source.Url,
 		"--blackduck.username="+input.Source.Username,
 		"--blackduck.password="+input.Source.Password,
+		"--detect.project.name="+input.Source.Name,
 		"--blackduck.trust.cert=true")
 	cmd.Dir = input.Params.Directory
 	cmd.Stderr = r.stdErr
