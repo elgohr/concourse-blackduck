@@ -11,6 +11,7 @@ type Source struct {
 	Password string `json:"password"`
 	Token    string `json:"token"`
 	Name     string `json:"name"`
+	Insecure bool   `json:"insecure"`
 }
 
 func (s *Source) Valid() bool {

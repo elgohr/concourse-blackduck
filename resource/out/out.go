@@ -47,28 +47,7 @@ func (r *Runner) run() error {
 	if !input.Params.Valid() {
 		return errors.New("missing mandatory params field")
 	}
-	var cmd *exec.Cmd
-	if len(input.Source.Token) != 0 {
-		cmd = r.exec(
-			"java",
-			"-jar",
-			"/opt/resource/synopsys-detect-5.3.3.jar",
-			"--blackduck.url="+input.Source.Url,
-			"--blackduck.api.token="+input.Source.Token,
-			"--detect.project.name="+input.Source.Name,
-			"--blackduck.trust.cert=true")
-	} else {
-		cmd = r.exec(
-			"java",
-			"-jar",
-			"/opt/resource/synopsys-detect-5.3.3.jar",
-			"--blackduck.url="+input.Source.Url,
-			"--blackduck.username="+input.Source.Username,
-			"--blackduck.password="+input.Source.Password,
-			"--detect.project.name="+input.Source.Name,
-			"--blackduck.trust.cert=true")
-	}
-
+	cmd := r.exec("java", getArguments(input)...)
 	cmd.Dir = input.Params.Directory
 	cmd.Stderr = r.stdErr
 	buf := bytes.Buffer{}
@@ -85,4 +64,25 @@ func (r *Runner) run() error {
 	}
 	fmt.Fprintf(r.stdOut, string(b))
 	return err
+}
+
+func getArguments(input shared.Request) []string {
+	args := []string{
+		"-jar",
+		"/opt/resource/synopsys-detect-5.3.3.jar",
+		"--blackduck.url=" + input.Source.Url,
+		"--detect.project.name=" + input.Source.Name,
+	}
+	if len(input.Source.Token) != 0 {
+		args = append(args, "--blackduck.api.token="+input.Source.Token)
+	} else {
+		args = append(args,
+			"--blackduck.username="+input.Source.Username,
+			"--blackduck.password="+input.Source.Password,
+		)
+	}
+	if input.Source.Insecure {
+		args = append(args, "--blackduck.trust.cert=true")
+	}
+	return args
 }
