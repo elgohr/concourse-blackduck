@@ -6,13 +6,29 @@ import (
 )
 
 func TestDoesNothing(t *testing.T) {
-	stdout := &bytes.Buffer{}
-	status := run(stdout)
-
-	if status != 0 {
-		t.Errorf("Expected status 0, but got %v", status)
+	stdIn := &bytes.Buffer{}
+	stdOut := &bytes.Buffer{}
+	r := Runner{
+		stdIn:  stdIn,
+		stdOut: stdOut,
+		stdErr: &bytes.Buffer{},
 	}
-	if stdout.String() != `[]` {
-		t.Errorf("Expected empty array, but got %v", stdout.String())
+
+	stdIn.WriteString(`{
+			"source": {
+    			"url": "http://blackduck",
+				"username": "username",
+    			"password": "password",
+				"name": "project1"
+  			},
+  			"version": { "ref": "0.1.1-DEVELOPMENT" }
+		}`)
+
+	if err := r.run(); err != nil {
+		t.Error(err)
+	}
+
+	if stdOut.String() != `[]` {
+		t.Errorf("Expected empty array, but got %v", stdOut.String())
 	}
 }

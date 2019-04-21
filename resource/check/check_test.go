@@ -2,19 +2,12 @@ package main
 
 import (
 	"bytes"
-	"fmt"
-	"io/ioutil"
-	"net/http"
-	"net/http/httptest"
+	"errors"
+	"github.com/elgohr/blackduck-resource/shared"
+	"github.com/elgohr/blackduck-resource/shared/sharedfakes"
 	"os"
 	"testing"
 )
-
-func clean(t *testing.T) {
-	if err := os.Remove(ProjectCacheName); err != nil {
-		t.Error(err)
-	}
-}
 
 func TestConstructsRunnerCorrectly(t *testing.T) {
 	r := NewRunner()
@@ -27,247 +20,71 @@ func TestConstructsRunnerCorrectly(t *testing.T) {
 	if r.stdErr != os.Stderr {
 		t.Error("Didn't set stdErr correctly")
 	}
+	if r.api == nil {
+		t.Error("Didn't set Blackduck Api")
+	}
 }
 
 func TestQueriesForTheLatestVersionsInChronologicalOrder(t *testing.T) {
-	var (
-		calledProjects  bool
-		calledVersions  bool
-		projectResponse []byte
-	)
-	h := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.RequestURI == "/api/projects" {
-			calledProjects = true
-			w.Write(projectResponse)
-		} else if r.RequestURI == "/api/projects/01883e41-d4c9-420a-b41b-0ddcaadda2b5/versions" {
-			calledVersions = true
-			b, err := ioutil.ReadFile("testdata/versions.json")
-			if err != nil {
-				t.Error(err)
-			}
-			w.Write(b)
-		}
+	stdIn, stdOut, fakeBlackduckApi, r := setup()
 
-	}))
-	defer h.Close()
+	fakeProject := shared.Project{Name: "TEST_PROJECT"}
+	fakeBlackduckApi.GetProjectByNameReturns(&fakeProject, nil)
+	fakeRefs := []shared.Ref{{Ref: "TEST_REF"}}
+	fakeBlackduckApi.GetProjectVersionsReturns(fakeRefs, nil)
 
-	b, err := ioutil.ReadFile("testdata/projects.json")
-	if err != nil {
-		t.Error(err)
-	}
-	projectResponse = []byte(fmt.Sprintf(string(b), h.URL))
-
-	stdIn := &bytes.Buffer{}
-	stdOut := &bytes.Buffer{}
-	r := Runner{
-		stdIn:  stdIn,
-		stdOut: stdOut,
-		stdErr: &bytes.Buffer{},
-	}
-
-	stdIn.WriteString(fmt.Sprintf(`{
-			"source": {
-    			"url": "%v",
-				"username": "username",
-    			"password": "password",
-				"name": "project1"
-  			}
-		}`, h.URL))
+	stdIn.WriteString(`{
+				"source": {
+	    			"url": "http://blackduck",
+					"username": "username",
+	    			"password": "password",
+					"name": "project1"
+	  			}
+			}`)
 
 	if err := r.run(); err != nil {
 		t.Error(err)
 	}
 
-	expRes := `[{"ref":"0.1.1-DEVELOPMENT"},{"ref":"0.1.2-DEVELOPMENT"}]`
+	expRes := `[{"ref":"TEST_REF"}]`
 	if stdOut.String() != expRes {
 		t.Errorf(`Expected: %v
-				Got:   %v`, expRes, stdOut.String())
+					Got:   %v`, expRes, stdOut.String())
 	}
-	if !calledProjects {
-		t.Error("Didn't call the Blackduck api for projects")
+	projectUrl, projectName := fakeBlackduckApi.GetProjectByNameArgsForCall(0)
+	pu := "http://blackduck/api/projects"
+	if projectUrl != pu {
+		t.Errorf("Expected api to be called with projectUrl %v, but was called with %v", pu, projectUrl)
 	}
-
-	if !calledVersions {
-		t.Error("Didn't call the Blackduck api for versions")
+	pt := "project1"
+	if projectName != pt {
+		t.Errorf("Expected api to be called with projectName %v, but was called with %v", pt, projectName)
 	}
-	clean(t)
 }
 
-func TestCachesTheProjectId(t *testing.T) {
-	var (
-		calledProjects  int
-		calledVersions  int
-		projectResponse []byte
-	)
-
-	h := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.RequestURI == "/api/projects" {
-			calledProjects++
-			w.Write(projectResponse)
-		} else if r.RequestURI == "/api/projects/01883e41-d4c9-420a-b41b-0ddcaadda2b5/versions" {
-			calledVersions++
-			b, err := ioutil.ReadFile("testdata/versions.json")
-			if err != nil {
-				t.Error(err)
-			}
-			w.Write(b)
-		}
-
-	}))
-	defer h.Close()
-
-	b, err := ioutil.ReadFile("testdata/projects.json")
-	if err != nil {
-		t.Error(err)
-	}
-	projectResponse = []byte(fmt.Sprintf(string(b), h.URL))
-
-	stdIn := &bytes.Buffer{}
-	stdOut := &bytes.Buffer{}
-	r := Runner{
-		stdIn:  stdIn,
-		stdOut: stdOut,
-		stdErr: &bytes.Buffer{},
-
-	}
-
-	stdIn.WriteString(fmt.Sprintf(`{
-			"source": {
-    			"url": "%v",
-				"username": "username",
-    			"password": "password",
-				"name": "project1"
-  			}
-		}`, h.URL))
-
-	if err := r.run(); err != nil {
-		t.Error(err)
-	}
-
+func setup() (stdIn *bytes.Buffer, stdOut *bytes.Buffer, fakeBlackduckApi *sharedfakes.FakeBlackduckApi, r Runner) {
 	stdIn = &bytes.Buffer{}
 	stdOut = &bytes.Buffer{}
+	fakeBlackduckApi = &sharedfakes.FakeBlackduckApi{}
 	r = Runner{
 		stdIn:  stdIn,
 		stdOut: stdOut,
 		stdErr: &bytes.Buffer{},
+		api:    fakeBlackduckApi,
 	}
-
-	stdIn.WriteString(fmt.Sprintf(`{
-			"source": {
-    			"url": "%v",
-				"username": "username",
-    			"password": "password",
-				"name": "project1"
-  			}
-		}`, h.URL))
-
-	if err := r.run(); err != nil {
-		t.Error(err)
-	}
-
-	if calledProjects > 1 {
-		t.Error("Didn't cache the Blackduck api for projects")
-	}
-
-	if calledVersions < 2{
-		t.Error("Didn't call the Blackduck api for versions multiple times")
-	}
-	clean(t)
-}
-
-func TestErrorsWhenInputIsCorrupted(t *testing.T) {
-	stdIn := &bytes.Buffer{}
-	stdOut := &bytes.Buffer{}
-	r := Runner{
-		stdIn:  stdIn,
-		stdOut: stdOut,
-		stdErr: &bytes.Buffer{},
-	}
-
-	stdIn.WriteString(`{:]`)
-
-	if err := r.run(); err == nil {
-		t.Error("Should have errored, but didn't")
-	}
+	return
 }
 
 func TestErrorsWhenProjectCouldNotBeFound(t *testing.T) {
-	h := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusBadGateway)
-	}))
-	defer h.Close()
+	stdIn, stdOut, fakeBlackduckApi, r := setup()
 
-	stdIn := &bytes.Buffer{}
-	stdOut := &bytes.Buffer{}
-	r := Runner{
-		stdIn:  stdIn,
-		stdOut: stdOut,
-		stdErr: &bytes.Buffer{},
-	}
-
-	stdIn.WriteString(fmt.Sprintf(`{
+	fakeBlackduckApi.GetProjectByNameReturns(nil, errors.New("no project matching the name"))
+	stdIn.WriteString(`{
 			"source": {
-    			"url": "%v",
+    			"url": "http://blackduck",
 				"username": "username",
     			"password": "password",
 				"name": "not_here"
-  			}
-		}`, h.URL))
-
-	if err := r.run(); err == nil {
-		t.Error("Should have errored, but didn't")
-	}
-
-	expRes := `[]`
-	if stdOut.String() != expRes {
-		t.Errorf(`Expected: %v
-				Got:   %v`, expRes, stdOut.String())
-	}
-}
-
-func TestErrorsWhenProjectResponseIsCorrupted(t *testing.T) {
-	h := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte(`{]`))
-	}))
-	defer h.Close()
-
-	stdIn := &bytes.Buffer{}
-	stdOut := &bytes.Buffer{}
-	r := Runner{
-		stdIn:  stdIn,
-		stdOut: stdOut,
-		stdErr: &bytes.Buffer{},
-	}
-
-	stdIn.WriteString(fmt.Sprintf(`{
-			"source": {
-    			"url": "%v",
-				"username": "username",
-    			"password": "password",
-				"name": "project1"
-  			}
-		}`, h.URL))
-
-	if err := r.run(); err == nil {
-		t.Error("Should have errored, but didn't")
-	}
-}
-
-func TestErrorsWhenBlackduckCouldNotBeReachedForProjects(t *testing.T) {
-	stdIn := &bytes.Buffer{}
-	stdOut := &bytes.Buffer{}
-	r := Runner{
-		stdIn:  stdIn,
-		stdOut: stdOut,
-		stdErr: &bytes.Buffer{},
-	}
-
-	stdIn.WriteString(`{
-			"source": {
-    			"url": "http://localhost",
-				"username": "username",
-    			"password": "password",
-				"name": "project1"
   			}
 		}`)
 
@@ -283,17 +100,11 @@ func TestErrorsWhenBlackduckCouldNotBeReachedForProjects(t *testing.T) {
 }
 
 func TestErrorsWhenTheProvidedUrlIsInvalid(t *testing.T) {
-	stdIn := &bytes.Buffer{}
-	stdOut := &bytes.Buffer{}
-	r := Runner{
-		stdIn:  stdIn,
-		stdOut: stdOut,
-		stdErr: &bytes.Buffer{},
-	}
+	stdIn, stdOut, fakeBlackduckApi, r := setup()
 
 	stdIn.WriteString(`{
 			"source": {
-    			"url": "http:\\!",
+    			"url": "ht!",
 				"username": "username",
     			"password": "password",
 				"name": "project1"
@@ -304,6 +115,14 @@ func TestErrorsWhenTheProvidedUrlIsInvalid(t *testing.T) {
 		t.Error("Should have errored, but didn't")
 	}
 
+	if fakeBlackduckApi.GetProjectByNameCallCount() > 0 {
+		t.Error("Should not have been called")
+	}
+
+	if fakeBlackduckApi.GetProjectVersionsCallCount() > 0 {
+		t.Error("Should not have been called")
+	}
+
 	expRes := `[]`
 	if stdOut.String() != expRes {
 		t.Errorf(`Expected: %v
@@ -311,46 +130,23 @@ func TestErrorsWhenTheProvidedUrlIsInvalid(t *testing.T) {
 	}
 }
 
-func TestErrorsWhenBlackduckCouldNotBeReachedForVersions(t *testing.T) {
-	var (
-		h               *httptest.Server
-		terminate       = make(chan bool, 1)
-		projectResponse []byte
-	)
-	go func() {
-		<-terminate
-		h.Close()
-	}()
-	h = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		terminate <- true
-		w.Write(projectResponse)
-	}))
+func TestErrorsWhenGetProjectByNameReturnsAnError(t *testing.T) {
+	stdIn, stdOut, fakeBlackduckApi, r := setup()
 
-	b, err := ioutil.ReadFile("testdata/projects.json")
-	if err != nil {
-		t.Error(err)
-	}
-	projectResponse = []byte(fmt.Sprintf(string(b), h.URL))
+	expError := errors.New("something bad")
+	fakeBlackduckApi.GetProjectByNameReturns(nil, expError)
 
-	stdIn := &bytes.Buffer{}
-	stdOut := &bytes.Buffer{}
-	r := Runner{
-		stdIn:  stdIn,
-		stdOut: stdOut,
-		stdErr: &bytes.Buffer{},
-	}
-
-	stdIn.WriteString(fmt.Sprintf(`{
+	stdIn.WriteString(`{
 			"source": {
-    			"url": "%v",
+    			"url": "http://blackduck",
 				"username": "username",
     			"password": "password",
 				"name": "project1"
   			}
-		}`, h.URL))
+		}`)
 
-	if err := r.run(); err == nil {
-		t.Error("Should have errored, but didn't")
+	if err := r.run(); err != expError {
+		t.Error("Should return GetProjectByNameError")
 	}
 
 	expRes := `[]`
@@ -358,5 +154,32 @@ func TestErrorsWhenBlackduckCouldNotBeReachedForVersions(t *testing.T) {
 		t.Errorf(`Expected: %v
 				Got:   %v`, expRes, stdOut.String())
 	}
-	clean(t)
+}
+
+func TestErrorsWhenGetProjectVersionReturnsAnError(t *testing.T) {
+	stdIn, stdOut, fakeBlackduckApi, r := setup()
+
+	fakeProject := shared.Project{Name: "TEST_PROJECT"}
+	expError := errors.New("something bad")
+	fakeBlackduckApi.GetProjectByNameReturns(&fakeProject, nil)
+	fakeBlackduckApi.GetProjectVersionsReturns(nil, expError)
+
+	stdIn.WriteString(`{
+			"source": {
+    			"url": "http://blackduck",
+				"username": "username",
+    			"password": "password",
+				"name": "project1"
+  			}
+		}`)
+
+	if err := r.run(); err != expError {
+		t.Error("Should return GetProjectByNameError")
+	}
+
+	expRes := `[]`
+	if stdOut.String() != expRes {
+		t.Errorf(`Expected: %v
+				Got:   %v`, expRes, stdOut.String())
+	}
 }

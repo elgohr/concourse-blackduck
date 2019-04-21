@@ -26,7 +26,7 @@
         "links": [
           {
             "rel": "versions",
-            "href": "%v/api/projects/01883e41-d4c9-420a-b41b-0ddcaadda2b5/versions"
+            "href": "https://my.Host/api/projects/01883e41-d4c9-420a-b41b-0ddcaadda2b5/versions"
           },
           {
             "rel": "canonicalVersion",

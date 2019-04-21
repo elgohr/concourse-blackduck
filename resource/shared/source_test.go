@@ -7,7 +7,7 @@ import (
 
 func TestIsValidWhenAllPropertiesAreFilled(t *testing.T) {
 	s := shared.Source{
-		Url:"url",
+		Url:"http://url",
 		Username:"user",
 		Password:"password",
 		Name:"name",
@@ -30,7 +30,7 @@ func TestIsInvalidWhenUrlIsMissing(t *testing.T) {
 
 func TestIsInvalidWhenUsernameIsMissing(t *testing.T) {
 	s := shared.Source{
-		Url:"url",
+		Url:"http://url",
 		Password:"password",
 		Name:"name",
 	}
@@ -41,7 +41,7 @@ func TestIsInvalidWhenUsernameIsMissing(t *testing.T) {
 
 func TestIsInvalidWhenPasswordIsMissing(t *testing.T) {
 	s := shared.Source{
-		Url:"url",
+		Url:"http://url",
 		Username:"user",
 		Name:"name",
 	}
@@ -52,7 +52,7 @@ func TestIsInvalidWhenPasswordIsMissing(t *testing.T) {
 
 func TestIsValidWhenTokenIsPresentButUsernameAndPasswordAreMissing(t *testing.T) {
 	s := shared.Source{
-		Url:"url",
+		Url:"http://url",
 		Token:"token",
 		Name:"name",
 	}
@@ -63,7 +63,7 @@ func TestIsValidWhenTokenIsPresentButUsernameAndPasswordAreMissing(t *testing.T)
 
 func TestIsValidWhenTokenIsMissingButUsernameAndPasswordArePresent(t *testing.T) {
 	s := shared.Source{
-		Url:"url",
+		Url:"http://url",
 		Username:"user",
 		Password:"password",
 		Name:"name",
@@ -75,11 +75,62 @@ func TestIsValidWhenTokenIsMissingButUsernameAndPasswordArePresent(t *testing.T)
 
 func TestIsInvalidWhenNameIsMissing(t *testing.T) {
 	s := shared.Source{
-		Url:"url",
+		Url:"http://url",
 		Username:"user",
 		Password:"password",
 	}
 	if s.Valid() {
 		t.Error("Should be invalid, but wasn't")
+	}
+}
+
+func TestIsInvalidWhenUrlIsNoUrl(t *testing.T) {
+	s := shared.Source{
+		Url:"no_url",
+		Username:"user",
+		Password:"password",
+		Name:"name",
+	}
+	if s.Valid() {
+		t.Error("Should be invalid, but wasn't")
+	}
+}
+
+func TestReturnsProjectUrl(t *testing.T) {
+	s := shared.Source{
+		Url:"http://url",
+		Username:"user",
+		Password:"password",
+		Name:"name",
+	}
+	url := s.GetProjectUrl()
+	if url != "http://url/api/projects" {
+		t.Errorf("Should've appended URL with the project url, but was %v", url)
+	}
+}
+
+func TestProjectUrlIsOkWithExtraSlash(t *testing.T) {
+	s := shared.Source{
+		Url:"http://url/",
+		Username:"user",
+		Password:"password",
+		Name:"name",
+	}
+	url := s.GetProjectUrl()
+	if url != "http://url/api/projects" {
+		t.Errorf("Should've appended URL with the project url, but was %v", url)
+	}
+}
+
+func TestProjectUrlIsEmptyWhenUrlWasSetIncorrectly(t *testing.T) {
+	s := shared.Source{
+		Url:"no_url",
+		Username:"user",
+		Password:"password",
+		Name:"name",
+	}
+	url := s.GetProjectUrl()
+	if url != "" {
+		t.Errorf("Should've been empty, but was %v", url)
 	}
 }

@@ -2,7 +2,9 @@ FROM golang:1.12.4 as buildResource
 ENV GO111MODULE=on
 WORKDIR /build/source
 ADD resource ./
-RUN go test -v ./... \
+RUN go get -u github.com/maxbrunsfeld/counterfeiter/v6 \
+ && go generate ./... \
+ && go test -v ./... \
  && go build -o ../compiled/out out/out.go \
  && go build -o ../compiled/in in/in.go \
  && go build -o ../compiled/check check/check.go
