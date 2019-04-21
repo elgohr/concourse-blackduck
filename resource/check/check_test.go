@@ -10,6 +10,12 @@ import (
 	"testing"
 )
 
+func clean(t *testing.T) {
+	if err := os.Remove(ProjectCacheName); err != nil {
+		t.Error(err)
+	}
+}
+
 func TestConstructsRunnerCorrectly(t *testing.T) {
 	r := NewRunner()
 	if r.stdIn != os.Stdin {
@@ -72,7 +78,7 @@ func TestQueriesForTheLatestVersions(t *testing.T) {
 		t.Error(err)
 	}
 
-	expRes := `[{"ref":"0.1.1"}]`
+	expRes := `[{"ref":"0.1.1-DEVELOPMENT"}]`
 	if stdOut.String() != expRes {
 		t.Errorf(`Expected: %v
 				Got:   %v`, expRes, stdOut.String())
@@ -84,6 +90,89 @@ func TestQueriesForTheLatestVersions(t *testing.T) {
 	if !calledVersions {
 		t.Error("Didn't call the Blackduck api for versions")
 	}
+	clean(t)
+}
+
+func TestCachesTheProjectId(t *testing.T) {
+	var (
+		calledProjects  int
+		calledVersions  int
+		projectResponse []byte
+	)
+
+	h := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.RequestURI == "/api/projects" {
+			calledProjects++
+			w.Write(projectResponse)
+		} else if r.RequestURI == "/api/projects/01883e41-d4c9-420a-b41b-0ddcaadda2b5/versions" {
+			calledVersions++
+			b, err := ioutil.ReadFile("testdata/versions.json")
+			if err != nil {
+				t.Error(err)
+			}
+			w.Write(b)
+		}
+
+	}))
+	defer h.Close()
+
+	b, err := ioutil.ReadFile("testdata/projects.json")
+	if err != nil {
+		t.Error(err)
+	}
+	projectResponse = []byte(fmt.Sprintf(string(b), h.URL))
+
+	stdIn := &bytes.Buffer{}
+	stdOut := &bytes.Buffer{}
+	r := Runner{
+		stdIn:  stdIn,
+		stdOut: stdOut,
+		stdErr: &bytes.Buffer{},
+
+	}
+
+	stdIn.WriteString(fmt.Sprintf(`{
+			"source": {
+    			"url": "%v",
+				"username": "username",
+    			"password": "password",
+				"name": "project1"
+  			}
+		}`, h.URL))
+
+	if err := r.run(); err != nil {
+		t.Error(err)
+	}
+
+	stdIn = &bytes.Buffer{}
+	stdOut = &bytes.Buffer{}
+	r = Runner{
+		stdIn:  stdIn,
+		stdOut: stdOut,
+		stdErr: &bytes.Buffer{},
+	}
+
+	stdIn.WriteString(fmt.Sprintf(`{
+			"source": {
+    			"url": "%v",
+				"username": "username",
+    			"password": "password",
+				"name": "project1"
+  			}
+		}`, h.URL))
+
+	if err := r.run(); err != nil {
+		t.Error(err)
+	}
+
+	if calledProjects > 1 {
+		t.Error("Didn't cache the Blackduck api for projects")
+	}
+
+	if calledVersions < 2{
+		t.Error("Didn't call the Blackduck api for versions multiple times")
+	}
+	clean(t)
 }
 
 func TestErrorsWhenInputIsCorrupted(t *testing.T) {
@@ -269,4 +358,5 @@ func TestErrorsWhenBlackduckCouldNotBeReachedForVersions(t *testing.T) {
 		t.Errorf(`Expected: %v
 				Got:   %v`, expRes, stdOut.String())
 	}
+	clean(t)
 }

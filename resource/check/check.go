@@ -6,12 +6,15 @@ import (
 	"fmt"
 	"github.com/elgohr/blackduck-resource/shared"
 	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
 	"os"
 	"path"
 )
+
+const ProjectCacheName = "./project.cache"
 
 func main() {
 	runner := NewRunner()
@@ -59,6 +62,13 @@ func (r *Runner) run() error {
 }
 
 func (r *Runner) getProjectByName(baseUrl string, name string) (*Project, error) {
+	if b, err := ioutil.ReadFile(ProjectCacheName); err == nil {
+		var cachedProject Project
+		if err := json.Unmarshal(b, &cachedProject); err == nil {
+			return &cachedProject, nil
+		}
+	}
+
 	u, err := url.Parse(baseUrl)
 	if err != nil {
 		return nil, err
@@ -74,6 +84,10 @@ func (r *Runner) getProjectByName(baseUrl string, name string) (*Project, error)
 	if err := json.NewDecoder(res.Body).Decode(&projectList); err == nil {
 		for _, project := range projectList.Projects {
 			if project.Name == name {
+				b, err := json.Marshal(project)
+				if err == nil {
+					ioutil.WriteFile(ProjectCacheName, b, 0644)
+				}
 				return &project, nil
 			}
 		}
@@ -124,7 +138,8 @@ func (r *Runner) getProjectVersions(project *Project) ([]shared.Ref, error) {
 	}
 	var refs []shared.Ref
 	for _, version := range versionList.Versions {
-		refs = append(refs, shared.Ref{Ref: version.Name})
+		versionRef := fmt.Sprintf("%v-%v", version.Name, version.Phase)
+		refs = append(refs, shared.Ref{Ref: versionRef})
 	}
 	return refs, nil
 }
@@ -134,5 +149,6 @@ type VersionList struct {
 }
 
 type Version struct {
-	Name string `json:"versionName"`
+	Name  string `json:"versionName"`
+	Phase string `json:"phase"`
 }
