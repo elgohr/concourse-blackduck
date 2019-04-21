@@ -62,19 +62,17 @@ func (r *Runner) run() error {
 }
 
 func (r *Runner) getProjectByName(baseUrl string, name string) (*Project, error) {
-	if b, err := ioutil.ReadFile(ProjectCacheName); err == nil {
+	if cache, cached := projectIsCached(); cached {
 		var cachedProject Project
-		if err := json.Unmarshal(b, &cachedProject); err == nil {
+		if err := json.Unmarshal(cache, &cachedProject); err == nil {
 			return &cachedProject, nil
 		}
 	}
-
-	u, err := url.Parse(baseUrl)
+	projectUrl, err := getProjectUrlFrom(baseUrl)
 	if err != nil {
 		return nil, err
 	}
-	u.Path = path.Join(u.Path, "api/projects")
-	res, err := http.Get(u.String())
+	res, err := http.Get(projectUrl)
 	if err != nil {
 		return nil, err
 	}
@@ -84,10 +82,7 @@ func (r *Runner) getProjectByName(baseUrl string, name string) (*Project, error)
 	if err := json.NewDecoder(res.Body).Decode(&projectList); err == nil {
 		for _, project := range projectList.Projects {
 			if project.Name == name {
-				b, err := json.Marshal(project)
-				if err == nil {
-					ioutil.WriteFile(ProjectCacheName, b, 0644)
-				}
+				writeProjectToCache(project)
 				return &project, nil
 			}
 		}
@@ -95,6 +90,28 @@ func (r *Runner) getProjectByName(baseUrl string, name string) (*Project, error)
 		return nil, err
 	}
 	return nil, errors.New("no project matching the name")
+}
+
+func writeProjectToCache(project Project) {
+	if b, err := json.Marshal(project); err == nil {
+		_ = ioutil.WriteFile(ProjectCacheName, b, 0644)
+	}
+}
+
+func projectIsCached() (content []byte, cached bool) {
+	if content, err := ioutil.ReadFile(ProjectCacheName); err == nil {
+		return content, true
+	}
+	return nil, false
+}
+
+func getProjectUrlFrom(baseUrl string) (projectUrl string, err error) {
+	u, err := url.Parse(baseUrl)
+	if err != nil {
+		return "", err
+	}
+	u.Path = path.Join(u.Path, "api/projects")
+	return u.String(), nil
 }
 
 type ProjectList struct {
