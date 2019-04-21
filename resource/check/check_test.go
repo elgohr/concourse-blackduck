@@ -29,7 +29,7 @@ func TestConstructsRunnerCorrectly(t *testing.T) {
 	}
 }
 
-func TestQueriesForTheLatestVersions(t *testing.T) {
+func TestQueriesForTheLatestVersionsInChronologicalOrder(t *testing.T) {
 	var (
 		calledProjects  bool
 		calledVersions  bool
@@ -78,7 +78,7 @@ func TestQueriesForTheLatestVersions(t *testing.T) {
 		t.Error(err)
 	}
 
-	expRes := `[{"ref":"0.1.1-DEVELOPMENT"}]`
+	expRes := `[{"ref":"0.1.1-DEVELOPMENT"},{"ref":"0.1.2-DEVELOPMENT"}]`
 	if stdOut.String() != expRes {
 		t.Errorf(`Expected: %v
 				Got:   %v`, expRes, stdOut.String())

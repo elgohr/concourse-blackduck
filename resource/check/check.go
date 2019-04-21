@@ -12,6 +12,8 @@ import (
 	"net/url"
 	"os"
 	"path"
+	"sort"
+	"time"
 )
 
 const ProjectCacheName = "./project.cache"
@@ -142,8 +144,8 @@ type Link struct {
 }
 
 func (r *Runner) getProjectVersions(project *Project) ([]shared.Ref, error) {
-	versions := project.Meta.GetLinkFor("versions")
-	res, err := http.Get(versions)
+	versionsLink := project.Meta.GetLinkFor("versions")
+	res, err := http.Get(versionsLink)
 	if err != nil {
 		return nil, err
 	}
@@ -154,11 +156,19 @@ func (r *Runner) getProjectVersions(project *Project) ([]shared.Ref, error) {
 		return nil, err
 	}
 	var refs []shared.Ref
-	for _, version := range versionList.Versions {
+	for _, version := range sortVersionsChronologically(versionList) {
 		versionRef := fmt.Sprintf("%v-%v", version.Name, version.Phase)
 		refs = append(refs, shared.Ref{Ref: versionRef})
 	}
 	return refs, nil
+}
+
+func sortVersionsChronologically(versionList VersionList) []Version {
+	versions := versionList.Versions
+	sort.Slice(versions, func(i, j int) bool {
+		return versions[i].Updated.Before(versions[j].Updated)
+	})
+	return versions
 }
 
 type VersionList struct {
@@ -166,6 +176,7 @@ type VersionList struct {
 }
 
 type Version struct {
-	Name  string `json:"versionName"`
-	Phase string `json:"phase"`
+	Name    string    `json:"versionName"`
+	Phase   string    `json:"phase"`
+	Updated time.Time `json:"settingUpdatedAt"`
 }
