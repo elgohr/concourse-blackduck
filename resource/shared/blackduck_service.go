@@ -11,15 +11,28 @@ import (
 	"strings"
 )
 
-const ProjectCacheName = "./project.cache"
+const (
+	ProjectCacheName = "./project.cache"
+	tokenPrefix      = "AUTHORIZATION_BEARER="
+)
 
 //go:generate counterfeiter . BlackduckApi
 type BlackduckApi interface {
 	GetProjectByName(projectUrl string, name string) (*Project, error)
 	GetProjectVersions(project *Project) ([]Ref, error)
+	Authenticate(baseUrl string, username string, password string) error
 }
 
-type Blackduck struct {}
+type Blackduck struct {
+	client http.Client
+	token  string
+}
+
+func NewBlackduck() Blackduck {
+	return Blackduck{
+		client: http.Client{},
+	}
+}
 
 func (b *Blackduck) GetProjectByName(projectUrl string, name string) (*Project, error) {
 	if cache, cached := projectIsCached(); cached {
@@ -28,7 +41,9 @@ func (b *Blackduck) GetProjectByName(projectUrl string, name string) (*Project, 
 			return &cachedProject, nil
 		}
 	}
-	res, err := http.Get(projectUrl)
+
+	req, _ := http.NewRequest("GET", projectUrl, nil)
+	res, err := b.client.Do(authenticatedRequest(*req, *b))
 	if err != nil {
 		return nil, err
 	}
@@ -50,7 +65,9 @@ func (b *Blackduck) GetProjectByName(projectUrl string, name string) (*Project, 
 
 func (b *Blackduck) GetProjectVersions(project *Project) ([]Ref, error) {
 	versionsLink := project.Meta.GetLinkFor("versions")
-	res, err := http.Get(versionsLink)
+
+	req, _ := http.NewRequest("GET", versionsLink, nil)
+	res, err := b.client.Do(authenticatedRequest(*req, *b))
 	if err != nil {
 		return nil, err
 	}
@@ -68,43 +85,38 @@ func (b *Blackduck) GetProjectVersions(project *Project) ([]Ref, error) {
 	return refs, nil
 }
 
-func (b *Blackduck) GetAuthenticationToken(blackBaseDuckUrl string, blackDuckUsername string, blackDuckPassword string) (string, error) {
-
-	const urlLoginPostfix = "/j_spring_security_check"
-	const formUserName= "j_username"
-	const formPassword = "j_password"
-
-	res, err := http.PostForm(blackBaseDuckUrl+urlLoginPostfix,
-		url.Values{formUserName: {blackDuckUsername}, formPassword: {blackDuckPassword}})
-
+func (b *Blackduck) Authenticate(baseUrl string, username string, password string) error {
+	formValues := url.Values{
+		"j_username": {username},
+		"j_password": {password},
+	}
+	authUrl := baseUrl + "/j_spring_security_check"
+	res, err := http.PostForm(authUrl, formValues)
 	if err != nil {
-		return "", err
+		return err
 	}
 	defer res.Body.Close()
 
-	if isStatusCodeNotOk(res) {
-		return "", errors.New("authentication failed")
+	if res.StatusCode > 300 {
+		return errors.New("authentication failed")
 	}
 
 	cookieHeader := res.Header.Get("Set-Cookie")
-
 	cookieHeaderEntries := strings.Split(cookieHeader, ";")
 
-	var token string
 	for _, cookieHeaderEntry := range cookieHeaderEntries {
 		trimmedCookieHeaderEntry := strings.TrimSpace(cookieHeaderEntry)
-		const tokenPrefix = "AUTHORIZATION_BEARER="
 		if strings.HasPrefix(trimmedCookieHeaderEntry, tokenPrefix) {
-			token = strings.Replace(trimmedCookieHeaderEntry, tokenPrefix, "", 1)
-			return token, nil
+			b.token = strings.Replace(trimmedCookieHeaderEntry, tokenPrefix, "", 1)
+			return nil
 		}
 	}
-
-	return "", errors.New("token not found")
+	return errors.New("token not found")
 }
 
-func isStatusCodeNotOk(res *http.Response) bool {
-	return res.StatusCode >= 300
+func authenticatedRequest(req http.Request, b Blackduck) (authReq *http.Request) {
+	req.Header.Set("Cookie", tokenPrefix+b.token)
+	return &req
 }
 
 func writeProjectToCache(project Project) {

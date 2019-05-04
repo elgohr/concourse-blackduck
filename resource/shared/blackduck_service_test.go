@@ -1,22 +1,20 @@
-package shared_test
+package shared
 
 import (
-	"github.com/elgohr/blackduck-resource/shared"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"os"
-	"strings"
 	"testing"
 )
 
 func clean(t *testing.T) {
-	if err := os.Remove(shared.ProjectCacheName); err != nil {
+	if err := os.Remove(ProjectCacheName); err != nil {
 		t.Error(err)
 	}
 }
 
-func TestGetProjectByNameQueriesForProject(t *testing.T) {
+func TestGetProjectQueriesForProject(t *testing.T) {
 	var calledProjects bool
 	h := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		calledProjects = true
@@ -30,7 +28,7 @@ func TestGetProjectByNameQueriesForProject(t *testing.T) {
 	}))
 	defer h.Close()
 
-	r := shared.Blackduck{}
+	r := NewBlackduck()
 	project, err := r.GetProjectByName(h.URL, "project1")
 	if err != nil {
 		t.Error(err)
@@ -49,118 +47,33 @@ func TestGetProjectByNameQueriesForProject(t *testing.T) {
 	clean(t)
 }
 
-func TestAuthenticationTokenFromBlackDuck(t *testing.T) {
-	var calledAuthenticated bool
-	const expectedPassword = "TEST_PASSWORD"
-	const expectedUser = "TEST_USER"
+func TestGetProjectAddsAuthentication(t *testing.T) {
 	const expectedToken = "TEST_TOKEN"
-
 	h := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		calledAuthenticated = true
-		r.ParseForm()
-		gotUser := r.Form.Get("j_username")
-		if gotUser != expectedUser {
-			t.Errorf("Expected username %v , but got %v", expectedUser, gotUser)
+		if r.Header.Get("Cookie") != "AUTHORIZATION_BEARER="+expectedToken {
+			t.Errorf("Expected the bearer to be send via Cookie (whoever knows why...), but got %v", r.Header.Get("Cookie"))
 		}
-		gotPw := r.Form.Get("j_password")
-		if gotPw != expectedPassword {
-			t.Errorf("Expected password %v , but got %v", expectedPassword, gotPw)
+		b, err := ioutil.ReadFile("testdata/projects.json")
+		if err != nil {
+			t.Error(err)
 		}
-		if !strings.HasSuffix(r.RequestURI, "/j_spring_security_check") {
-			t.Errorf("Expected url to end with /j_spring_security_check , but was %v", r.RequestURI)
+		if _, err := w.Write(b); err != nil {
+			t.Error(err)
 		}
-		w.Header().Set("Set-Cookie", "Test=a; AUTHORIZATION_BEARER="+expectedToken+"; Max-Age=7200; Expires=Fri, " +
-			"26-Apr-2019 13:37:14 GMT; Path=/; secure; Secure; HttpOnly")
-		w.WriteHeader(http.StatusNoContent)
 	}))
 	defer h.Close()
 
-	r := shared.Blackduck{}
-	token, err := r.GetAuthenticationToken(h.URL, expectedUser, expectedPassword)
-
+	r := NewBlackduck()
+	r.token = expectedToken
+	_, err := r.GetProjectByName(h.URL, "project1")
 	if err != nil {
 		t.Error(err)
 	}
-	if expectedToken != token {
-		t.Errorf("Expected token %v but was %v",expectedToken, token)
-	}
 
-	if !calledAuthenticated {
-		t.Error("Didn't call the Blackduck api for token")
-	}
+	clean(t)
 }
 
-func TestAuthenticationTokenFromBlackDuckTokenNotFound(t *testing.T) {
-	var calledAuthenticated bool
-	const expectedPassword = "TEST_PASSWORD"
-	const expectedUser = "TEST_USER"
-	const expectedToken = ""
-
-	h := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		calledAuthenticated = true
-		r.ParseForm()
-		gotUser := r.Form.Get("j_username")
-		if gotUser != expectedUser {
-			t.Errorf("Expected username %v , but got %v", expectedUser, gotUser)
-		}
-		gotPw := r.Form.Get("j_password")
-		if gotPw != expectedPassword {
-			t.Errorf("Expected password %v , but got %v", expectedPassword, gotPw)
-		}
-		if !strings.HasSuffix(r.RequestURI, "/j_spring_security_check") {
-			t.Errorf("Expected url to end with /j_spring_security_check , but was %v", r.RequestURI)
-		}
-		w.Header().Set("Set-Cookie", "Max-Age=7200; Expires=Fri, " +
-			"26-Apr-2019 13:37:14 GMT; Path=/; secure; Secure; HttpOnly")
-		w.WriteHeader(http.StatusNoContent)
-	}))
-	defer h.Close()
-
-	r := shared.Blackduck{}
-	token, err := r.GetAuthenticationToken(h.URL, expectedUser, expectedPassword)
-
-	if err == nil {
-		t.Errorf("Expected error but was nil")
-	}
-
-	if expectedToken != token {
-		t.Errorf("Expected token to be empty but was %v", token)
-	}
-
-	if !calledAuthenticated {
-		t.Error("Didn't call the Blackduck api for token")
-	}
-}
-
-func TestAuthenticationTokenFromBlackDuckAuthenticationFaild(t *testing.T) {
-	var calledAuthenticated bool
-	const expectedPassword = "TEST_PASSWORD"
-	const expectedUser = "TEST_USER"
-	const expectedToken = ""
-
-	h := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		calledAuthenticated = true
-		w.WriteHeader(http.StatusUnauthorized)
-	}))
-	defer h.Close()
-
-	r := shared.Blackduck{}
-	token, err := r.GetAuthenticationToken(h.URL, expectedUser, expectedPassword)
-
-	if err.Error() != "authentication failed" {
-		t.Errorf("Expected error was wrong")
-	}
-
-	if expectedToken != token {
-		t.Errorf("Expected token to be empty but was %v", token)
-	}
-
-	if !calledAuthenticated {
-		t.Error("Didn't call the Blackduck api for token")
-	}
-}
-
-func TestGetProjectByNameCachesTheResult(t *testing.T) {
+func TestGetProjectCachesTheResult(t *testing.T) {
 	var calledProjects int
 	h := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		calledProjects++
@@ -174,13 +87,13 @@ func TestGetProjectByNameCachesTheResult(t *testing.T) {
 	}))
 	defer h.Close()
 
-	r := shared.Blackduck{}
+	r := NewBlackduck()
 	project1, err := r.GetProjectByName(h.URL, "project1")
 	if err != nil {
 		t.Error(err)
 	}
 
-	r2 := shared.Blackduck{}
+	r2 := NewBlackduck()
 	project2, err := r2.GetProjectByName(h.URL, "project1")
 	if err != nil {
 		t.Error(err)
@@ -196,13 +109,13 @@ func TestGetProjectByNameCachesTheResult(t *testing.T) {
 	clean(t)
 }
 
-func TestGetProjectByNameErrorsWhenResponseIsCorrupted(t *testing.T) {
+func TestGetProjectErrorsWhenResponseIsCorrupted(t *testing.T) {
 	h := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(`{]`))
 	}))
 	defer h.Close()
 
-	r := shared.Blackduck{}
+	r := NewBlackduck()
 	_, err := r.GetProjectByName(h.URL, "project1")
 	if err == nil {
 		t.Error("Should have errored, but didn't")
@@ -223,11 +136,11 @@ func TestQueriesForTheLatestVersionsInChronologicalOrder(t *testing.T) {
 	}))
 	defer h.Close()
 
-	r := shared.Blackduck{}
-	refs, err := r.GetProjectVersions(&shared.Project{
+	r := NewBlackduck()
+	refs, err := r.GetProjectVersions(&Project{
 		Name: "",
-		Meta: shared.Meta{
-			Links: []shared.Link{
+		Meta: Meta{
+			Links: []Link{
 				{
 					Rel:  "versions",
 					Href: h.URL,
@@ -250,5 +163,39 @@ func TestQueriesForTheLatestVersionsInChronologicalOrder(t *testing.T) {
 	}
 	if !calledVersions {
 		t.Error("Didn't call the Blackduck api for versions")
+	}
+}
+
+func TestQueriesForTheLatestVersionsWithAuthentication(t *testing.T) {
+	const expectedToken = "TEST_TOKEN"
+	h := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Header.Get("Cookie") != "AUTHORIZATION_BEARER="+expectedToken {
+			t.Errorf("Expected the bearer to be send via Cookie (whoever knows why...), but got %v", r.Header.Get("Cookie"))
+		}
+		b, err := ioutil.ReadFile("testdata/versions.json")
+		if err != nil {
+			t.Error(err)
+		}
+		if _, err := w.Write(b); err != nil {
+			t.Error(err)
+		}
+	}))
+	defer h.Close()
+
+	r := NewBlackduck()
+	r.token = expectedToken
+	_, err := r.GetProjectVersions(&Project{
+		Name: "",
+		Meta: Meta{
+			Links: []Link{
+				{
+					Rel:  "versions",
+					Href: h.URL,
+				},
+			},
+		},
+	})
+	if err != nil {
+		t.Error(err)
 	}
 }

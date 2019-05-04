@@ -25,11 +25,12 @@ type Runner struct {
 }
 
 func NewRunner() Runner {
+	bd := shared.NewBlackduck()
 	return Runner{
 		stdIn:  os.Stdin,
 		stdOut: os.Stdout,
 		stdErr: os.Stderr,
-		api:    &shared.Blackduck{},
+		api:    &bd,
 	}
 }
 
@@ -42,6 +43,11 @@ func (r *Runner) run() error {
 		fmt.Fprintf(r.stdOut, `[]`)
 		return errors.New("source is invalid")
 	}
+	err := r.api.Authenticate(input.Source.Url, input.Source.Username, input.Source.Password)
+	if err != nil {
+		return err
+	}
+
 	project, err := r.api.GetProjectByName(input.Source.GetProjectUrl(), input.Source.Name)
 	if err != nil {
 		fmt.Fprintf(r.stdOut, `[]`)

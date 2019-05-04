@@ -62,6 +62,57 @@ func TestQueriesForTheLatestVersionsInChronologicalOrder(t *testing.T) {
 	}
 }
 
+func TestAuthenticatesFirst(t *testing.T) {
+	stdIn, _, fakeBlackduckApi, r := setup()
+
+	first := true
+	called := false
+	expectedError := errors.New("authError")
+	fakeBlackduckApi.GetProjectByNameStub = func(s string, s2 string) (project *shared.Project, e error) {
+		first = false
+		return &shared.Project{}, nil
+	}
+	fakeBlackduckApi.GetProjectVersionsStub = func(project *shared.Project) (refs []shared.Ref, e error) {
+		first = false
+		return nil, nil
+	}
+	fakeBlackduckApi.AuthenticateStub = func(url string, user string, password string) error {
+		called = true
+		if !first {
+			t.Error("Should be authenticated first, but wasn't")
+		}
+		eUrl := "http://blackduck"
+		if url != eUrl {
+			t.Errorf("Expected url to be %v, but was %v", eUrl, url)
+		}
+		eUser := "username"
+		if user != eUser {
+			t.Errorf("Expected user to be %v, but was %v", eUser, user)
+		}
+		ePassword := "password"
+		if password != ePassword {
+			t.Errorf("Expected password to be %v, but was %v", ePassword, password)
+		}
+		return expectedError
+	}
+
+	stdIn.WriteString(`{
+				"source": {
+	    			"url": "http://blackduck",
+					"username": "username",
+	    			"password": "password",
+					"name": "project1"
+	  			}
+			}`)
+
+	if err := r.run(); err != expectedError {
+		t.Error(err)
+	}
+	if !called {
+		t.Error("Wasn't authenticated")
+	}
+}
+
 func setup() (stdIn *bytes.Buffer, stdOut *bytes.Buffer, fakeBlackduckApi *sharedfakes.FakeBlackduckApi, r Runner) {
 	stdIn = &bytes.Buffer{}
 	stdOut = &bytes.Buffer{}
