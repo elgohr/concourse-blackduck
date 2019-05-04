@@ -69,7 +69,7 @@ func (r *Runner) run() error {
 func getArguments(input shared.Request) []string {
 	args := []string{
 		"-jar",
-		"/opt/resource/synopsys-detect-5.3.3.jar",
+		"/opt/resource/synopsys-detect-5.4.0.jar",
 		"--blackduck.url=" + input.Source.Url,
 		"--detect.project.name=" + input.Source.Name,
 	}

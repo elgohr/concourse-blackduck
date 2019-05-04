@@ -159,7 +159,7 @@ func TestLoadsCertificateFromBlackduckWhenConfiguredInsecure(t *testing.T) {
 			}
 			expectedArgs := []string{
 				"-jar",
-				"/opt/resource/synopsys-detect-5.3.3.jar",
+				"/opt/resource/synopsys-detect-5.4.0.jar",
 				"--blackduck.url=" + targetUrl,
 				"--detect.project.name=" + name,
 				"--blackduck.api.token=" + token,
