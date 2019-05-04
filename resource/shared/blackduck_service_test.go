@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"strings"
 	"testing"
 )
 
@@ -46,6 +47,117 @@ func TestGetProjectByNameQueriesForProject(t *testing.T) {
 	}
 
 	clean(t)
+}
+
+func TestAuthenticationTokenFromBlackDuck(t *testing.T) {
+	var calledAuthenticated bool
+	const expectedPassword = "TEST_PASSWORD"
+	const expectedUser = "TEST_USER"
+	const expectedToken = "TEST_TOKEN"
+
+	h := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		calledAuthenticated = true
+		r.ParseForm()
+		gotUser := r.Form.Get("j_username")
+		if gotUser != expectedUser {
+			t.Errorf("Expected username %v , but got %v", expectedUser, gotUser)
+		}
+		gotPw := r.Form.Get("j_password")
+		if gotPw != expectedPassword {
+			t.Errorf("Expected password %v , but got %v", expectedPassword, gotPw)
+		}
+		if !strings.HasSuffix(r.RequestURI, "/j_spring_security_check") {
+			t.Errorf("Expected url to end with /j_spring_security_check , but was %v", r.RequestURI)
+		}
+		w.Header().Set("Set-Cookie", "Test=a; AUTHORIZATION_BEARER="+expectedToken+"; Max-Age=7200; Expires=Fri, " +
+			"26-Apr-2019 13:37:14 GMT; Path=/; secure; Secure; HttpOnly")
+		w.WriteHeader(http.StatusNoContent)
+	}))
+	defer h.Close()
+
+	r := shared.Blackduck{}
+	token, err := r.GetAuthenticationToken(h.URL, expectedUser, expectedPassword)
+
+	if err != nil {
+		t.Error(err)
+	}
+	if expectedToken != token {
+		t.Errorf("Expected token %v but was %v",expectedToken, token)
+	}
+
+	if !calledAuthenticated {
+		t.Error("Didn't call the Blackduck api for token")
+	}
+}
+
+func TestAuthenticationTokenFromBlackDuckTokenNotFound(t *testing.T) {
+	var calledAuthenticated bool
+	const expectedPassword = "TEST_PASSWORD"
+	const expectedUser = "TEST_USER"
+	const expectedToken = ""
+
+	h := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		calledAuthenticated = true
+		r.ParseForm()
+		gotUser := r.Form.Get("j_username")
+		if gotUser != expectedUser {
+			t.Errorf("Expected username %v , but got %v", expectedUser, gotUser)
+		}
+		gotPw := r.Form.Get("j_password")
+		if gotPw != expectedPassword {
+			t.Errorf("Expected password %v , but got %v", expectedPassword, gotPw)
+		}
+		if !strings.HasSuffix(r.RequestURI, "/j_spring_security_check") {
+			t.Errorf("Expected url to end with /j_spring_security_check , but was %v", r.RequestURI)
+		}
+		w.Header().Set("Set-Cookie", "Max-Age=7200; Expires=Fri, " +
+			"26-Apr-2019 13:37:14 GMT; Path=/; secure; Secure; HttpOnly")
+		w.WriteHeader(http.StatusNoContent)
+	}))
+	defer h.Close()
+
+	r := shared.Blackduck{}
+	token, err := r.GetAuthenticationToken(h.URL, expectedUser, expectedPassword)
+
+	if err == nil {
+		t.Errorf("Expected error but was nil")
+	}
+
+	if expectedToken != token {
+		t.Errorf("Expected token to be empty but was %v", token)
+	}
+
+	if !calledAuthenticated {
+		t.Error("Didn't call the Blackduck api for token")
+	}
+}
+
+func TestAuthenticationTokenFromBlackDuckAuthenticationFaild(t *testing.T) {
+	var calledAuthenticated bool
+	const expectedPassword = "TEST_PASSWORD"
+	const expectedUser = "TEST_USER"
+	const expectedToken = ""
+
+	h := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		calledAuthenticated = true
+		w.WriteHeader(http.StatusUnauthorized)
+	}))
+	defer h.Close()
+
+	r := shared.Blackduck{}
+	token, err := r.GetAuthenticationToken(h.URL, expectedUser, expectedPassword)
+
+	if err.Error() != "authentication failed" {
+		t.Errorf("Expected error was wrong")
+	}
+
+	if expectedToken != token {
+		t.Errorf("Expected token to be empty but was %v", token)
+	}
+
+	if !calledAuthenticated {
+		t.Error("Didn't call the Blackduck api for token")
+	}
 }
 
 func TestGetProjectByNameCachesTheResult(t *testing.T) {
