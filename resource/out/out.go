@@ -72,14 +72,8 @@ func getArguments(input shared.Request) []string {
 		"/opt/resource/synopsys-detect-5.4.0.jar",
 		"--blackduck.url=" + input.Source.Url,
 		"--detect.project.name=" + input.Source.Name,
-	}
-	if len(input.Source.Token) != 0 {
-		args = append(args, "--blackduck.api.token="+input.Source.Token)
-	} else {
-		args = append(args,
-			"--blackduck.username="+input.Source.Username,
-			"--blackduck.password="+input.Source.Password,
-		)
+		"--blackduck.username="+input.Source.Username,
+		"--blackduck.password="+input.Source.Password,
 	}
 	if input.Source.Insecure {
 		args = append(args, "--blackduck.trust.cert=true")

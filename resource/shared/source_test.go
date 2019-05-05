@@ -50,17 +50,6 @@ func TestIsInvalidWhenPasswordIsMissing(t *testing.T) {
 	}
 }
 
-func TestIsValidWhenTokenIsPresentButUsernameAndPasswordAreMissing(t *testing.T) {
-	s := shared.Source{
-		Url:"http://url",
-		Token:"token",
-		Name:"name",
-	}
-	if !s.Valid() {
-		t.Error("Should be valid, but wasn't")
-	}
-}
-
 func TestIsValidWhenTokenIsMissingButUsernameAndPasswordArePresent(t *testing.T) {
 	s := shared.Source{
 		Url:"http://url",

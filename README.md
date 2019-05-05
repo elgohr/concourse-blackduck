@@ -38,9 +38,8 @@ resources:
 |-----------|-------------------------|--------------------------------------------------------------------------------------------|
 | `url`     | *Mandatory*             | URL of your Blackduck instance e.g. `https://my-synopsys.com/blackduck`.                   |
 | `name`    | *Mandatory*             | Project name in Blackduck.                                                                 |
-| `username`| *or Token*              | Username, which is used to authenticate on Blackduck.                                      |
-| `password`| *or Token*              | Password, which is used to authenticate on Blackduck.                                      |
-| `token`   | *or Username/Password*  | API-Token, which is used to authenticate on Blackduck.                                     |
+| `username`| *Mandatory*             | Username, which is used to authenticate on Blackduck.                                      |
+| `password`| *Mandatory*             | Password, which is used to authenticate on Blackduck.                                      |
 | `insecure`| *Optional*              | In case your Blackduck uses a self-signed certificate, it's pinned with the first request. |
 
 ## `in`: Nothing yet

@@ -57,7 +57,7 @@ func TestStartsBlackduckWithUsernamePassword(t *testing.T) {
 			}
 			expectedArgs := []string{
 				"-jar",
-				"/opt/resource/synopsys-detect-5.3.3.jar",
+				"/opt/resource/synopsys-detect-5.4.0.jar",
 				"--blackduck.url=" + targetUrl,
 				"--detect.project.name=" + name,
 				"--blackduck.username=" + username,
@@ -80,72 +80,24 @@ func TestStartsBlackduckWithUsernamePassword(t *testing.T) {
 	}
 }
 
-func TestStartsBlackduckWithToken(t *testing.T) {
-	stdIn := &bytes.Buffer{}
-	targetUrl := "https://BLACKDUCK"
-	token := "TOKEN"
-	name := "project1"
-	stdIn.WriteString(fmt.Sprintf(`{
-			"source": {
-    			"url": "%v",
-				"token": "%v",
-				"name": "%v"
-  			},
-			"params": {
-				"directory": "."
-			}
-		}`, targetUrl, token, name))
-
-	var called bool
-	r := Runner{
-		stdIn:  stdIn,
-		stdOut: &bytes.Buffer{},
-		stdErr: &bytes.Buffer{},
-		exec: func(command string, arg ...string) *exec.Cmd {
-			called = true
-			if command != "java" {
-				t.Errorf("Should have started java, but started %v", command)
-			}
-			expectedArgs := []string{
-				"-jar",
-				"/opt/resource/synopsys-detect-5.3.3.jar",
-				"--blackduck.url=" + targetUrl,
-				"--detect.project.name=" + name,
-				"--blackduck.api.token=" + token,
-			}
-			for i, a := range arg {
-				if a != expectedArgs[i] {
-					t.Errorf("Expected argument %v, but got %v", expectedArgs[i], a)
-				}
-			}
-			return exec.Command("true")
-		},
-	}
-
-	if err := r.run(); err != nil {
-		t.Error(err)
-	}
-	if !called {
-		t.Error("Blackduck wasn't started")
-	}
-}
-
 func TestLoadsCertificateFromBlackduckWhenConfiguredInsecure(t *testing.T) {
 	stdIn := &bytes.Buffer{}
 	targetUrl := "https://BLACKDUCK"
-	token := "TOKEN"
+	username := "USERNAME"
+	password := "PASSWORD"
 	name := "project1"
 	stdIn.WriteString(fmt.Sprintf(`{
 			"source": {
     			"url": "%v",
-				"token": "%v",
+				"username": "%v",
+    			"password": "%v",
 				"name": "%v",
 				"insecure": true
   			},
 			"params": {
 				"directory": "."
 			}
-		}`, targetUrl, token, name))
+		}`, targetUrl, username, password, name))
 
 	var called bool
 	r := Runner{
@@ -162,7 +114,8 @@ func TestLoadsCertificateFromBlackduckWhenConfiguredInsecure(t *testing.T) {
 				"/opt/resource/synopsys-detect-5.4.0.jar",
 				"--blackduck.url=" + targetUrl,
 				"--detect.project.name=" + name,
-				"--blackduck.api.token=" + token,
+				"--blackduck.username=" + username,
+				"--blackduck.password=" + password,
 				"--blackduck.trust.cert=true",
 			}
 			for i, a := range arg {
