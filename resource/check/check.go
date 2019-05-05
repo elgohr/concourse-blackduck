@@ -55,7 +55,11 @@ func (r *Runner) run() error {
 		fmt.Fprintf(r.stdOut, `[]`)
 		return err
 	}
-	b, err := json.Marshal(versions)
+	var refs []shared.Ref
+	for _, version := range versions {
+		refs = append(refs, shared.Ref{Ref: version.Updated.String()})
+	}
+	b, err := json.Marshal(refs)
 	if err != nil {
 		return err
 	}

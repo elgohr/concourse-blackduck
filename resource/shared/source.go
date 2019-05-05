@@ -6,8 +6,9 @@ import (
 )
 
 type Request struct {
-	Source Source `json:"source"`
-	Params Params `json:"params"`
+	Source  Source `json:"source"`
+	Params  Params `json:"params"`
+	Version Ref    `json:"version"`
 }
 
 type Source struct {

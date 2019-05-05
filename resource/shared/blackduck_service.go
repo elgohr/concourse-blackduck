@@ -18,7 +18,7 @@ const (
 //go:generate counterfeiter . BlackduckApi
 type BlackduckApi interface {
 	GetProjectByName(source Source) (*Project, error)
-	GetProjectVersions(source Source, project *Project) ([]Ref, error)
+	GetProjectVersions(source Source, project *Project) ([]Version, error)
 }
 
 type Blackduck struct {
@@ -65,7 +65,7 @@ func (b *Blackduck) GetProjectByName(source Source) (*Project, error) {
 	return nil, errors.New("no project matching the name")
 }
 
-func (b *Blackduck) GetProjectVersions(source Source, project *Project) ([]Ref, error) {
+func (b *Blackduck) GetProjectVersions(source Source, project *Project) ([]Version, error) {
 	versionsLink := project.Meta.GetLinkFor("versions")
 
 	token, err := authenticate(source)
@@ -84,11 +84,7 @@ func (b *Blackduck) GetProjectVersions(source Source, project *Project) ([]Ref, 
 	if err := json.NewDecoder(res.Body).Decode(&versionList); err != nil {
 		return nil, err
 	}
-	var refs []Ref
-	for _, version := range sortVersionsChronologically(versionList) {
-		refs = append(refs, Ref{Ref: version.Updated.String()})
-	}
-	return refs, nil
+	return sortVersionsChronologically(versionList), nil
 }
 
 func authenticate(source Source) (token string, err error) {

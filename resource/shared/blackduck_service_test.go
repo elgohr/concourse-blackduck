@@ -228,11 +228,11 @@ func TestQueriesForTheLatestVersionsInChronologicalOrder(t *testing.T) {
 	if len(refs) != 2 {
 		t.Errorf("Expected refs to contain 2 elements, but where %v", len(refs))
 	}
-	if refs[0].Ref != "2019-04-18 09:12:48.511 +0000 UTC" {
-		t.Errorf("Expected older entry first, but was %v", refs[0].Ref)
+	if refs[0].Updated.String() != "2019-04-18 09:12:48.511 +0000 UTC" {
+		t.Errorf("Expected older entry first, but was %v", refs[0].Updated.String())
 	}
-	if refs[1].Ref != "2019-04-20 09:12:48.511 +0000 UTC" {
-		t.Errorf("Expected newer entry second, but was %v", refs[1].Ref)
+	if refs[1].Updated.String() != "2019-04-20 09:12:48.511 +0000 UTC" {
+		t.Errorf("Expected newer entry second, but was %v", refs[1].Updated.String())
 	}
 	if !calledVersions {
 		t.Error("Didn't call the Blackduck api for versions")

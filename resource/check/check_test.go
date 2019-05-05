@@ -3,11 +3,26 @@ package main
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"github.com/elgohr/blackduck-resource/shared"
 	"github.com/elgohr/blackduck-resource/shared/sharedfakes"
 	"os"
 	"testing"
+	"time"
 )
+
+func setup() (stdIn *bytes.Buffer, stdOut *bytes.Buffer, fakeBlackduckApi *sharedfakes.FakeBlackduckApi, r Runner) {
+	stdIn = &bytes.Buffer{}
+	stdOut = &bytes.Buffer{}
+	fakeBlackduckApi = &sharedfakes.FakeBlackduckApi{}
+	r = Runner{
+		stdIn:  stdIn,
+		stdOut: stdOut,
+		stdErr: &bytes.Buffer{},
+		api:    fakeBlackduckApi,
+	}
+	return
+}
 
 func TestConstructsRunnerCorrectly(t *testing.T) {
 	r := NewRunner()
@@ -30,8 +45,8 @@ func TestQueriesForTheLatestVersionsInChronologicalOrder(t *testing.T) {
 
 	fakeProject := shared.Project{Name: "TEST_PROJECT"}
 	fakeBlackduckApi.GetProjectByNameReturns(&fakeProject, nil)
-	fakeRefs := []shared.Ref{{Ref: "TEST_REF"}}
-	fakeBlackduckApi.GetProjectVersionsReturns(fakeRefs, nil)
+	now := time.Now()
+	fakeBlackduckApi.GetProjectVersionsReturns([]shared.Version{{Updated: now}}, nil)
 
 	stdIn.WriteString(`{
 				"source": {
@@ -46,7 +61,7 @@ func TestQueriesForTheLatestVersionsInChronologicalOrder(t *testing.T) {
 		t.Error(err)
 	}
 
-	expRes := `[{"ref":"TEST_REF"}]`
+	expRes := fmt.Sprintf(`[{"ref":"%v"}]`, now)
 	if stdOut.String() != expRes {
 		t.Errorf(`Expected: %v
 					Got:   %v`, expRes, stdOut.String())
@@ -60,19 +75,6 @@ func TestQueriesForTheLatestVersionsInChronologicalOrder(t *testing.T) {
 	if source.Name != pt {
 		t.Errorf("Expected api to be called with projectName %v, but was called with %v", pt, source.Name)
 	}
-}
-
-func setup() (stdIn *bytes.Buffer, stdOut *bytes.Buffer, fakeBlackduckApi *sharedfakes.FakeBlackduckApi, r Runner) {
-	stdIn = &bytes.Buffer{}
-	stdOut = &bytes.Buffer{}
-	fakeBlackduckApi = &sharedfakes.FakeBlackduckApi{}
-	r = Runner{
-		stdIn:  stdIn,
-		stdOut: stdOut,
-		stdErr: &bytes.Buffer{},
-		api:    fakeBlackduckApi,
-	}
-	return
 }
 
 func TestErrorsWhenProjectCouldNotBeFound(t *testing.T) {

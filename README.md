@@ -42,7 +42,8 @@ resources:
 | `password`| *Mandatory*             | Password, which is used to authenticate on Blackduck.                                      |
 | `insecure`| *Optional*              | In case your Blackduck uses a self-signed certificate, it's pinned with the first request. |
 
-## `in`: Nothing yet
+## `in`: Get Results
+The resource will provide the latest version changes on Blackduck as a file for later use.
 
 ## `out`: Analysis
 The resource will analyse your provided content and push it to the provided Blackduck instance.
