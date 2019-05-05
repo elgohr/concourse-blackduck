@@ -17,14 +17,12 @@ const (
 
 //go:generate counterfeiter . BlackduckApi
 type BlackduckApi interface {
-	GetProjectByName(projectUrl string, name string) (*Project, error)
-	GetProjectVersions(project *Project) ([]Ref, error)
-	Authenticate(baseUrl string, username string, password string) error
+	GetProjectByName(source Source) (*Project, error)
+	GetProjectVersions(source Source, project *Project) ([]Ref, error)
 }
 
 type Blackduck struct {
 	client http.Client
-	token  string
 }
 
 func NewBlackduck() Blackduck {
@@ -33,7 +31,7 @@ func NewBlackduck() Blackduck {
 	}
 }
 
-func (b *Blackduck) GetProjectByName(projectUrl string, name string) (*Project, error) {
+func (b *Blackduck) GetProjectByName(source Source) (*Project, error) {
 	if cache, cached := projectIsCached(); cached {
 		var cachedProject Project
 		if err := json.Unmarshal(cache, &cachedProject); err == nil {
@@ -41,8 +39,13 @@ func (b *Blackduck) GetProjectByName(projectUrl string, name string) (*Project, 
 		}
 	}
 
-	req, _ := http.NewRequest("GET", projectUrl, nil)
-	res, err := b.client.Do(authenticatedRequest(*req, *b))
+	token, err := authenticate(source)
+	if err != nil {
+		return nil, err
+	}
+
+	req, _ := http.NewRequest("GET", source.GetProjectUrl(), nil)
+	res, err := b.client.Do(authenticatedRequest(*req, token))
 	if err != nil {
 		return nil, err
 	}
@@ -51,7 +54,7 @@ func (b *Blackduck) GetProjectByName(projectUrl string, name string) (*Project, 
 	var projectList ProjectList
 	if err := json.NewDecoder(res.Body).Decode(&projectList); err == nil {
 		for _, project := range projectList.Projects {
-			if project.Name == name {
+			if project.Name == source.Name {
 				writeProjectToCache(project)
 				return &project, nil
 			}
@@ -62,11 +65,16 @@ func (b *Blackduck) GetProjectByName(projectUrl string, name string) (*Project, 
 	return nil, errors.New("no project matching the name")
 }
 
-func (b *Blackduck) GetProjectVersions(project *Project) ([]Ref, error) {
+func (b *Blackduck) GetProjectVersions(source Source, project *Project) ([]Ref, error) {
 	versionsLink := project.Meta.GetLinkFor("versions")
 
+	token, err := authenticate(source)
+	if err != nil {
+		return nil, err
+	}
+
 	req, _ := http.NewRequest("GET", versionsLink, nil)
-	res, err := b.client.Do(authenticatedRequest(*req, *b))
+	res, err := b.client.Do(authenticatedRequest(*req, token))
 	if err != nil {
 		return nil, err
 	}
@@ -83,20 +91,20 @@ func (b *Blackduck) GetProjectVersions(project *Project) ([]Ref, error) {
 	return refs, nil
 }
 
-func (b *Blackduck) Authenticate(baseUrl string, username string, password string) error {
+func authenticate(source Source) (token string, err error) {
 	formValues := url.Values{
-		"j_username": {username},
-		"j_password": {password},
+		"j_username": {source.Username},
+		"j_password": {source.Password},
 	}
-	authUrl := baseUrl + "/j_spring_security_check"
+	authUrl := source.Url + "/j_spring_security_check"
 	res, err := http.PostForm(authUrl, formValues)
 	if err != nil {
-		return err
+		return "", err
 	}
 	defer res.Body.Close()
 
 	if res.StatusCode > 300 {
-		return errors.New("authentication failed")
+		return "", errors.New("authentication failed")
 	}
 
 	cookieHeader := res.Header.Get("Set-Cookie")
@@ -105,15 +113,15 @@ func (b *Blackduck) Authenticate(baseUrl string, username string, password strin
 	for _, cookieHeaderEntry := range cookieHeaderEntries {
 		trimmedCookieHeaderEntry := strings.TrimSpace(cookieHeaderEntry)
 		if strings.HasPrefix(trimmedCookieHeaderEntry, tokenPrefix) {
-			b.token = strings.Replace(trimmedCookieHeaderEntry, tokenPrefix, "", 1)
-			return nil
+			token = strings.Replace(trimmedCookieHeaderEntry, tokenPrefix, "", 1)
+			return token, nil
 		}
 	}
-	return errors.New("token not found")
+	return "", errors.New("token not found")
 }
 
-func authenticatedRequest(req http.Request, b Blackduck) (authReq *http.Request) {
-	req.Header.Set("Cookie", tokenPrefix+b.token)
+func authenticatedRequest(req http.Request, token string) (authReq *http.Request) {
+	req.Header.Set("Cookie", tokenPrefix+token)
 	return &req
 }
 

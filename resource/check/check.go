@@ -43,18 +43,14 @@ func (r *Runner) run() error {
 		fmt.Fprintf(r.stdOut, `[]`)
 		return errors.New("source is invalid")
 	}
-	err := r.api.Authenticate(input.Source.Url, input.Source.Username, input.Source.Password)
-	if err != nil {
-		return err
-	}
 
-	project, err := r.api.GetProjectByName(input.Source.GetProjectUrl(), input.Source.Name)
+	project, err := r.api.GetProjectByName(input.Source)
 	if err != nil {
 		fmt.Fprintf(r.stdOut, `[]`)
 		return err
 	}
 
-	versions, err := r.api.GetProjectVersions(project)
+	versions, err := r.api.GetProjectVersions(input.Source, project)
 	if err != nil {
 		fmt.Fprintf(r.stdOut, `[]`)
 		return err
