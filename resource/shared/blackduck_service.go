@@ -3,7 +3,6 @@ package shared
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -79,8 +78,7 @@ func (b *Blackduck) GetProjectVersions(project *Project) ([]Ref, error) {
 	}
 	var refs []Ref
 	for _, version := range sortVersionsChronologically(versionList) {
-		versionRef := fmt.Sprintf("%v-%v", version.Name, version.Phase)
-		refs = append(refs, Ref{Ref: versionRef})
+		refs = append(refs, Ref{Ref: version.Updated.String()})
 	}
 	return refs, nil
 }
