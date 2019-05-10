@@ -2,7 +2,9 @@ FROM golang:1.12.5 as buildResource
 ENV GO111MODULE=on
 WORKDIR /build/source
 ADD resource ./
-RUN go test -v ./... \
+RUN go get -u github.com/maxbrunsfeld/counterfeiter/v6 \
+ && go generate ./... \
+ && go test -v ./... \
  && go build -o ../compiled/out out/out.go \
  && go build -o ../compiled/in in/in.go \
  && go build -o ../compiled/check check/check.go
@@ -16,20 +18,20 @@ RUN jlink --compress=2 \
 
 FROM debian:9.9 as runtime
 ENV PATH=$PATH:/opt/jdk/bin
-ENV DETECT_JAR_PATH /opt/resource
+ENV DETECT_JAR_DOWNLOAD_DIR /opt/resource
 COPY --from=buildJava /compressed /opt/jdk/
-COPY --from=buildResource /build/compiled/* ${DETECT_JAR_PATH}/
+COPY --from=buildResource /build/compiled/* ${DETECT_JAR_DOWNLOAD_DIR}/
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
 	ca-certificates \
 	curl \
  && rm -rf /var/lib/apt/lists/*
-RUN /bin/bash -c "cd ${DETECT_JAR_PATH}; bash <(curl -s -L https://detect.synopsys.com/detect.sh) || true"
+RUN /bin/bash -c "bash <(curl -s -L https://detect.synopsys.com/detect.sh) || true"
 RUN adduser --home /home/blackduck \
 	--disabled-password \
 	--gecos "Blackduck" \
 	blackduck
-RUN chown -R blackduck ${DETECT_JAR_PATH}
-RUN chmod +x ${DETECT_JAR_PATH}/*
+RUN chown -R blackduck ${DETECT_JAR_DOWNLOAD_DIR}
+RUN chmod +x ${DETECT_JAR_DOWNLOAD_DIR}/*
 WORKDIR /home/blackduck
 USER blackduck

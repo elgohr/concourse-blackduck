@@ -1,0 +1,133 @@
+{
+  "totalCount": 190,
+  "items": [
+    {
+      "name": "project1",
+      "projectLevelAdjustments": true,
+      "cloneCategories": [
+        "VULN_DATA",
+        "COMPONENT_DATA"
+      ],
+      "customSignatureEnabled": false,
+      "createdAt": "2019-04-18T06:49:20.480Z",
+      "createdBy": "*******",
+      "createdByUser": "https://my.Host/api/users/7cfb0b1f-6b0a-4e6c-ab6c-281841674aba",
+      "updatedAt": "2019-04-18T06:49:20.486Z",
+      "updatedBy": "*******",
+      "updatedByUser": "https://my.Host/api/users/7cfb0b1f-6b0a-4e6c-ab6c-281841674aba",
+      "source": "CUSTOM",
+      "_meta": {
+        "allow": [
+          "DELETE",
+          "GET",
+          "PUT"
+        ],
+        "href": "https://my.Host/api/projects/01883e41-d4c9-420a-b41b-0ddcaadda2b5",
+        "links": [
+          {
+            "rel": "versions",
+            "href": "https://my.Host/api/projects/01883e41-d4c9-420a-b41b-0ddcaadda2b5/versions"
+          },
+          {
+            "rel": "canonicalVersion",
+            "href": "https://my.Host/api/projects/01883e41-d4c9-420a-b41b-0ddcaadda2b5/versions/509ce50d-b7a2-4303-89bf-bde16e4b7bef"
+          },
+          {
+            "rel": "assignable-users",
+            "href": "https://my.Host/api/projects/01883e41-d4c9-420a-b41b-0ddcaadda2b5/assignable-users"
+          },
+          {
+            "rel": "assignable-usergroups",
+            "href": "https://my.Host/api/projects/01883e41-d4c9-420a-b41b-0ddcaadda2b5/assignable-usergroups"
+          },
+          {
+            "rel": "users",
+            "href": "https://my.Host/api/projects/01883e41-d4c9-420a-b41b-0ddcaadda2b5/users"
+          },
+          {
+            "rel": "usergroups",
+            "href": "https://my.Host/api/projects/01883e41-d4c9-420a-b41b-0ddcaadda2b5/usergroups"
+          },
+          {
+            "rel": "tags",
+            "href": "https://my.Host/api/projects/01883e41-d4c9-420a-b41b-0ddcaadda2b5/tags"
+          },
+          {
+            "rel": "project-mappings",
+            "href": "https://my.Host/api/projects/01883e41-d4c9-420a-b41b-0ddcaadda2b5/project-mappings"
+          },
+          {
+            "rel": "custom-fields",
+            "href": "https://my.Host/api/projects/01883e41-d4c9-420a-b41b-0ddcaadda2b5/custom-fields"
+          }
+        ]
+      }
+    },
+    {
+      "name": "project2",
+      "projectLevelAdjustments": true,
+      "cloneCategories": [],
+      "customSignatureEnabled": false,
+      "createdAt": "2019-03-19T11:25:27.496Z",
+      "createdBy": "*******",
+      "createdByUser": "https://my.Host/api/users/546d1bda-4eef-492d-8536-cb7b18e06a10",
+      "updatedAt": "2019-03-19T11:25:27.588Z",
+      "updatedBy": "*******",
+      "updatedByUser": "https://my.Host/api/users/546d1bda-4eef-492d-8536-cb7b18e06a10",
+      "source": "CUSTOM",
+      "_meta": {
+        "allow": [
+          "GET"
+        ],
+        "href": "https://my.Host/api/projects/e12475e3-db5a-4f3a-a2bb-8ae011d90910",
+        "links": [
+          {
+            "rel": "versions",
+            "href": "https://my.Host/api/projects/e12475e3-db5a-4f3a-a2bb-8ae011d90910/versions"
+          },
+          {
+            "rel": "canonicalVersion",
+            "href": "https://my.Host/api/projects/e12475e3-db5a-4f3a-a2bb-8ae011d90910/versions/934f2438-4bad-4f59-958b-9073998defb5"
+          },
+          {
+            "rel": "assignable-users",
+            "href": "https://my.Host/api/projects/e12475e3-db5a-4f3a-a2bb-8ae011d90910/assignable-users"
+          },
+          {
+            "rel": "assignable-usergroups",
+            "href": "https://my.Host/api/projects/e12475e3-db5a-4f3a-a2bb-8ae011d90910/assignable-usergroups"
+          },
+          {
+            "rel": "users",
+            "href": "https://my.Host/api/projects/e12475e3-db5a-4f3a-a2bb-8ae011d90910/users"
+          },
+          {
+            "rel": "usergroups",
+            "href": "https://my.Host/api/projects/e12475e3-db5a-4f3a-a2bb-8ae011d90910/usergroups"
+          },
+          {
+            "rel": "tags",
+            "href": "https://my.Host/api/projects/e12475e3-db5a-4f3a-a2bb-8ae011d90910/tags"
+          },
+          {
+            "rel": "project-mappings",
+            "href": "https://my.Host/api/projects/e12475e3-db5a-4f3a-a2bb-8ae011d90910/project-mappings"
+          },
+          {
+            "rel": "custom-fields",
+            "href": "https://my.Host/api/projects/e12475e3-db5a-4f3a-a2bb-8ae011d90910/custom-fields"
+          }
+        ]
+      }
+    }
+  ],
+  "appliedFilters": [],
+  "_meta": {
+    "allow": [
+      "POST",
+      "GET"
+    ],
+    "href": "https://my.Host/api/projects",
+    "links": []
+  }
+}

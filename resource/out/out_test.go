@@ -27,36 +27,93 @@ func TestConstructsRunnerCorrectly(t *testing.T) {
 	}
 }
 
-func TestStartsBlackduck(t *testing.T) {
+func TestStartsBlackduckWithUsernamePassword(t *testing.T) {
 	stdIn := &bytes.Buffer{}
 	targetUrl := "https://BLACKDUCK"
 	username := "USERNAME"
 	password := "PASSWORD"
+	name := "project1"
 	stdIn.WriteString(fmt.Sprintf(`{
 			"source": {
     			"url": "%v",
 				"username": "%v",
-    			"password": "%v"
+    			"password": "%v",
+				"name": "%v"
   			},
 			"params": {
 				"directory": "."
 			}
-		}`, targetUrl, username, password))
+		}`, targetUrl, username, password, name))
 
 	var called bool
 	r := Runner{
 		stdIn:  stdIn,
 		stdOut: &bytes.Buffer{},
 		stdErr: &bytes.Buffer{},
-		exec: func(name string, arg ...string) *exec.Cmd {
+		exec: func(command string, arg ...string) *exec.Cmd {
 			called = true
-			if name != "java" {
-				t.Errorf("Should have started java, but started %v", name)
+			if command != "java" {
+				t.Errorf("Should have started java, but started %v", command)
 			}
 			expectedArgs := []string{
 				"-jar",
-				"/opt/resource/synopsys-detect-5.3.3.jar",
+				"/opt/resource/synopsys-detect-5.4.0.jar",
 				"--blackduck.url=" + targetUrl,
+				"--detect.project.name=" + name,
+				"--blackduck.username=" + username,
+				"--blackduck.password=" + password,
+			}
+			for i, a := range arg {
+				if a != expectedArgs[i] {
+					t.Errorf("Expected argument %v, but got %v", expectedArgs[i], a)
+				}
+			}
+			return exec.Command("true")
+		},
+	}
+
+	if err := r.run(); err != nil {
+		t.Error(err)
+	}
+	if !called {
+		t.Error("Blackduck wasn't started")
+	}
+}
+
+func TestLoadsCertificateFromBlackduckWhenConfiguredInsecure(t *testing.T) {
+	stdIn := &bytes.Buffer{}
+	targetUrl := "https://BLACKDUCK"
+	username := "USERNAME"
+	password := "PASSWORD"
+	name := "project1"
+	stdIn.WriteString(fmt.Sprintf(`{
+			"source": {
+    			"url": "%v",
+				"username": "%v",
+    			"password": "%v",
+				"name": "%v",
+				"insecure": true
+  			},
+			"params": {
+				"directory": "."
+			}
+		}`, targetUrl, username, password, name))
+
+	var called bool
+	r := Runner{
+		stdIn:  stdIn,
+		stdOut: &bytes.Buffer{},
+		stdErr: &bytes.Buffer{},
+		exec: func(command string, arg ...string) *exec.Cmd {
+			called = true
+			if command != "java" {
+				t.Errorf("Should have started java, but started %v", command)
+			}
+			expectedArgs := []string{
+				"-jar",
+				"/opt/resource/synopsys-detect-5.4.0.jar",
+				"--blackduck.url=" + targetUrl,
+				"--detect.project.name=" + name,
 				"--blackduck.username=" + username,
 				"--blackduck.password=" + password,
 				"--blackduck.trust.cert=true",
@@ -97,7 +154,8 @@ func TestSetsTheWorkingDirectoryToTheProvidedSource(t *testing.T) {
 			"source": {
     			"url": "https://BLACKDUCK",
 				"username": "username",
-    			"password": "password"
+    			"password": "password",
+				"name": "project1"
   			},
 			"params": {
 				"directory": "%v"
@@ -128,7 +186,8 @@ func TestAddsLoggingToSubProcess(t *testing.T) {
 			"source": {
     			"url": "https://BLACKDUCK",
 				"username": "username",
-    			"password": "password"
+    			"password": "password",
+				"name": "project1"
   			},
 			"params": {
 				"directory": "."
@@ -164,7 +223,8 @@ func TestReturnsTheVersionAndMetaDataOfTheBlackduckScan(t *testing.T) {
 			"source": {
     			"url": "https://BLACKDUCK",
 				"username": "username",
-    			"password": "password"
+    			"password": "password",
+				"name": "project1"
   			},
 			"params": {
 				"directory": "."
@@ -182,7 +242,7 @@ func TestReturnsTheVersionAndMetaDataOfTheBlackduckScan(t *testing.T) {
 			{ "name": "version", "value": "1.0.0" },
 			{ "name": "url", "value": "https://my.host/api/projects/d6aed8bb-0b9a-46a2-a1ce-60101939eb10/versions/d1530c19-1541-443f-8a5e-ea4e17c856a8/components" }
 		]
-	}`, "\n", ""), "	", "")," ", "")
+	}`, "\n", ""), "	", ""), " ", "")
 	if stdOut.String() != expRes {
 		t.Errorf(`Expected: %v
 				Got:   %v`, expRes, stdOut.String())
@@ -210,7 +270,8 @@ func TestErrorsWhenTheScanFails(t *testing.T) {
 			"source": {
     			"url": "https://BLACKDUCK",
 				"username": "username",
-    			"password": "password"
+    			"password": "password",
+				"name": "project1"
   			},
 			"params": {
 				"directory": "."
@@ -228,7 +289,7 @@ func TestErrorsWhenTheScanFails(t *testing.T) {
 			{ "name": "version", "value": "%v" },
 			{ "name": "url", "value": "https://my.Host/api/projects/01883e41-d4c9-420a-b41b-0ddcaadda2b5/versions/509ce50d-b7a2-4303-89bf-bde16e4b7bef/components" }
 		]
-	}`, "\n", ""), "	", "")," ", ""),"Default Detect Version")
+	}`, "\n", ""), "	", ""), " ", ""), "Default Detect Version")
 	if stdOut.String() != expRes {
 		t.Errorf(`Expected: %v
 				Got:   %v`, expRes, stdOut.String())
@@ -251,7 +312,8 @@ func TestErrorsWhenUrlWasNotConfigured(t *testing.T) {
 	stdIn.WriteString(`{
 			"source": {
 				"username": "username",
-    			"password": "password"
+    			"password": "password",
+				"name": "project1"
   			}
 		}`)
 
@@ -317,7 +379,8 @@ func TestErrorsWhenPasswordWasNotConfigured(t *testing.T) {
 	stdIn.WriteString(`{
 			"source": {
     			"url": "https://BLACKDUCK",
-				"username": "username"
+				"username": "username",
+				"name": "project1"
   			}
 		}`)
 
@@ -351,7 +414,8 @@ func TestErrorsWhenDirectoryIsMissing(t *testing.T) {
 			"source": {
 				"url": "https://BLACKDUCK",
 				"username": "username",
-    			"password": "password"
+    			"password": "password",
+				"name": "project1"
   			},
 			"params": {}
 		}`)

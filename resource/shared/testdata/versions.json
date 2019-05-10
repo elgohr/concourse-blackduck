@@ -1,0 +1,197 @@
+{
+  "totalCount": 1,
+  "items": [
+    {
+      "versionName": "0.1.2",
+      "phase": "DEVELOPMENT",
+      "distribution": "EXTERNAL",
+      "license": {
+        "type": "DISJUNCTIVE",
+        "licenses": [
+          {
+            "license": "https://my.Host/api/licenses/00000000-0010-0000-0000-000000000000",
+            "licenses": [],
+            "name": "Unknown License",
+            "ownership": "UNKNOWN",
+            "licenseDisplay": "Unknown License",
+            "licenseFamilySummary": {
+              "name": "Unknown",
+              "href": "https://my.Host/api/license-families/5"
+            }
+          }
+        ],
+        "licenseDisplay": "Unknown License"
+      },
+      "createdAt": "2019-04-18T06:49:20.483Z",
+      "createdBy": "***********",
+      "createdByUser": "https://my.Host/api/users/7cfb0b1f-6b0a-4e6c-ab6c-281841674aba",
+      "settingUpdatedAt": "2019-04-20T09:12:48.511Z",
+      "settingUpdatedBy": "***********",
+      "settingUpdatedByUser": "https://my.Host/api/users/7cfb0b1f-6b0a-4e6c-ab6c-281841674aba",
+      "source": "CUSTOM",
+      "_meta": {
+        "allow": [
+          "GET",
+          "PUT"
+        ],
+        "href": "https://my.Host/api/projects/01883e41-d4c9-420a-b41b-0ddcaadda2b5/versions/509ce50d-b7a2-4303-89bf-bde16e4b7bef",
+        "links": [
+          {
+            "rel": "versionReport",
+            "href": "https://my.Host/api/versions/509ce50d-b7a2-4303-89bf-bde16e4b7bef/reports"
+          },
+          {
+            "rel": "licenseReports",
+            "href": "https://my.Host/api/versions/509ce50d-b7a2-4303-89bf-bde16e4b7bef/license-reports"
+          },
+          {
+            "rel": "riskProfile",
+            "href": "https://my.Host/api/projects/01883e41-d4c9-420a-b41b-0ddcaadda2b5/versions/509ce50d-b7a2-4303-89bf-bde16e4b7bef/risk-profile"
+          },
+          {
+            "rel": "components",
+            "href": "https://my.Host/api/projects/01883e41-d4c9-420a-b41b-0ddcaadda2b5/versions/509ce50d-b7a2-4303-89bf-bde16e4b7bef/components"
+          },
+          {
+            "rel": "vulnerable-components",
+            "href": "https://my.Host/api/projects/01883e41-d4c9-420a-b41b-0ddcaadda2b5/versions/509ce50d-b7a2-4303-89bf-bde16e4b7bef/vulnerable-bom-components"
+          },
+          {
+            "rel": "comparison",
+            "href": "https://my.Host/api/projects/01883e41-d4c9-420a-b41b-0ddcaadda2b5/versions/509ce50d-b7a2-4303-89bf-bde16e4b7bef/comparison"
+          },
+          {
+            "rel": "project",
+            "href": "https://my.Host/api/projects/01883e41-d4c9-420a-b41b-0ddcaadda2b5"
+          },
+          {
+            "rel": "custom-fields",
+            "href": "https://my.Host/api/projects/01883e41-d4c9-420a-b41b-0ddcaadda2b5/versions/509ce50d-b7a2-4303-89bf-bde16e4b7bef/custom-fields"
+          },
+          {
+            "rel": "policy-status",
+            "href": "https://my.Host/api/projects/01883e41-d4c9-420a-b41b-0ddcaadda2b5/versions/509ce50d-b7a2-4303-89bf-bde16e4b7bef/policy-status"
+          },
+          {
+            "rel": "codelocations",
+            "href": "https://my.Host/api/projects/01883e41-d4c9-420a-b41b-0ddcaadda2b5/versions/509ce50d-b7a2-4303-89bf-bde16e4b7bef/codelocations"
+          },
+          {
+            "rel": "custom-fields",
+            "href": "https://my.Host/api/projects/01883e41-d4c9-420a-b41b-0ddcaadda2b5/versions/509ce50d-b7a2-4303-89bf-bde16e4b7bef/custom-fields"
+          }
+        ]
+      }
+    },
+    {
+      "versionName": "0.1.1",
+      "phase": "DEVELOPMENT",
+      "distribution": "EXTERNAL",
+      "license": {
+        "type": "DISJUNCTIVE",
+        "licenses": [
+          {
+            "license": "https://my.Host/api/licenses/00000000-0010-0000-0000-000000000000",
+            "licenses": [],
+            "name": "Unknown License",
+            "ownership": "UNKNOWN",
+            "licenseDisplay": "Unknown License",
+            "licenseFamilySummary": {
+              "name": "Unknown",
+              "href": "https://my.Host/api/license-families/5"
+            }
+          }
+        ],
+        "licenseDisplay": "Unknown License"
+      },
+      "createdAt": "2019-04-18T06:49:20.483Z",
+      "createdBy": "***********",
+      "createdByUser": "https://my.Host/api/users/7cfb0b1f-6b0a-4e6c-ab6c-281841674aba",
+      "settingUpdatedAt": "2019-04-18T09:12:48.511Z",
+      "settingUpdatedBy": "***********",
+      "settingUpdatedByUser": "https://my.Host/api/users/7cfb0b1f-6b0a-4e6c-ab6c-281841674aba",
+      "source": "CUSTOM",
+      "_meta": {
+        "allow": [
+          "GET",
+          "PUT"
+        ],
+        "href": "https://my.Host/api/projects/01883e41-d4c9-420a-b41b-0ddcaadda2b5/versions/509ce50d-b7a2-4303-89bf-bde16e4b7bef",
+        "links": [
+          {
+            "rel": "versionReport",
+            "href": "https://my.Host/api/versions/509ce50d-b7a2-4303-89bf-bde16e4b7bef/reports"
+          },
+          {
+            "rel": "licenseReports",
+            "href": "https://my.Host/api/versions/509ce50d-b7a2-4303-89bf-bde16e4b7bef/license-reports"
+          },
+          {
+            "rel": "riskProfile",
+            "href": "https://my.Host/api/projects/01883e41-d4c9-420a-b41b-0ddcaadda2b5/versions/509ce50d-b7a2-4303-89bf-bde16e4b7bef/risk-profile"
+          },
+          {
+            "rel": "components",
+            "href": "https://my.Host/api/projects/01883e41-d4c9-420a-b41b-0ddcaadda2b5/versions/509ce50d-b7a2-4303-89bf-bde16e4b7bef/components"
+          },
+          {
+            "rel": "vulnerable-components",
+            "href": "https://my.Host/api/projects/01883e41-d4c9-420a-b41b-0ddcaadda2b5/versions/509ce50d-b7a2-4303-89bf-bde16e4b7bef/vulnerable-bom-components"
+          },
+          {
+            "rel": "comparison",
+            "href": "https://my.Host/api/projects/01883e41-d4c9-420a-b41b-0ddcaadda2b5/versions/509ce50d-b7a2-4303-89bf-bde16e4b7bef/comparison"
+          },
+          {
+            "rel": "project",
+            "href": "https://my.Host/api/projects/01883e41-d4c9-420a-b41b-0ddcaadda2b5"
+          },
+          {
+            "rel": "custom-fields",
+            "href": "https://my.Host/api/projects/01883e41-d4c9-420a-b41b-0ddcaadda2b5/versions/509ce50d-b7a2-4303-89bf-bde16e4b7bef/custom-fields"
+          },
+          {
+            "rel": "policy-status",
+            "href": "https://my.Host/api/projects/01883e41-d4c9-420a-b41b-0ddcaadda2b5/versions/509ce50d-b7a2-4303-89bf-bde16e4b7bef/policy-status"
+          },
+          {
+            "rel": "codelocations",
+            "href": "https://my.Host/api/projects/01883e41-d4c9-420a-b41b-0ddcaadda2b5/versions/509ce50d-b7a2-4303-89bf-bde16e4b7bef/codelocations"
+          },
+          {
+            "rel": "custom-fields",
+            "href": "https://my.Host/api/projects/01883e41-d4c9-420a-b41b-0ddcaadda2b5/versions/509ce50d-b7a2-4303-89bf-bde16e4b7bef/custom-fields"
+          }
+        ]
+      }
+    }
+  ],
+  "appliedFilters": [],
+  "_meta": {
+    "allow": [
+      "POST",
+      "GET"
+    ],
+    "href": "https://my.Host/api/projects/01883e41-d4c9-420a-b41b-0ddcaadda2b5/versions",
+    "links": [
+      {
+        "rel": "static-filter",
+        "href": "https://my.Host/api/projects/01883e41-d4c9-420a-b41b-0ddcaadda2b5/versions-filters?filterKey=distribution",
+        "name": "distribution",
+        "label": "Distribution"
+      },
+      {
+        "rel": "dynamic-filter",
+        "href": "https://my.Host/api/projects/01883e41-d4c9-420a-b41b-0ddcaadda2b5/versions-filters?filterKey=license",
+        "name": "license",
+        "label": "License"
+      },
+      {
+        "rel": "static-filter",
+        "href": "https://my.Host/api/projects/01883e41-d4c9-420a-b41b-0ddcaadda2b5/versions-filters?filterKey=phase",
+        "name": "phase",
+        "label": "Release phase"
+      }
+    ]
+  }
+}

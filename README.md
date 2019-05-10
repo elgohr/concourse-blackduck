@@ -31,13 +31,19 @@ resources:
     url: https://my.blackduck.server
     username: ((my-secret-username))
     password: ((my-secret-password))
+    name: myScanProject
 ```
 
-* `url`: *Required.* URL of your Blackduck instance e.g. `https://my-synopsys.com/blackduck`.
-* `username`: *Required.* Username, which is used to authenticate on Blackduck.
-* `password`: *Required.* Password, which is used to authenticate on Blackduck.
+| Argument  | Mandatory               | Description                                                                                |
+|-----------|-------------------------|--------------------------------------------------------------------------------------------|
+| `url`     | *Mandatory*             | URL of your Blackduck instance e.g. `https://my-synopsys.com/blackduck`.                   |
+| `name`    | *Mandatory*             | Project name in Blackduck.                                                                 |
+| `username`| *Mandatory*             | Username, which is used to authenticate on Blackduck.                                      |
+| `password`| *Mandatory*             | Password, which is used to authenticate on Blackduck.                                      |
+| `insecure`| *Optional*              | In case your Blackduck uses a self-signed certificate, it's pinned with the first request. |
 
-## `in`: Nothing yet
+## `in`: Get Results
+The resource will provide the latest version changes on Blackduck as a file for later use.
 
 ## `out`: Analysis
 The resource will analyse your provided content and push it to the provided Blackduck instance.
@@ -50,4 +56,3 @@ The resource will analyse your provided content and push it to the provided Blac
 ```
 
 * `directory`: *Required.* The path of the repository to analyze.
-

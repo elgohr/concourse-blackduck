@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/elgohr/blackduck-resource/out/interpreter"
+	"github.com/elgohr/blackduck-resource/shared"
 	"io"
 	"log"
 	"os"
@@ -36,7 +37,7 @@ func NewRunner() Runner {
 }
 
 func (r *Runner) run() error {
-	var input OutRequest
+	var input shared.Request
 	if err := json.NewDecoder(r.stdIn).Decode(&input); err != nil {
 		return err
 	}
@@ -46,14 +47,7 @@ func (r *Runner) run() error {
 	if !input.Params.Valid() {
 		return errors.New("missing mandatory params field")
 	}
-	cmd := r.exec(
-		"java",
-		"-jar",
-		"/opt/resource/synopsys-detect-5.3.3.jar",
-		"--blackduck.url="+input.Source.Url,
-		"--blackduck.username="+input.Source.Username,
-		"--blackduck.password="+input.Source.Password,
-		"--blackduck.trust.cert=true")
+	cmd := r.exec("java", getArguments(input)...)
 	cmd.Dir = input.Params.Directory
 	cmd.Stderr = r.stdErr
 	buf := bytes.Buffer{}
@@ -72,27 +66,17 @@ func (r *Runner) run() error {
 	return err
 }
 
-type OutRequest struct {
-	Source Source `json:"source"`
-	Params Params `json:"params"`
-}
-
-type Source struct {
-	Url      string `json:"url"`
-	Username string `json:"username"`
-	Password string `json:"password"`
-}
-
-func (s *Source) Valid() bool {
-	return len(s.Url) != 0 &&
-		len(s.Username) != 0 &&
-		len(s.Password) != 0
-}
-
-type Params struct {
-	Directory string `json:"directory"`
-}
-
-func (p *Params) Valid() bool {
-	return len(p.Directory) != 0
+func getArguments(input shared.Request) []string {
+	args := []string{
+		"-jar",
+		"/opt/resource/synopsys-detect-5.4.0.jar",
+		"--blackduck.url=" + input.Source.Url,
+		"--detect.project.name=" + input.Source.Name,
+		"--blackduck.username="+input.Source.Username,
+		"--blackduck.password="+input.Source.Password,
+	}
+	if input.Source.Insecure {
+		args = append(args, "--blackduck.trust.cert=true")
+	}
+	return args
 }
