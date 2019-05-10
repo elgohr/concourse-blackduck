@@ -56,4 +56,3 @@ The resource will analyse your provided content and push it to the provided Blac
 ```
 
 * `directory`: *Required.* The path of the repository to analyze.
-
