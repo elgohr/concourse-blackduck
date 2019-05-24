@@ -53,13 +53,14 @@ func (r *Runner) run() error {
 	cmd.Dir = r.path + "/" + input.Params.Directory
 	cmd.Stderr = r.stdErr
 	buf := bytes.Buffer{}
-	cmd.Stdout = &buf
+	cmd.Stdout = io.MultiWriter(&buf, r.stdErr)
 
 	if err := cmd.Run(); err != nil {
 		return err
 	}
 
-	response, err := interpreter.NewResponse(buf.String())
+	outContent := buf.String()
+	response, err := interpreter.NewResponse(outContent)
 	b, marshErr := json.Marshal(response)
 	if marshErr != nil {
 		return marshErr

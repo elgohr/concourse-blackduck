@@ -185,11 +185,12 @@ func TestSetsTheWorkingDirectoryToTheProvidedSource(t *testing.T) {
 
 func TestAddsLoggingToSubProcess(t *testing.T) {
 	stdIn := &bytes.Buffer{}
-	command := exec.Command("true")
+	command := exec.Command("echo", "hi")
+	stdErrBuf := &bytes.Buffer{}
 	r := Runner{
 		stdIn:  stdIn,
 		stdOut: &bytes.Buffer{},
-		stdErr: &bytes.Buffer{},
+		stdErr: stdErrBuf,
 		exec: func(name string, arg ...string) *exec.Cmd {
 			return command
 		},
