@@ -3,7 +3,7 @@ package shared
 import (
 	"crypto/tls"
 	"encoding/json"
-	"errors"
+	"github.com/pkg/errors"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -65,7 +65,7 @@ func (b *Blackduck) GetProjectByName(source Source) (*Project, error) {
 			}
 		}
 	} else {
-		return nil, err
+		return nil, errors.Wrap(err, "Error during decoding")
 	}
 	return nil, errors.New("no project matching the name")
 }
@@ -104,7 +104,7 @@ func authenticate(source Source) (token string, err error) {
 	authUrl := source.Url + "/j_spring_security_check"
 	res, err := http.PostForm(authUrl, formValues)
 	if err != nil {
-		return "", err
+		return "", errors.Wrap(err, "Error during authentication")
 	}
 	defer res.Body.Close()
 
