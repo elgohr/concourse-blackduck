@@ -52,7 +52,7 @@ func (b *Blackduck) GetProjectByName(source Source) (*Project, error) {
 	req, _ := http.NewRequest("GET", source.GetProjectUrl(), nil)
 	res, err := b.client.Do(authenticatedRequest(*req, token))
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "Error getting projects")
 	}
 	defer res.Body.Close()
 
