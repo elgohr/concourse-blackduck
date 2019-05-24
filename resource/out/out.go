@@ -48,7 +48,8 @@ func (r *Runner) run() error {
 		return errors.New("missing mandatory params field")
 	}
 	cmd := r.exec("java", getArguments(input)...)
-	cmd.Dir = input.Params.Directory
+	pwd, _ := os.Getwd()
+	cmd.Dir = pwd + "/" + input.Params.Directory
 	cmd.Stderr = r.stdErr
 	buf := bytes.Buffer{}
 	cmd.Stdout = &buf
@@ -72,8 +73,8 @@ func getArguments(input shared.Request) []string {
 		"/opt/resource/synopsys-detect-5.4.0.jar",
 		"--blackduck.url=" + input.Source.Url,
 		"--detect.project.name=" + input.Source.Name,
-		"--blackduck.username="+input.Source.Username,
-		"--blackduck.password="+input.Source.Password,
+		"--blackduck.username=" + input.Source.Username,
+		"--blackduck.password=" + input.Source.Password,
 	}
 	if input.Source.Insecure {
 		args = append(args, "--blackduck.trust.cert=true")
