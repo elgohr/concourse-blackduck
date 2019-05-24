@@ -95,7 +95,7 @@ func TestLoadsCertificateFromBlackduckWhenConfiguredInsecure(t *testing.T) {
 				"insecure": true
   			},
 			"params": {
-				"directory": "."
+				"directory": "/"
 			}
 		}`, targetUrl, username, password, name))
 
@@ -136,6 +136,11 @@ func TestLoadsCertificateFromBlackduckWhenConfiguredInsecure(t *testing.T) {
 }
 
 func TestSetsTheWorkingDirectoryToTheProvidedSource(t *testing.T) {
+	pwd, err := os.Getwd()
+	if err != nil {
+		t.Error(err)
+	}
+	args := []string{"program", pwd}
 	stdIn := &bytes.Buffer{}
 	command := exec.Command("true")
 
@@ -143,6 +148,7 @@ func TestSetsTheWorkingDirectoryToTheProvidedSource(t *testing.T) {
 		stdIn:  stdIn,
 		stdOut: &bytes.Buffer{},
 		stdErr: &bytes.Buffer{},
+		path:   args[1],
 		exec: func(name string, arg ...string) *exec.Cmd {
 			return command
 		},
@@ -165,12 +171,9 @@ func TestSetsTheWorkingDirectoryToTheProvidedSource(t *testing.T) {
 	if err := r.run(); err != nil {
 		t.Error(err)
 	}
-	pwd, err := os.Getwd()
-	if err != nil {
-		t.Error(err)
-	}
-	if command.Dir != pwd+"/"+directory {
-		t.Error("Working dir was not set correctly")
+	expPath := pwd + "/" + directory
+	if command.Dir != expPath {
+		t.Errorf("Working dir was %v, but should be %v", command.Dir, expPath)
 	}
 }
 
@@ -194,7 +197,7 @@ func TestAddsLoggingToSubProcess(t *testing.T) {
 				"name": "project1"
   			},
 			"params": {
-				"directory": "."
+				"directory": "/"
 			}
 		}`)
 
@@ -231,7 +234,7 @@ func TestReturnsTheVersionAndMetaDataOfTheBlackduckScan(t *testing.T) {
 				"name": "project1"
   			},
 			"params": {
-				"directory": "."
+				"directory": "/"
 			}
 		}`)
 
@@ -278,7 +281,7 @@ func TestErrorsWhenTheScanFails(t *testing.T) {
 				"name": "project1"
   			},
 			"params": {
-				"directory": "."
+				"directory": "/"
 			}
 		}`)
 

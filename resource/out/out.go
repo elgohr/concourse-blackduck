@@ -24,6 +24,7 @@ type Runner struct {
 	stdIn  io.Reader
 	stdOut io.Writer
 	stdErr io.Writer
+	path   string
 	exec   func(name string, arg ...string) *exec.Cmd
 }
 
@@ -32,6 +33,7 @@ func NewRunner() Runner {
 		stdIn:  os.Stdin,
 		stdOut: os.Stdout,
 		stdErr: os.Stderr,
+		path:   os.Args[1],
 		exec:   exec.Command,
 	}
 }
@@ -48,8 +50,7 @@ func (r *Runner) run() error {
 		return errors.New("missing mandatory params field")
 	}
 	cmd := r.exec("java", getArguments(input)...)
-	pwd, _ := os.Getwd()
-	cmd.Dir = pwd + "/" + input.Params.Directory
+	cmd.Dir = r.path + "/" + input.Params.Directory
 	cmd.Stderr = r.stdErr
 	buf := bytes.Buffer{}
 	cmd.Stdout = &buf
