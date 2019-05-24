@@ -12,10 +12,11 @@ resources:
       url: https://my.blackduck.server
       username: ((my-secret-username))
       password: ((my-secret-password))
+      name: myProject
   - name: source-code
     type: git
     source:
-      uri: git@github.com:concourse/git-resource.git
+      uri: https://github.com/concourse/git-resource.git
       branch: master
 
 jobs:
