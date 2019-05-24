@@ -33,5 +33,5 @@ func (s *Source) GetProjectUrl() string {
 		return ""
 	}
 	u.Path = path.Join(u.Path, "api/projects")
-	return u.String()
+	return u.String() + "?q=name:" + s.Name
 }

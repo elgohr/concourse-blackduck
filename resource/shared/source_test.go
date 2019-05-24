@@ -93,7 +93,7 @@ func TestReturnsProjectUrl(t *testing.T) {
 		Name:"name",
 	}
 	url := s.GetProjectUrl()
-	if url != "http://url/api/projects" {
+	if url != "http://url/api/projects?q=name:name" {
 		t.Errorf("Should've appended URL with the project url, but was %v", url)
 	}
 }
@@ -106,7 +106,7 @@ func TestProjectUrlIsOkWithExtraSlash(t *testing.T) {
 		Name:"name",
 	}
 	url := s.GetProjectUrl()
-	if url != "http://url/api/projects" {
+	if url != "http://url/api/projects?q=name:name" {
 		t.Errorf("Should've appended URL with the project url, but was %v", url)
 	}
 }
