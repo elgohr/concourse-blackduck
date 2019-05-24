@@ -12,6 +12,9 @@ import (
 )
 
 func TestConstructsRunnerCorrectly(t *testing.T) {
+	oldArgs := os.Args
+	defer func() { os.Args = oldArgs }()
+	os.Args = []string{"programBin", "path-to-sources"}
 	r := NewRunner()
 	if r.stdIn != os.Stdin {
 		t.Error("Didn't set stdIn correctly")
@@ -24,6 +27,9 @@ func TestConstructsRunnerCorrectly(t *testing.T) {
 	}
 	if reflect.TypeOf(r.exec) != reflect.TypeOf(exec.Command) {
 		t.Error("Didn't set exec correctly")
+	}
+	if r.path != "path-to-sources" {
+		t.Error("Expected the path to come from program args")
 	}
 }
 
