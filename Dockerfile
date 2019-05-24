@@ -33,5 +33,5 @@ RUN adduser --home /home/blackduck \
 	blackduck
 RUN chown -R blackduck ${DETECT_JAR_DOWNLOAD_DIR}
 RUN chmod +x ${DETECT_JAR_DOWNLOAD_DIR}/*
-WORKDIR /tmp/build/put
+WORKDIR /
 USER blackduck
