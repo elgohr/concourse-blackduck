@@ -100,6 +100,33 @@ func TestQueriesForTheLatestVersionsInChronologicalOrder(t *testing.T) {
 	clean(t)
 }
 
+func TestReturnsEmptyArrayWhenNoLatestVersions(t *testing.T) {
+	stdIn, stdOut, fakeBlackduckApi, r := setup()
+
+	fakeProject := shared.Project{Name: "TEST_PROJECT"}
+	fakeBlackduckApi.GetProjectByNameReturns(&fakeProject, nil)
+	now := time.Now()
+	fakeBlackduckApi.GetProjectVersionsReturns([]shared.Version{}, nil)
+
+	stdIn.WriteString(fmt.Sprintf(`{
+				"source": {
+	    			"url": "http://blackduck",
+					"username": "username",
+	    			"password": "password",
+					"name": "project1"
+	  			},
+				"version": {"ref": "%v"}
+			}`, now))
+
+	if err := r.run(); err != nil {
+		t.Error(err)
+	}
+
+	if stdOut.String() != "{}" {
+		t.Errorf(`Expected {}, got %v`, stdOut.String())
+	}
+}
+
 func TestErrorsWhenProjectCouldNotBeFound(t *testing.T) {
 	stdIn, stdOut, fakeBlackduckApi, r := setup()
 

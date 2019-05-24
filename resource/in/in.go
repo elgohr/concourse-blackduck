@@ -79,7 +79,11 @@ func (r *Runner) run() error {
 		}
 	}
 
-	_, err = fmt.Fprintf(r.stdOut, string(output))
+	if len(output) != 0 {
+		_, err = fmt.Fprintf(r.stdOut, string(output))
+	} else {
+		_, err = fmt.Fprintf(r.stdOut, "{}")
+	}
 	return err
 }
 
