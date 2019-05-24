@@ -183,6 +183,18 @@ func TestGetProjectErrorsWhenAuthenticationFails(t *testing.T) {
 	}
 }
 
+func TestGetProjectByNameSetsInsecureHttpWhenInsecure(t *testing.T) {
+	r := NewBlackduck()
+	r.GetProjectByName(Source{
+		Url:      "http://localhost",
+		Name:     "project1",
+		Insecure: true,
+	})
+	if !http.DefaultTransport.(*http.Transport).TLSClientConfig.InsecureSkipVerify{
+		t.Error("Should be insecure, but wasn't")
+	}
+}
+
 func TestQueriesForTheLatestVersionsInChronologicalOrder(t *testing.T) {
 	var calledVersions bool
 	h := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -236,5 +248,19 @@ func TestQueriesForTheLatestVersionsInChronologicalOrder(t *testing.T) {
 	}
 	if !calledVersions {
 		t.Error("Didn't call the Blackduck api for versions")
+	}
+}
+
+func TestGetProjectVersionsSetsInsecureHttpWhenInsecure(t *testing.T) {
+	r := NewBlackduck()
+	r.GetProjectVersions(Source{
+		Url:      "http://localhost",
+		Name:     "project1",
+		Insecure: true,
+	}, &Project{
+		Name: "",
+	})
+	if !http.DefaultTransport.(*http.Transport).TLSClientConfig.InsecureSkipVerify{
+		t.Error("Should be insecure, but wasn't")
 	}
 }

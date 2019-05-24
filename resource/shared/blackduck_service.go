@@ -1,6 +1,7 @@
 package shared
 
 import (
+	"crypto/tls"
 	"encoding/json"
 	"errors"
 	"io/ioutil"
@@ -39,6 +40,10 @@ func (b *Blackduck) GetProjectByName(source Source) (*Project, error) {
 		}
 	}
 
+	if source.Insecure {
+		http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
+	}
+
 	token, err := authenticate(source)
 	if err != nil {
 		return nil, err
@@ -67,6 +72,10 @@ func (b *Blackduck) GetProjectByName(source Source) (*Project, error) {
 
 func (b *Blackduck) GetProjectVersions(source Source, project *Project) ([]Version, error) {
 	versionsLink := project.Meta.GetLinkFor("versions")
+
+	if source.Insecure {
+		http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
+	}
 
 	token, err := authenticate(source)
 	if err != nil {
