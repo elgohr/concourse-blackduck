@@ -46,13 +46,13 @@ func (b *Blackduck) GetProjectByName(source Source) (*Project, error) {
 
 	token, err := authenticate(source)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "GetProjectByName")
 	}
 
 	req, _ := http.NewRequest("GET", source.GetProjectUrl(), nil)
 	res, err := b.client.Do(authenticatedRequest(*req, token))
 	if err != nil {
-		return nil, errors.Wrap(err, "Error getting projects")
+		return nil, errors.Wrap(errors.Wrap(err, "GetProjectByName"),"GetProjectUrl")
 	}
 	defer res.Body.Close()
 
@@ -65,9 +65,9 @@ func (b *Blackduck) GetProjectByName(source Source) (*Project, error) {
 			}
 		}
 	} else {
-		return nil, errors.Wrap(err, "Error during decoding")
+		return nil, errors.Wrap(errors.Wrap(err, "Decode"),"GetProjectByName")
 	}
-	return nil, errors.New("no project matching the name")
+	return nil, errors.Wrap(errors.New("no project matching the name"), "GetProjectByName")
 }
 
 func (b *Blackduck) GetProjectVersions(source Source, project *Project) ([]Version, error) {
@@ -79,19 +79,19 @@ func (b *Blackduck) GetProjectVersions(source Source, project *Project) ([]Versi
 
 	token, err := authenticate(source)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "GetProjectVersions")
 	}
 
 	req, _ := http.NewRequest("GET", versionsLink, nil)
 	res, err := b.client.Do(authenticatedRequest(*req, token))
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(errors.Wrap(err, "GetProjectVersions"),"Versions")
 	}
 	defer res.Body.Close()
 
 	var versionList VersionList
 	if err := json.NewDecoder(res.Body).Decode(&versionList); err != nil {
-		return nil, err
+		return nil, errors.Wrap(errors.Wrap(err, "Decode"),"GetProjectVersions")
 	}
 	return sortVersionsChronologically(versionList), nil
 }
@@ -104,12 +104,12 @@ func authenticate(source Source) (token string, err error) {
 	authUrl := source.Url + "/j_spring_security_check"
 	res, err := http.PostForm(authUrl, formValues)
 	if err != nil {
-		return "", errors.Wrap(err, "Error during authentication")
+		return "", errors.Wrap(err, "Authentication")
 	}
 	defer res.Body.Close()
 
 	if res.StatusCode > 300 {
-		return "", errors.New("authentication failed")
+		return "", errors.Wrap(errors.New("authentication failed"), "Authentication")
 	}
 
 	cookieHeader := res.Header.Get("Set-Cookie")
@@ -122,7 +122,7 @@ func authenticate(source Source) (token string, err error) {
 			return token, nil
 		}
 	}
-	return "", errors.New("token not found")
+	return "", errors.Wrap(errors.New("token not found"), "Authentication")
 }
 
 func authenticatedRequest(req http.Request, token string) (authReq *http.Request) {

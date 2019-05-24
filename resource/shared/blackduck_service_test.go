@@ -153,8 +153,9 @@ func TestGetProjectErrorsWhenResponseIsCorrupted(t *testing.T) {
 		Url:  h.URL,
 		Name: "project1",
 	})
-	if err.Error() != "authentication failed" {
-		t.Error("Should have errored for authentication, but didn't")
+	expError := "GetProjectByName: Authentication: authentication failed"
+	if err.Error() != expError {
+		t.Errorf("Should have errored for authentication like %v, but did with %v", expError, err.Error())
 	}
 }
 
@@ -178,7 +179,7 @@ func TestGetProjectErrorsWhenAuthenticationFails(t *testing.T) {
 		Url:  h.URL,
 		Name: "project1",
 	})
-	expError := "Error during decoding: invalid character ']' looking for beginning of object key string"
+	expError := "GetProjectByName: Decode: invalid character ']' looking for beginning of object key string"
 	if err.Error() != expError {
 		t.Errorf("Should have errored with %v, but did with %v", expError, err.Error())
 	}
@@ -191,7 +192,7 @@ func TestGetProjectByNameSetsInsecureHttpWhenInsecure(t *testing.T) {
 		Name:     "project1",
 		Insecure: true,
 	})
-	if !http.DefaultTransport.(*http.Transport).TLSClientConfig.InsecureSkipVerify{
+	if !http.DefaultTransport.(*http.Transport).TLSClientConfig.InsecureSkipVerify {
 		t.Error("Should be insecure, but wasn't")
 	}
 }
@@ -261,7 +262,7 @@ func TestGetProjectVersionsSetsInsecureHttpWhenInsecure(t *testing.T) {
 	}, &Project{
 		Name: "",
 	})
-	if !http.DefaultTransport.(*http.Transport).TLSClientConfig.InsecureSkipVerify{
+	if !http.DefaultTransport.(*http.Transport).TLSClientConfig.InsecureSkipVerify {
 		t.Error("Should be insecure, but wasn't")
 	}
 }
