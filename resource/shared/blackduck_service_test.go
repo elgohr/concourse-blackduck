@@ -178,8 +178,9 @@ func TestGetProjectErrorsWhenAuthenticationFails(t *testing.T) {
 		Url:  h.URL,
 		Name: "project1",
 	})
-	if err.Error() != "invalid character ']' looking for beginning of object key string" {
-		t.Error("Should have errored, but didn't")
+	expError := "Error during decoding: invalid character ']' looking for beginning of object key string"
+	if err.Error() != expError {
+		t.Errorf("Should have errored with %v, but did with %v", expError, err.Error())
 	}
 }
 
