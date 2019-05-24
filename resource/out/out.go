@@ -48,7 +48,8 @@ func (r *Runner) run() error {
 		return errors.New("missing mandatory params field")
 	}
 	cmd := r.exec("java", getArguments(input)...)
-	cmd.Dir = input.Params.Directory
+	pwd, _ := os.Getwd()
+	cmd.Dir = pwd + "/" + input.Params.Directory
 	cmd.Stderr = r.stdErr
 	buf := bytes.Buffer{}
 	cmd.Stdout = &buf

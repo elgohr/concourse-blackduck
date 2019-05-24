@@ -165,7 +165,11 @@ func TestSetsTheWorkingDirectoryToTheProvidedSource(t *testing.T) {
 	if err := r.run(); err != nil {
 		t.Error(err)
 	}
-	if command.Dir != directory {
+	pwd, err := os.Getwd()
+	if err != nil {
+		t.Error(err)
+	}
+	if command.Dir != pwd+"/"+directory {
 		t.Error("Working dir was not set correctly")
 	}
 }
