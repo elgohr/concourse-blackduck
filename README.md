@@ -1,8 +1,6 @@
 # Concourse Blackduck Resource
 This is a [Concourse](https://concourse-ci.org/) resource for [Blackduck](https://www.blackducksoftware.com).  
 
-__The State of this resource is early alpha, so please take care and give feedback. Thank you!__
-
 ## Installing
 
 `Shortcut`: [Pipeline example](https://github.com/elgohr/concourse-blackduck/blob/master/example-pipeline.yml)
@@ -41,6 +39,9 @@ resources:
 | `username`| *Mandatory*             | Username, which is used to authenticate on Blackduck.                                      |
 | `password`| *Mandatory*             | Password, which is used to authenticate on Blackduck.                                      |
 | `insecure`| *Optional*              | In case your Blackduck uses a self-signed certificate, it's pinned with the first request. |
+
+It seems like Blackduck doesn't support Tokens for API-Access.  
+In this way it's not supported here. Sorry.
 
 ## `in`: Get Results
 The resource will provide the latest version changes on Blackduck as a file for later use.
