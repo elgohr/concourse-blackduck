@@ -2,9 +2,9 @@ package main
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"github.com/elgohr/blackduck-resource/shared"
+	"github.com/pkg/errors"
 	"io"
 	"log"
 	"os"
@@ -13,6 +13,7 @@ import (
 func main() {
 	runner := NewRunner()
 	if err := runner.run(); err != nil {
+		fmt.Fprintf(runner.stdOut, `[]`)
 		log.Fatalln(err)
 	}
 }
@@ -37,23 +38,20 @@ func NewRunner() Runner {
 func (r *Runner) run() error {
 	var input shared.Request
 	if err := json.NewDecoder(r.stdIn).Decode(&input); err != nil {
-		return err
+		return errors.Wrap(err, "Decode")
 	}
 	if !input.Source.Valid() {
-		fmt.Fprintf(r.stdOut, `[]`)
 		return errors.New("source is invalid")
 	}
 
 	project, err := r.api.GetProjectByName(input.Source)
 	if err != nil {
-		fmt.Fprintf(r.stdOut, `[]`)
-		return err
+		return errors.Wrap(err, "GetProjectByName")
 	}
 
 	versions, err := r.api.GetProjectVersions(input.Source, project)
 	if err != nil {
-		fmt.Fprintf(r.stdOut, `[]`)
-		return err
+		return errors.Wrap(err, "GetProjectVersions")
 	}
 	var refs []shared.Ref
 	for _, version := range versions {
@@ -61,7 +59,7 @@ func (r *Runner) run() error {
 	}
 	b, err := json.Marshal(refs)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "Marshal")
 	}
 	_, err = fmt.Fprintf(r.stdOut, string(b))
 	return err

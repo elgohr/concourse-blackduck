@@ -2,9 +2,9 @@ package main
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"github.com/elgohr/blackduck-resource/shared"
+	"github.com/pkg/errors"
 	"io"
 	"io/ioutil"
 	"log"
@@ -14,6 +14,7 @@ import (
 func main() {
 	runner := NewRunner()
 	if err := runner.run(); err != nil {
+		fmt.Fprintf(runner.stdOut, `{}`)
 		log.Fatalln(err)
 	}
 }
@@ -38,23 +39,20 @@ func NewRunner() Runner {
 func (r *Runner) run() error {
 	var input shared.Request
 	if err := json.NewDecoder(r.stdIn).Decode(&input); err != nil {
-		return err
+		return errors.Wrap(err, "Decode")
 	}
 	if !input.Source.Valid() {
-		fmt.Fprintf(r.stdOut, `[]`)
 		return errors.New("source is invalid")
 	}
 
 	project, err := r.api.GetProjectByName(input.Source)
 	if err != nil {
-		fmt.Fprintf(r.stdOut, `[]`)
-		return err
+		return errors.Wrap(err, "GetProjectByName")
 	}
 
 	versions, err := r.api.GetProjectVersions(input.Source, project)
 	if err != nil {
-		fmt.Fprintf(r.stdOut, `[]`)
-		return err
+		return errors.Wrap(err, "GetProjectVersions")
 	}
 	var output []byte
 	for _, v := range versions {
@@ -70,11 +68,11 @@ func (r *Runner) run() error {
 				},
 			})
 			if err != nil {
-				return err
+				return errors.Wrap(err, "Marshal")
 			}
 			err = ioutil.WriteFile("latest_version.json", output, 0644)
 			if err != nil {
-				return err
+				return errors.Wrap(err, "WriteFile")
 			}
 		}
 	}

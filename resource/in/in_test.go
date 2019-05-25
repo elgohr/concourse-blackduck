@@ -128,7 +128,7 @@ func TestReturnsEmptyArrayWhenNoLatestVersions(t *testing.T) {
 }
 
 func TestErrorsWhenProjectCouldNotBeFound(t *testing.T) {
-	stdIn, stdOut, fakeBlackduckApi, r := setup()
+	stdIn, _, fakeBlackduckApi, r := setup()
 
 	fakeBlackduckApi.GetProjectByNameReturns(nil, errors.New("no project matching the name"))
 	stdIn.WriteString(`{
@@ -143,16 +143,10 @@ func TestErrorsWhenProjectCouldNotBeFound(t *testing.T) {
 	if err := r.run(); err == nil {
 		t.Error("Should have errored, but didn't")
 	}
-
-	expRes := `[]`
-	if stdOut.String() != expRes {
-		t.Errorf(`Expected: %v
-				Got:   %v`, expRes, stdOut.String())
-	}
 }
 
 func TestErrorsWhenTheProvidedUrlIsInvalid(t *testing.T) {
-	stdIn, stdOut, fakeBlackduckApi, r := setup()
+	stdIn, _, fakeBlackduckApi, r := setup()
 
 	stdIn.WriteString(`{
 			"source": {
@@ -174,16 +168,10 @@ func TestErrorsWhenTheProvidedUrlIsInvalid(t *testing.T) {
 	if fakeBlackduckApi.GetProjectVersionsCallCount() > 0 {
 		t.Error("Should not have been called")
 	}
-
-	expRes := `[]`
-	if stdOut.String() != expRes {
-		t.Errorf(`Expected: %v
-				Got:   %v`, expRes, stdOut.String())
-	}
 }
 
 func TestErrorsWhenGetProjectByNameReturnsAnError(t *testing.T) {
-	stdIn, stdOut, fakeBlackduckApi, r := setup()
+	stdIn, _, fakeBlackduckApi, r := setup()
 
 	expError := errors.New("something bad")
 	fakeBlackduckApi.GetProjectByNameReturns(nil, expError)
@@ -197,19 +185,14 @@ func TestErrorsWhenGetProjectByNameReturnsAnError(t *testing.T) {
   			}
 		}`)
 
-	if err := r.run(); err != expError {
-		t.Error("Should return GetProjectByNameError")
-	}
-
-	expRes := `[]`
-	if stdOut.String() != expRes {
-		t.Errorf(`Expected: %v
-				Got:   %v`, expRes, stdOut.String())
+	msg := "GetProjectByName: " + expError.Error()
+	if err := r.run(); err.Error() != msg {
+		t.Errorf("Should return %v, but was %v", msg, err.Error())
 	}
 }
 
 func TestErrorsWhenGetProjectVersionReturnsAnError(t *testing.T) {
-	stdIn, stdOut, fakeBlackduckApi, r := setup()
+	stdIn, _, fakeBlackduckApi, r := setup()
 
 	fakeProject := shared.Project{Name: "TEST_PROJECT"}
 	expError := errors.New("something bad")
@@ -225,13 +208,8 @@ func TestErrorsWhenGetProjectVersionReturnsAnError(t *testing.T) {
   			}
 		}`)
 
-	if err := r.run(); err != expError {
-		t.Error("Should return GetProjectByNameError")
-	}
-
-	expRes := `[]`
-	if stdOut.String() != expRes {
-		t.Errorf(`Expected: %v
-				Got:   %v`, expRes, stdOut.String())
+	msg := "GetProjectVersions: " + expError.Error()
+	if err := r.run(); err.Error() != msg {
+		t.Errorf("Should return %v, but was %v", msg, err.Error())
 	}
 }
