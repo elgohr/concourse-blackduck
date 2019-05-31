@@ -1,7 +1,7 @@
 package interpreter_test
 
 import (
-	"github.com/elgohr/blackduck-resource/out/interpreter"
+	"github.com/elgohr/concourse-blackduck/out/interpreter"
 	"io/ioutil"
 	"os"
 	"testing"

@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/elgohr/blackduck-resource/shared"
+	"github.com/elgohr/concourse-blackduck/shared"
 	"github.com/pkg/errors"
 	"io"
 	"io/ioutil"

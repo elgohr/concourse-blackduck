@@ -2,7 +2,7 @@ package interpreter
 
 import (
 	"errors"
-	"github.com/elgohr/blackduck-resource/shared"
+	"github.com/elgohr/concourse-blackduck/shared"
 	"strings"
 )
 

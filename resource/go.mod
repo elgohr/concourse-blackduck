@@ -1,4 +1,4 @@
-module github.com/elgohr/blackduck-resource
+module github.com/elgohr/concourse-blackduck
 
 go 1.12
 

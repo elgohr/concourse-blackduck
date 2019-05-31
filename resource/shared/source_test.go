@@ -1,7 +1,7 @@
 package shared_test
 
 import (
-	"github.com/elgohr/blackduck-resource/shared"
+	"github.com/elgohr/concourse-blackduck/shared"
 	"testing"
 )
 
