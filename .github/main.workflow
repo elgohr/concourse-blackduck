@@ -11,11 +11,14 @@ action "login" {
     "DOCKER_USERNAME",
     "DOCKER_PASSWORD",
   ]
+  env = {
+    DOCKER_REGISTRY_URL = "docker.pkg.github.com"
+  }
 }
 
 action "publish" {
   uses = "elgohr/Publish-Docker-Github-Action@1.0"
-  args = "lgohr/blackduck-resource"
+  args = "docker.pkg.github.com/elgohr/concourse-blackduck/blackduck-resource"
   needs = ["login"]
 }
 
