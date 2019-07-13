@@ -15,7 +15,7 @@ resource_types:
 - name: blackduck
   type: docker-image
   source:
-    repository: lgohr/blackduck-resource
+    repository: docker.pkg.github.com/elgohr/publish-docker-github-action/publish-docker-github-action
     tag: latest
 ```
 
