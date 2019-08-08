@@ -12,11 +12,15 @@ type Request struct {
 }
 
 type Source struct {
-	Url      string `json:"url"`
-	Username string `json:"username"`
-	Password string `json:"password"`
-	Name     string `json:"name"`
-	Insecure bool   `json:"insecure"`
+	Url           string `json:"url"`
+	Username      string `json:"username"`
+	Password      string `json:"password"`
+	Name          string `json:"name"`
+	Insecure      bool   `json:"insecure"`
+	ProxyHost     string `json:"proxy-host"`
+	ProxyPort     string `json:"proxy-port"`
+	ProxyUsername string `json:"proxy-username"`
+	ProxyPassword string `json:"proxy-password"`
 }
 
 func (s *Source) Valid() bool {

@@ -647,3 +647,72 @@ func prepareMockAgentFile(t *testing.T) (string, string) {
 	}
 	return dir, mockFileName
 }
+
+func TestAddsProxySettingsIfConfigured(t *testing.T) {
+	stdIn := &bytes.Buffer{}
+
+	targetUrl := "https://BLACKDUCK"
+	username := "USERNAME"
+	password := "PASSWORD"
+	name := "project1"
+	proxyHost := "http://PROXY"
+	proxyPort := "8080"
+	proxyUsername := "PROXY_USER"
+	proxyPassword := "PROXY_PASSWORD"
+	stdIn.WriteString(fmt.Sprintf(`{
+				"source": {
+	    			"url": "%v",
+					"username": "%v",
+	    			"password": "%v",
+					"name": "%v",
+                    "proxy-host": "%v",
+				    "proxy-port": "%v",
+				    "proxy-username": "%v",
+				    "proxy-password": "%v"
+	  			},
+				"params": {
+					"directory": "."
+				}
+			}`, targetUrl, username, password, name,
+			proxyHost, proxyPort, proxyUsername, proxyPassword))
+
+	dir, mockFileName := prepareMockAgentFile(t)
+	var called bool
+	r := Runner{
+		stdIn:    stdIn,
+		stdOut:   &bytes.Buffer{},
+		stdErr:   &bytes.Buffer{},
+		agentDir: dir,
+		exec: func(command string, arg ...string) *exec.Cmd {
+			called = true
+			if command != "java" {
+				t.Errorf("Should have started java, but started %v", command)
+			}
+			expectedArgs := []string{
+				"-jar",
+				dir + "/" + mockFileName,
+				"--blackduck.url=https://BLACKDUCK",
+				"--detect.project.name=project1",
+				"--blackduck.username=USERNAME",
+				"--blackduck.password=PASSWORD",
+				"--blackduck.proxy.host=" + proxyHost,
+				"--blackduck.proxy.port=" + proxyPort,
+				"--blackduck.proxy.username=" + proxyUsername,
+				"--blackduck.proxy.password=" + proxyPassword,
+			}
+			for i, a := range arg {
+				if a != expectedArgs[i] {
+					t.Errorf("Expected argument %v, but got %v", expectedArgs[i], a)
+				}
+			}
+			return exec.Command("true")
+		},
+	}
+
+	if err := r.run(); err != nil {
+		t.Error(err)
+	}
+	if !called {
+		t.Error("Blackduck wasn't started")
+	}
+}

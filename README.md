@@ -34,13 +34,17 @@ resources:
     name: myScanProject
 ```
 
-| Argument  | Mandatory               | Description                                                                                |
-|-----------|-------------------------|--------------------------------------------------------------------------------------------|
-| `url`     | *Mandatory*             | URL of your Blackduck instance e.g. `https://my-synopsys.com/blackduck`.                   |
-| `name`    | *Mandatory*             | Project name in Blackduck.                                                                 |
-| `username`| *Mandatory*             | Username, which is used to authenticate on Blackduck.                                      |
-| `password`| *Mandatory*             | Password, which is used to authenticate on Blackduck.                                      |
-| `insecure`| *Optional*              | In case your Blackduck uses a self-signed certificate, it's pinned with the first request. |
+| Argument        | Mandatory               | Description                                                                                |
+|-----------------|-------------------------|--------------------------------------------------------------------------------------------|
+| `url`           | *Mandatory*             | URL of your Blackduck instance e.g. `https://my-synopsys.com/blackduck`.                   |
+| `name`          | *Mandatory*             | Project name in Blackduck.                                                                 |
+| `username`      | *Mandatory*             | Username, which is used to authenticate on Blackduck.                                      |
+| `password`      | *Mandatory*             | Password, which is used to authenticate on Blackduck.                                      |
+| `insecure`      | *Optional*              | In case your Blackduck uses a self-signed certificate, it's pinned with the first request. |
+| `proxy-host`    | *Optional*              | In case your Concourse needs to use a proxy to connect to Blackduck.                       |
+| `proxy-port`    | *Optional*              | In case your Concourse needs to use a proxy to connect to Blackduck.                       |
+| `proxy-username`| *Optional*              | In case your Concourse needs to use a proxy to connect to Blackduck.                       |
+| `proxy-password`| *Optional*              | In case your Concourse needs to use a proxy to connect to Blackduck.                       |
 
 It seems like Blackduck doesn't support Tokens for API-Access.  
 In this way it's not supported here. Sorry.

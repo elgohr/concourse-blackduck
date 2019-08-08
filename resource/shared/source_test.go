@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestIsValidWhenAllPropertiesAreFilled(t *testing.T) {
+func TestIsValidWhenAllMandatoryPropertiesAreFilled(t *testing.T) {
 	s := shared.Source{
 		Url:"http://url",
 		Username:"user",

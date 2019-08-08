@@ -90,5 +90,17 @@ func getArguments(agentJar string, input shared.Request) []string {
 	if input.Source.Insecure {
 		args = append(args, "--blackduck.trust.cert=true")
 	}
+	if len(input.Source.ProxyHost) != 0 {
+		args = append(args, "--blackduck.proxy.host="+input.Source.ProxyHost)
+	}
+	if len(input.Source.ProxyPort) != 0 {
+		args = append(args, "--blackduck.proxy.port="+input.Source.ProxyPort)
+	}
+	if len(input.Source.ProxyUsername) != 0 {
+		args = append(args, "--blackduck.proxy.username="+input.Source.ProxyUsername)
+	}
+	if len(input.Source.ProxyPassword) != 0 {
+		args = append(args, "--blackduck.proxy.password="+input.Source.ProxyPassword)
+	}
 	return args
 }
