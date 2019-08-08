@@ -19,10 +19,7 @@ action "master" {
 action "login" {
   needs = "master"
   uses = "actions/docker/login@master"
-  secrets = [
-    "DOCKER_USERNAME",
-    "DOCKER_PASSWORD",
-  ]
+  secrets = ["DOCKER_USERNAME", "DOCKER_PASSWORD"]
 }
 
 action "publish" {
