@@ -4,8 +4,10 @@ import (
 	"bytes"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"reflect"
 	"strings"
 	"testing"
@@ -31,6 +33,9 @@ func TestConstructsRunnerCorrectly(t *testing.T) {
 	if r.path != "path-to-sources" {
 		t.Error("Expected the path to come from program args")
 	}
+	if r.agentDir != "/opt/resource" {
+		t.Errorf("Expected the agent to be searched in /opt/resource, but was %v", r.agentDir)
+	}
 }
 
 func TestStartsBlackduckWithUsernamePassword(t *testing.T) {
@@ -51,11 +56,13 @@ func TestStartsBlackduckWithUsernamePassword(t *testing.T) {
 			}
 		}`, targetUrl, username, password, name))
 
+	dir, mockFileName := prepareMockAgentFile(t)
 	var called bool
 	r := Runner{
-		stdIn:  stdIn,
-		stdOut: &bytes.Buffer{},
-		stdErr: &bytes.Buffer{},
+		stdIn:    stdIn,
+		stdOut:   &bytes.Buffer{},
+		stdErr:   &bytes.Buffer{},
+		agentDir: dir,
 		exec: func(command string, arg ...string) *exec.Cmd {
 			called = true
 			if command != "java" {
@@ -63,7 +70,7 @@ func TestStartsBlackduckWithUsernamePassword(t *testing.T) {
 			}
 			expectedArgs := []string{
 				"-jar",
-				"/opt/resource/synopsys-detect-5.4.0.jar",
+				dir + "/" + mockFileName,
 				"--blackduck.url=" + targetUrl,
 				"--detect.project.name=" + name,
 				"--blackduck.username=" + username,
@@ -105,11 +112,13 @@ func TestLoadsCertificateFromBlackduckWhenConfiguredInsecure(t *testing.T) {
 			}
 		}`, targetUrl, username, password, name))
 
+	dir, mockFileName := prepareMockAgentFile(t)
 	var called bool
 	r := Runner{
-		stdIn:  stdIn,
-		stdOut: &bytes.Buffer{},
-		stdErr: &bytes.Buffer{},
+		stdIn:    stdIn,
+		stdOut:   &bytes.Buffer{},
+		stdErr:   &bytes.Buffer{},
+		agentDir: dir,
 		exec: func(command string, arg ...string) *exec.Cmd {
 			called = true
 			if command != "java" {
@@ -117,7 +126,7 @@ func TestLoadsCertificateFromBlackduckWhenConfiguredInsecure(t *testing.T) {
 			}
 			expectedArgs := []string{
 				"-jar",
-				"/opt/resource/synopsys-detect-5.4.0.jar",
+				dir + "/" + mockFileName,
 				"--blackduck.url=" + targetUrl,
 				"--detect.project.name=" + name,
 				"--blackduck.username=" + username,
@@ -150,11 +159,13 @@ func TestSetsTheWorkingDirectoryToTheProvidedSource(t *testing.T) {
 	stdIn := &bytes.Buffer{}
 	command := exec.Command("true")
 
+	dir, _ := prepareMockAgentFile(t)
 	r := Runner{
-		stdIn:  stdIn,
-		stdOut: &bytes.Buffer{},
-		stdErr: &bytes.Buffer{},
-		path:   args[1],
+		stdIn:    stdIn,
+		stdOut:   &bytes.Buffer{},
+		stdErr:   &bytes.Buffer{},
+		path:     args[1],
+		agentDir: dir,
 		exec: func(name string, arg ...string) *exec.Cmd {
 			return command
 		},
@@ -187,10 +198,12 @@ func TestAddsLoggingToSubProcess(t *testing.T) {
 	stdIn := &bytes.Buffer{}
 	command := exec.Command("echo", "hi")
 	stdErrBuf := &bytes.Buffer{}
+	dir, _ := prepareMockAgentFile(t)
 	r := Runner{
-		stdIn:  stdIn,
-		stdOut: &bytes.Buffer{},
-		stdErr: stdErrBuf,
+		stdIn:    stdIn,
+		stdOut:   &bytes.Buffer{},
+		stdErr:   stdErrBuf,
+		agentDir: dir,
 		exec: func(name string, arg ...string) *exec.Cmd {
 			return command
 		},
@@ -219,10 +232,13 @@ func TestAddsLoggingToSubProcess(t *testing.T) {
 func TestReturnsTheVersionAndMetaDataOfTheBlackduckScan(t *testing.T) {
 	stdIn := &bytes.Buffer{}
 	stdOut := &bytes.Buffer{}
+	dir, _ := prepareMockAgentFile(t)
+
 	r := Runner{
-		stdIn:  stdIn,
-		stdOut: stdOut,
-		stdErr: &bytes.Buffer{},
+		stdIn:    stdIn,
+		stdOut:   stdOut,
+		stdErr:   &bytes.Buffer{},
+		agentDir: dir,
 		exec: func(name string, arg ...string) *exec.Cmd {
 			b, err := ioutil.ReadFile("testdata/blackduckResponse.txt")
 			if err != nil {
@@ -266,10 +282,13 @@ func TestReturnsTheVersionAndMetaDataOfTheBlackduckScan(t *testing.T) {
 func TestErrorsWhenTheScanFails(t *testing.T) {
 	stdIn := &bytes.Buffer{}
 	stdOut := &bytes.Buffer{}
+	dir, _ := prepareMockAgentFile(t)
+
 	r := Runner{
-		stdIn:  stdIn,
-		stdOut: stdOut,
-		stdErr: &bytes.Buffer{},
+		stdIn:    stdIn,
+		stdOut:   stdOut,
+		stdErr:   &bytes.Buffer{},
+		agentDir: dir,
 		exec: func(name string, arg ...string) *exec.Cmd {
 			b, err := ioutil.ReadFile("testdata/blackduckError.txt")
 			if err != nil {
@@ -477,4 +496,154 @@ func TestErrorsWhenConfigurationJsonIsInvalid(t *testing.T) {
 	if called {
 		t.Error("Should not have called Blackduck")
 	}
+}
+
+func TestUsesLatestAgentVersionAvailable(t *testing.T) {
+	stdIn := &bytes.Buffer{}
+	targetUrl := "https://BLACKDUCK"
+	username := "USERNAME"
+	password := "PASSWORD"
+	name := "project1"
+	dir, mockFileName := prepareMockAgentFile(t)
+	stdIn.WriteString(fmt.Sprintf(`{
+				"source": {
+	    			"url": "%v",
+					"username": "%v",
+	    			"password": "%v",
+					"name": "%v"
+	  			},
+				"params": {
+					"directory": "."
+				}
+			}`, targetUrl, username, password, name))
+
+	var called bool
+	r := Runner{
+		stdIn:    stdIn,
+		stdOut:   &bytes.Buffer{},
+		stdErr:   &bytes.Buffer{},
+		agentDir: dir,
+		exec: func(command string, arg ...string) *exec.Cmd {
+			called = true
+			if command != "java" {
+				t.Errorf("Should have started java, but started %v", command)
+			}
+			expectedArgs := []string{
+				"-jar",
+				dir + "/" + mockFileName,
+				"--blackduck.url=" + targetUrl,
+				"--detect.project.name=" + name,
+				"--blackduck.username=" + username,
+				"--blackduck.password=" + password,
+			}
+			for i, a := range arg {
+				if a != expectedArgs[i] {
+					t.Errorf("Expected argument %v, but got %v", expectedArgs[i], a)
+				}
+			}
+			return exec.Command("true")
+		},
+	}
+
+	if err := r.run(); err != nil {
+		t.Error(err)
+	}
+	if !called {
+		t.Error("Blackduck wasn't started")
+	}
+}
+
+func TestErrorsWhenNoAgentIsAvailable(t *testing.T) {
+	stdIn := &bytes.Buffer{}
+	targetUrl := "https://BLACKDUCK"
+	username := "USERNAME"
+	password := "PASSWORD"
+	name := "project1"
+	dir, err := ioutil.TempDir("", "test-agent-dir")
+	if err != nil {
+		t.Error(err)
+	}
+	stdIn.WriteString(fmt.Sprintf(`{
+				"source": {
+	    			"url": "%v",
+					"username": "%v",
+	    			"password": "%v",
+					"name": "%v"
+	  			},
+				"params": {
+					"directory": "."
+				}
+			}`, targetUrl, username, password, name))
+
+	var called bool
+	r := Runner{
+		stdIn:    stdIn,
+		stdOut:   &bytes.Buffer{},
+		stdErr:   &bytes.Buffer{},
+		agentDir: dir,
+		exec: func(command string, arg ...string) *exec.Cmd {
+			called = true
+			return exec.Command("true")
+		},
+	}
+
+	errMsg := "could not find the scanner, please open an issue on Github"
+	if err := r.run(); err.Error() != errMsg {
+		t.Errorf("Should have errored with %v, but was %v", errMsg, err)
+	}
+	if called {
+		t.Error("Blackduck was trieed to be called, but wasn't there")
+	}
+}
+
+func TestErrorsWhenTheAgentDirectoryIsNotPresent(t *testing.T) {
+	stdIn := &bytes.Buffer{}
+	targetUrl := "https://BLACKDUCK"
+	username := "USERNAME"
+	password := "PASSWORD"
+	name := "project1"
+	stdIn.WriteString(fmt.Sprintf(`{
+				"source": {
+	    			"url": "%v",
+					"username": "%v",
+	    			"password": "%v",
+					"name": "%v"
+	  			},
+				"params": {
+					"directory": "."
+				}
+			}`, targetUrl, username, password, name))
+
+	var called bool
+	r := Runner{
+		stdIn:    stdIn,
+		stdOut:   &bytes.Buffer{},
+		stdErr:   &bytes.Buffer{},
+		agentDir: "/not_here",
+		exec: func(command string, arg ...string) *exec.Cmd {
+			called = true
+			return exec.Command("true")
+		},
+	}
+
+	errMsg := "could not find the scanner, please open an issue on Github"
+	if err := r.run(); err.Error() != errMsg {
+		t.Errorf("Should have errored with %v, but was %v", errMsg, err)
+	}
+	if called {
+		t.Error("Blackduck was trieed to be called, but wasn't there")
+	}
+}
+
+func prepareMockAgentFile(t *testing.T) (string, string) {
+	dir, err := ioutil.TempDir("", "test-agent-dir")
+	if err != nil {
+		t.Error(err)
+	}
+	mockFileName := "synopsys-detect-5.4.99.jar"
+	mockAgentFile := filepath.Join(dir, mockFileName)
+	if err := ioutil.WriteFile(mockAgentFile, []byte(""), 0666); err != nil {
+		log.Fatal(err)
+	}
+	return dir, mockFileName
 }

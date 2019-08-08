@@ -11,6 +11,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"path/filepath"
 )
 
 func main() {
@@ -21,20 +22,22 @@ func main() {
 }
 
 type Runner struct {
-	stdIn  io.Reader
-	stdOut io.Writer
-	stdErr io.Writer
-	path   string
-	exec   func(name string, arg ...string) *exec.Cmd
+	stdIn    io.Reader
+	stdOut   io.Writer
+	stdErr   io.Writer
+	path     string
+	agentDir string
+	exec     func(name string, arg ...string) *exec.Cmd
 }
 
 func NewRunner() Runner {
 	return Runner{
-		stdIn:  os.Stdin,
-		stdOut: os.Stdout,
-		stdErr: os.Stderr,
-		path:   os.Args[1],
-		exec:   exec.Command,
+		stdIn:    os.Stdin,
+		stdOut:   os.Stdout,
+		stdErr:   os.Stderr,
+		path:     os.Args[1],
+		agentDir: "/opt/resource",
+		exec:     exec.Command,
 	}
 }
 
@@ -49,7 +52,13 @@ func (r *Runner) run() error {
 	if !input.Params.Valid() {
 		return errors.New("missing mandatory params field")
 	}
-	cmd := r.exec("java", getArguments(input)...)
+
+	agentJar, _ := filepath.Glob(r.agentDir + "/synopsys-detect-*.jar")
+	if len(agentJar) != 1 {
+		return errors.New("could not find the scanner, please open an issue on Github")
+	}
+
+	cmd := r.exec("java", getArguments(agentJar[0], input)...)
 	cmd.Dir = r.path + "/" + input.Params.Directory
 	cmd.Stderr = r.stdErr
 	buf := bytes.Buffer{}
@@ -69,10 +78,10 @@ func (r *Runner) run() error {
 	return err
 }
 
-func getArguments(input shared.Request) []string {
+func getArguments(agentJar string, input shared.Request) []string {
 	args := []string{
 		"-jar",
-		"/opt/resource/synopsys-detect-5.4.0.jar",
+		agentJar,
 		"--blackduck.url=" + input.Source.Url,
 		"--detect.project.name=" + input.Source.Name,
 		"--blackduck.username=" + input.Source.Username,
