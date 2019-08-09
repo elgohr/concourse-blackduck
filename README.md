@@ -46,8 +46,8 @@ resources:
 | `proxy-username`| *Optional*              | In case your Concourse needs to use a proxy to connect to Blackduck.                       |
 | `proxy-password`| *Optional*              | In case your Concourse needs to use a proxy to connect to Blackduck.                       |
 
-It seems like Blackduck doesn't support Tokens for API-Access.  
-In this way it's not supported here. Sorry.
+It seems like Blackduck doesn't support Tokens for API-Access (in the scanner it would work fine).  
+As the configuration should be clean and understandable, the token is not supported. Sorry.
 
 ## `in`: Get Results
 The resource will provide the latest version changes on Blackduck as a file for later use.
