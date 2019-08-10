@@ -14,8 +14,7 @@ jobs:
       run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
     - name: Push to Registry
       run: |
-      docker push lgohr/blackduck-resource:${{ GITHUB_SHA }}
-      docker push lgohr/blackduck-resource:latest
+        docker push lgohr/blackduck-resource:${{ GITHUB_SHA }}
+        docker push lgohr/blackduck-resource:latest
     - name: Logout
-      run: |
-      docker logout
+      run: docker logout
