@@ -1,0 +1,21 @@
+name: Publish Image
+on: 
+  push:
+    branches:
+    - master
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Build the Docker image
+      run: docker build . -t lgohr/blackduck-resource:${{ GITHUB_SHA }} -t lgohr/blackduck-resource:latest
+    - name: Login to Registry
+      run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+    - name: Push to Registry
+      run: |
+      docker push lgohr/blackduck-resource:${{ GITHUB_SHA }}
+      docker push lgohr/blackduck-resource:latest
+    - name: Logout
+      run: |
+      docker logout
