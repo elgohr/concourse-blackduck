@@ -18,13 +18,3 @@ jobs:
         docker push lgohr/blackduck-resource:latest
     - name: Logout
       run: docker logout
-      
-name: Test
-on: push
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@master
-    - name: Build the Docker image
-      run: docker build .
