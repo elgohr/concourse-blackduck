@@ -15,7 +15,7 @@ the `resource_types` section of a pipeline config:
 ```yaml
 resource_types:
 - name: blackduck
-  type: docker-image
+  type: registry-image
   source:
     repository: lgohr/blackduck-resource
     tag: latest
