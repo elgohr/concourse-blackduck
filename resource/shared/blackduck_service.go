@@ -44,7 +44,7 @@ func (b *Blackduck) GetProjectByName(source Source) (*Project, error) {
 	}
 
 	if source.Insecure {
-		b.client.Transport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
+		http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
 	}
 
 	token, err := authenticate(source)
@@ -77,7 +77,7 @@ func (b *Blackduck) GetProjectVersions(source Source, project *Project) ([]Versi
 	versionsLink := project.Meta.GetLinkFor("versions")
 
 	if source.Insecure {
-		b.client.Transport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
+		http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
 	}
 
 	token, err := authenticate(source)
