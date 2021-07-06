@@ -16,6 +16,7 @@ type Source struct {
 	Username      string `json:"username"`
 	Password      string `json:"password"`
 	Name          string `json:"name"`
+	Token         string `json:"token"`
 	Insecure      bool   `json:"insecure"`
 	ProxyHost     string `json:"proxy-host"`
 	ProxyPort     string `json:"proxy-port"`

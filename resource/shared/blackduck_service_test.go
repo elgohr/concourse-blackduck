@@ -1,6 +1,8 @@
 package shared
 
 import (
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -15,6 +17,8 @@ func clean(t *testing.T) {
 	}
 }
 
+const validCookie = "AUTHORIZATION_BEARER=TOKEN; Max-Age=7200; Expires=Fri, 26-Apr-2019 13:37:14 GMT; Path=/; secure; Secure; HttpOnly"
+
 func TestGetProjectQueriesForProject(t *testing.T) {
 	var (
 		calledProjects      bool
@@ -23,66 +27,44 @@ func TestGetProjectQueriesForProject(t *testing.T) {
 	const (
 		expectedPassword = "TEST_PASSWORD"
 		expectedUser     = "TEST_USER"
-		expectedToken    = "TEST_TOKEN"
 	)
-	h := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == "GET" {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodGet {
 			calledProjects = true
-			if r.Header.Get("Cookie") != "AUTHORIZATION_BEARER=TEST_TOKEN" {
-				t.Errorf("Expected to get the authentication token, but got %v", r.Header.Get("Cookie"))
-			}
+			assert.Equal(t, "AUTHORIZATION_BEARER=TOKEN", r.Header.Get("Cookie"))
+
 			b, err := ioutil.ReadFile("testdata/projects.json")
-			if err != nil {
-				t.Error(err)
-			}
-			if _, err := w.Write(b); err != nil {
-				t.Error(err)
-			}
-		} else if r.Method == "POST" {
+			assert.NoError(t, err)
+
+			_, err = w.Write(b)
+			assert.NoError(t, err)
+		} else if r.Method == http.MethodPost {
 			calledAuthenticated = true
-			r.ParseForm()
-			gotUser := r.Form.Get("j_username")
-			if gotUser != expectedUser {
-				t.Errorf("Expected username %v , but got %v", expectedUser, gotUser)
-			}
-			gotPw := r.Form.Get("j_password")
-			if gotPw != expectedPassword {
-				t.Errorf("Expected password %v , but got %v", expectedPassword, gotPw)
-			}
-			if !strings.HasSuffix(r.RequestURI, "/j_spring_security_check") {
-				t.Errorf("Expected url to end with /j_spring_security_check , but was %v", r.RequestURI)
-			}
-			w.Header().Set("Set-Cookie", "Test=a; AUTHORIZATION_BEARER="+expectedToken+"; Max-Age=7200; Expires=Fri, "+
-				"26-Apr-2019 13:37:14 GMT; Path=/; secure; Secure; HttpOnly")
+
+			assert.NoError(t, r.ParseForm())
+
+			assert.Equal(t, r.Form.Get("j_username"), expectedUser)
+			assert.Equal(t, r.Form.Get("j_password"), expectedPassword)
+			assert.True(t, strings.HasSuffix(r.RequestURI, "/j_spring_security_check"), "Expected url to end with /j_spring_security_check , but was "+r.RequestURI)
+			w.Header().Set("Set-Cookie", validCookie)
 			w.WriteHeader(http.StatusNoContent)
 		}
 
 	}))
-	defer h.Close()
+	defer ts.Close()
 
 	r := NewBlackduck()
 	project, err := r.GetProjectByName(Source{
-		Url:      h.URL,
+		Url:      ts.URL,
 		Name:     "project1",
 		Username: expectedUser,
 		Password: expectedPassword,
 	})
-	if err != nil {
-		t.Error(err)
-	}
-	if project.Name != "project1" {
-		t.Errorf("Expected project1 to be loaded, but was %v", project.Name)
-	}
-	l := len(project.Meta.Links)
-	if l != 9 {
-		t.Errorf("Expected project to contain 9 links, but had %v", l)
-	}
-	if !calledProjects {
-		t.Error("Didn't call the Blackduck api for projects")
-	}
-	if !calledAuthenticated {
-		t.Error("Didn't call the Blackduck api for authentication token")
-	}
+	require.NoError(t, err)
+	require.Equal(t, "project1", project.Name)
+	require.Equal(t, 9, len(project.Meta.Links))
+	require.True(t, calledProjects)
+	require.True(t, calledAuthenticated)
 
 	clean(t)
 }
@@ -92,137 +74,122 @@ func TestGetProjectCachesTheResult(t *testing.T) {
 		calledProjects     int
 		calledAuthenticate int
 	)
-	h := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == "POST" {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodPost {
 			calledAuthenticate++
-			w.Header().Set("Set-Cookie", "AUTHORIZATION_BEARER=TOKEN; Max-Age=7200; Expires=Fri, "+
-				"26-Apr-2019 13:37:14 GMT; Path=/; secure; Secure; HttpOnly")
+			w.Header().Set("Set-Cookie", validCookie)
 			w.WriteHeader(http.StatusNoContent)
 		} else {
 			calledProjects++
 			b, err := ioutil.ReadFile("testdata/projects.json")
-			if err != nil {
-				t.Error(err)
-			}
-			if _, err := w.Write(b); err != nil {
-				t.Error(err)
-			}
+			require.NoError(t, err)
+			_, err = w.Write(b)
+			require.NoError(t, err)
 		}
 	}))
-	defer h.Close()
+	defer ts.Close()
 
 	r := NewBlackduck()
 	project1, err := r.GetProjectByName(Source{
-		Url:  h.URL,
+		Url:  ts.URL,
 		Name: "project1",
 	})
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
 	r2 := NewBlackduck()
 	project2, err := r2.GetProjectByName(Source{
-		Url:  h.URL,
+		Url:  ts.URL,
 		Name: "project1",
 	})
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
-	if calledProjects > 1 {
-		t.Error("Called blackduck multiple times")
-	}
-	if calledAuthenticate > 1 {
-		t.Error("Called blackduck authenticate multiple times")
-	}
-	if project1.Name != project2.Name || len(project1.Meta.Links) != len(project2.Meta.Links) {
-		t.Error("Response didn't match")
-	}
+	require.GreaterOrEqual(t, 1, calledProjects)
+	require.Equal(t, project1, project2)
 
 	clean(t)
 }
 
 func TestGetProjectErrorsWhenResponseIsCorrupted(t *testing.T) {
-	h := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 	}))
-	defer h.Close()
+	defer ts.Close()
 
 	r := NewBlackduck()
 	_, err := r.GetProjectByName(Source{
-		Url:  h.URL,
+		Url:  ts.URL,
 		Name: "project1",
 	})
 	expError := "GetProjectByName: Authentication: authentication failed"
-	if err.Error() != expError {
-		t.Errorf("Should have errored for authentication like %v, but did with %v", expError, err.Error())
-	}
+	require.EqualError(t, err, expError)
 }
 
 func TestGetProjectErrorsWhenAuthenticationFails(t *testing.T) {
-	h := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == "POST" {
-			w.Header().Set("Set-Cookie", "AUTHORIZATION_BEARER=TOKEN; Max-Age=7200; Expires=Fri, "+
-				"26-Apr-2019 13:37:14 GMT; Path=/; secure; Secure; HttpOnly")
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodPost {
+			w.Header().Set("Set-Cookie", validCookie)
 			w.WriteHeader(http.StatusNoContent)
 		} else {
 			_, err := w.Write([]byte(`{]`))
-			if err != nil {
-				t.Error(err)
-			}
+			assert.NoError(t, err)
 		}
 	}))
-	defer h.Close()
+	defer ts.Close()
 
 	r := NewBlackduck()
 	_, err := r.GetProjectByName(Source{
-		Url:  h.URL,
+		Url:  ts.URL,
 		Name: "project1",
 	})
 	expError := "GetProjectByName: Decode: invalid character ']' looking for beginning of object key string"
-	if err.Error() != expError {
-		t.Errorf("Should have errored with %v, but did with %v", expError, err.Error())
-	}
+	require.EqualError(t, err, expError)
 }
 
 func TestGetProjectByNameSetsInsecureHttpWhenInsecure(t *testing.T) {
 	r := NewBlackduck()
-	r.GetProjectByName(Source{
-		Url:      "http://localhost",
+	called := false
+	ts := httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		called = true
+		w.WriteHeader(http.StatusOK)
+	}))
+	defer ts.Close()
+
+	_, err := r.GetProjectByName(Source{
+		Url:  ts.URL,
+		Name: "project1",
+	})
+	require.Error(t, err)
+	require.True(t, strings.HasSuffix(err.Error(), "x509: certificate signed by unknown authority"), err.Error())
+	require.False(t, called)
+
+	_, _ = r.GetProjectByName(Source{
+		Url:      ts.URL,
 		Name:     "project1",
 		Insecure: true,
 	})
-	if !http.DefaultTransport.(*http.Transport).TLSClientConfig.InsecureSkipVerify {
-		t.Error("Should be insecure, but wasn't")
-	}
+	require.True(t, called)
 }
 
 func TestQueriesForTheLatestVersionsInChronologicalOrder(t *testing.T) {
 	var calledVersions bool
-	h := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == "POST" {
-			w.Header().Set("Set-Cookie", "AUTHORIZATION_BEARER=TOKEN; Max-Age=7200; Expires=Fri, "+
-				"26-Apr-2019 13:37:14 GMT; Path=/; secure; Secure; HttpOnly")
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodPost {
+			w.Header().Set("Set-Cookie", validCookie)
 			w.WriteHeader(http.StatusNoContent)
 		} else {
 			calledVersions = true
-			if r.Header.Get("Cookie") != "AUTHORIZATION_BEARER=TOKEN" {
-				t.Errorf("Expected the bearer to be send via Cookie (whoever knows why...), but got %v", r.Header.Get("Cookie"))
-			}
+			require.Equal(t, "AUTHORIZATION_BEARER=TOKEN", r.Header.Get("Cookie"))
 			b, err := ioutil.ReadFile("testdata/versions.json")
-			if err != nil {
-				t.Error(err)
-			}
-			if _, err := w.Write(b); err != nil {
-				t.Error(err)
-			}
+			require.NoError(t, err)
+			_, err = w.Write(b)
+			require.NoError(t, err)
 		}
 	}))
-	defer h.Close()
+	defer ts.Close()
 
 	r := NewBlackduck()
 	refs, err := r.GetProjectVersions(Source{
-		Url:  h.URL,
+		Url:  ts.URL,
 		Name: "project1",
 	}, &Project{
 		Name: "",
@@ -230,39 +197,15 @@ func TestQueriesForTheLatestVersionsInChronologicalOrder(t *testing.T) {
 			Links: []Link{
 				{
 					Rel:  "versions",
-					Href: h.URL,
+					Href: ts.URL,
 				},
 			},
 		},
 	})
-	if err != nil {
-		t.Error(err)
-	}
+	require.NoError(t, err)
 
-	if len(refs) != 2 {
-		t.Errorf("Expected refs to contain 2 elements, but where %v", len(refs))
-	}
-	if refs[0].Updated.String() != "2019-04-18 09:12:48.511 +0000 UTC" {
-		t.Errorf("Expected older entry first, but was %v", refs[0].Updated.String())
-	}
-	if refs[1].Updated.String() != "2019-04-20 09:12:48.511 +0000 UTC" {
-		t.Errorf("Expected newer entry second, but was %v", refs[1].Updated.String())
-	}
-	if !calledVersions {
-		t.Error("Didn't call the Blackduck api for versions")
-	}
-}
-
-func TestGetProjectVersionsSetsInsecureHttpWhenInsecure(t *testing.T) {
-	r := NewBlackduck()
-	r.GetProjectVersions(Source{
-		Url:      "http://localhost",
-		Name:     "project1",
-		Insecure: true,
-	}, &Project{
-		Name: "",
-	})
-	if !http.DefaultTransport.(*http.Transport).TLSClientConfig.InsecureSkipVerify {
-		t.Error("Should be insecure, but wasn't")
-	}
+	require.Equal(t, 2,  len(refs))
+	require.Equal(t, "2019-04-18 09:12:48.511 +0000 UTC", refs[0].Updated.String())
+	require.Equal(t, "2019-04-20 09:12:48.511 +0000 UTC", refs[1].Updated.String())
+	require.True(t, calledVersions)
 }

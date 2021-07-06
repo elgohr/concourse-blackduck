@@ -9,6 +9,7 @@ import (
 	"net/url"
 	"sort"
 	"strings"
+	"time"
 )
 
 const (
@@ -16,7 +17,9 @@ const (
 	tokenPrefix      = "AUTHORIZATION_BEARER="
 )
 
-//go:generate counterfeiter . BlackduckApi
+//go:generate go run github.com/maxbrunsfeld/counterfeiter/v6 -generate
+
+//counterfeiter:generate . BlackduckApi
 type BlackduckApi interface {
 	GetProjectByName(source Source) (*Project, error)
 	GetProjectVersions(source Source, project *Project) ([]Version, error)
@@ -28,7 +31,7 @@ type Blackduck struct {
 
 func NewBlackduck() Blackduck {
 	return Blackduck{
-		client: http.Client{},
+		client: http.Client{Timeout: 30 * time.Second},
 	}
 }
 
@@ -41,7 +44,7 @@ func (b *Blackduck) GetProjectByName(source Source) (*Project, error) {
 	}
 
 	if source.Insecure {
-		http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
+		b.client.Transport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
 	}
 
 	token, err := authenticate(source)
@@ -49,7 +52,7 @@ func (b *Blackduck) GetProjectByName(source Source) (*Project, error) {
 		return nil, errors.Wrap(err, "GetProjectByName")
 	}
 
-	req, _ := http.NewRequest("GET", source.GetProjectUrl(), nil)
+	req, _ := http.NewRequest(http.MethodGet, source.GetProjectUrl(), nil)
 	res, err := b.client.Do(authenticatedRequest(*req, token))
 	if err != nil {
 		return nil, errors.Wrap(errors.Wrap(err, "GetProjectByName"),"GetProjectUrl")
@@ -74,7 +77,7 @@ func (b *Blackduck) GetProjectVersions(source Source, project *Project) ([]Versi
 	versionsLink := project.Meta.GetLinkFor("versions")
 
 	if source.Insecure {
-		http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
+		b.client.Transport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
 	}
 
 	token, err := authenticate(source)
@@ -82,7 +85,7 @@ func (b *Blackduck) GetProjectVersions(source Source, project *Project) ([]Versi
 		return nil, errors.Wrap(err, "GetProjectVersions")
 	}
 
-	req, _ := http.NewRequest("GET", versionsLink, nil)
+	req, _ := http.NewRequest(http.MethodGet, versionsLink, nil)
 	res, err := b.client.Do(authenticatedRequest(*req, token))
 	if err != nil {
 		return nil, errors.Wrap(errors.Wrap(err, "GetProjectVersions"),"Versions")

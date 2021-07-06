@@ -2,6 +2,7 @@ package shared_test
 
 import (
 	"github.com/elgohr/concourse-blackduck/shared"
+	"github.com/stretchr/testify/require"
 	"testing"
 )
 
@@ -9,14 +10,10 @@ func TestIsValidWhenDirectoryIsFilled(t *testing.T) {
 	p := shared.Params{
 		Directory:"directory",
 	}
-	if !p.Valid() {
-		t.Error("Should be valid, but wasn't")
-	}
+	require.True(t, p.Valid())
 }
 
 func TestIsInvalidWhenDirectoryIsNotFilled(t *testing.T) {
 	p := shared.Params{}
-	if p.Valid() {
-		t.Error("Should be invalid, but wasn't")
-	}
+	require.False(t, p.Valid())
 }
