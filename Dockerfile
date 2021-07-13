@@ -16,7 +16,7 @@ RUN jlink --compress=2 \
    --add-modules java.base,java.sql,java.desktop,java.naming \
 --output /compressed
 
-FROM debian:9.13 as runtime
+FROM debian:10.10 as runtime
 ENV PATH=$PATH:/opt/jdk/bin
 ENV DETECT_JAR_DOWNLOAD_DIR /opt/resource
 COPY --from=buildJava /compressed /opt/jdk/
