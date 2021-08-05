@@ -1,4 +1,4 @@
-FROM golang:1.16.6 as buildResource
+FROM golang:1.16.7 as buildResource
 ENV GO111MODULE=on
 WORKDIR /build/source
 ADD resource ./
