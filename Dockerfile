@@ -9,7 +9,7 @@ RUN go get -u github.com/maxbrunsfeld/counterfeiter/v6 \
  && go build -o ../compiled/in in/in.go \
  && go build -o ../compiled/check check/check.go
 
-FROM openjdk:18 as buildJava
+FROM openjdk:19 as buildJava
 RUN jlink --compress=2 \
    --no-man-pages \
    --module-path /opt/openjdk-13/jmods \
