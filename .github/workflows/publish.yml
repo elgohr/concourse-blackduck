@@ -1,15 +1,15 @@
-name: Publish Master
+name: Publish
 on: 
   push:
     branches:
-    - master
+    - main
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
+    - uses: actions/checkout@v3
     - name: Publish to Registry
-      uses: elgohr/Publish-Docker-Github-Action@master
+      uses: elgohr/Publish-Docker-Github-Action@v4
       with:
         name: lgohr/blackduck-resource
         username: ${{ secrets.DOCKER_USERNAME }}

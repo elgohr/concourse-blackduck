@@ -1,5 +1,4 @@
 FROM golang:1.18rc1 as buildResource
-ENV GO111MODULE=on
 WORKDIR /build/source
 ADD resource ./
 RUN go get -u github.com/maxbrunsfeld/counterfeiter/v6 \

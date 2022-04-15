@@ -1,6 +1,6 @@
 # Concourse Blackduck Resource
 [![Actions Status](https://github.com/elgohr/concourse-blackduck/workflows/Test/badge.svg)](https://github.com/elgohr/concourse-blackduck/actions)
-[![Actions Status](https://github.com/elgohr/concourse-blackduck/workflows/Publish%20Master/badge.svg)](https://github.com/elgohr/concourse-blackduck/actions)
+[![Actions Status](https://github.com/elgohr/concourse-blackduck/workflows/Publish/badge.svg)](https://github.com/elgohr/concourse-blackduck/actions)
 
 
 This is a [Concourse](https://concourse-ci.org/) resource for [Blackduck](https://www.blackducksoftware.com).  
