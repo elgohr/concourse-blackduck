@@ -1,4 +1,4 @@
-FROM golang:1.18.2 as buildResource
+FROM golang:1.18.3 as buildResource
 WORKDIR /build/source
 ADD resource ./
 RUN go get -u github.com/maxbrunsfeld/counterfeiter/v6 \
